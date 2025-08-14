@@ -1,0 +1,86 @@
+.resume-container {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333;
+  padding: 40px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  width: 210mm; /* A4 width */
+  min-height: 297mm; /* A4 height */
+  box-sizing: border-box;
+}
+
+.resume-header {
+  text-align: center;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.resume-header h1 {
+  margin: 0;
+  font-size: 28pt;
+  font-weight: bold;
+}
+
+.resume-header p {
+  margin: 5px 0 0;
+  font-size: 11pt;
+}
+
+.resume-section {
+  margin-bottom: 20px;
+}
+
+.resume-section h2 {
+  font-size: 14pt;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  color: #000;
+}
+
+.resume-item {
+  margin-bottom: 15px;
+}
+
+.item-header,
+.item-subheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.item-header h3,
+.item-subheader h4 {
+  margin: 0;
+  font-size: 12pt;
+  font-weight: bold;
+}
+
+.item-subheader h4 {
+  font-weight: normal;
+  font-style: italic;
+}
+
+.item-header span,
+.item-subheader span {
+  font-size: 10pt;
+  color: #666;
+}
+
+.item-description {
+  margin-top: 5px;
+  font-size: 10pt;
+  white-space: pre-wrap; /* Preserve line breaks from textarea */
+}
+
+a {
+  color: #0056b3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}

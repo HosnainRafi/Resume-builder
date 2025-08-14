@@ -9,12 +9,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 
 // Components and Pages
-import Layout from './components/Layout'; // <-- Import the new Layout
+import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ResumesPage from './pages/ResumesPage';
 import ResumeEditorPage from './pages/ResumeEditorPage';
+import NotFoundPage from './pages/NotFoundPage'; // <-- 1. Import the new page
 import { useAuthStore } from './store/authStore';
 
 const queryClient = new QueryClient();
@@ -26,11 +27,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
-          {/* Public routes have their own simple layout */}
+          {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
 
-          {/* Protected routes are wrapped by the new Layout component */}
+          {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/resumes" element={<ResumesPage />} />
@@ -41,6 +42,7 @@ function App() {
             </Route>
           </Route>
 
+          {/* Root path navigation */}
           <Route
             path="/"
             element={
@@ -51,6 +53,9 @@ function App() {
               )
             }
           />
+
+          {/* 2. Add the catch-all route at the very end */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
     </QueryClientProvider>

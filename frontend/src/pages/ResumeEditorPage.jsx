@@ -1,41 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getResumeById, updateResume } from '../api/resumes';
-import { Container, Form, Button, Spinner, Alert } from 'react-bootstrap';
+import { Form, Button, Spinner, Alert, Card } from 'react-bootstrap';
+import { useReactToPrint } from 'react-to-print'; // <-- Import the hook
+
+// Import editor components
+import HeaderEditor from '../components/HeaderEditor';
+import ExperienceEditor from '../components/ExperienceEditor';
+import EducationEditor from '../components/EducationEditor';
+import SkillsEditor from '../components/SkillsEditor';
+import ProjectsEditor from '../components/ProjectsEditor';
+import ResumeTemplate from '../components/ResumeTemplate'; // <-- Import the template
 
 function ResumeEditorPage() {
-  // --- FIX: Ensure we destructure 'resumeId' to match the route parameter ---
   const { resumeId } = useParams();
-
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [title, setTitle] = useState('');
 
-  // This query now receives the correct, defined 'resumeId'
+  const [resumeData, setResumeData] = useState(null);
+  const componentRef = useRef(); // <-- Create a ref for the template
+
+  // Configure the print hook
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: () => resumeData?.title || 'resume',
+  });
+
   const {
-    data: resume,
+    data: initialResume,
     isLoading,
     isError,
-    status,
   } = useQuery({
     queryKey: ['resume', resumeId],
     queryFn: () => getResumeById(resumeId),
-    // Only run this query if resumeId is a valid, non-undefined value
     enabled: !!resumeId,
   });
 
   useEffect(() => {
-    if (resume) {
-      setTitle(resume.title);
+    if (initialResume) {
+      setResumeData(initialResume);
     }
-  }, [resume]);
+  }, [initialResume]);
 
   const updateMutation = useMutation({
-    mutationFn: (updatedData) => {
-      if (!resumeId) throw new Error('Resume ID is missing.');
-      return updateResume({ resumeId, resumeData: updatedData });
-    },
+    mutationFn: (updatedData) =>
+      updateResume({ resumeId, resumeData: updatedData }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resume', resumeId] });
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
@@ -43,43 +53,32 @@ function ResumeEditorPage() {
   });
 
   const handleSave = () => {
-    if (!resumeId) {
-      console.error('Cannot save, resume ID is missing.');
-      return;
-    }
-    updateMutation.mutate({ title });
+    updateMutation.mutate(resumeData);
   };
 
-  // Handle loading and error states more gracefully
-  if (status === 'pending' || isLoading) {
-    return (
-      <Container className="text-center pt-5">
-        <Spinner animation="border" />
-      </Container>
-    );
-  }
+  const handleFieldChange = (field, value) => {
+    setResumeData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  if (status === 'error' || isError) {
-    return (
-      <Container className="pt-5">
-        <Alert variant="danger">
-          Error loading resume. It might have been deleted or an error occurred.
-        </Alert>
-      </Container>
-    );
-  }
+  if (isLoading) return <Spinner animation="border" className="m-5" />;
+  if (isError) return <Alert variant="danger">Error loading resume.</Alert>;
+  if (!resumeData) return null;
 
   return (
-    <Container className="pt-5">
+    <>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Editing Resume</h2>
+        <h2>Editing: {resumeData.title}</h2>
         <div>
           <Button
-            variant="secondary"
+            variant="outline-secondary"
             onClick={() => navigate('/resumes')}
             className="me-2"
           >
             Back to List
+          </Button>
+          {/* Add the Download PDF button */}
+          <Button variant="success" onClick={handlePrint} className="me-2">
+            Download PDF
           </Button>
           <Button onClick={handleSave} disabled={updateMutation.isPending}>
             {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
@@ -87,18 +86,39 @@ function ResumeEditorPage() {
         </div>
       </div>
 
-      <Form>
-        <Form.Group className="mb-3">
-          <Form.Label>Resume Title</Form.Label>
-          <Form.Control
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </Form.Group>
-      </Form>
-      {/* Additional editor sections will be added here */}
-    </Container>
+      {/* ... All editor components remain the same ... */}
+      <HeaderEditor
+        header={resumeData.header}
+        setHeader={(newHeader) => handleFieldChange('header', newHeader)}
+      />
+      <ExperienceEditor
+        experience={resumeData.experience}
+        setExperience={(newExperience) =>
+          handleFieldChange('experience', newExperience)
+        }
+      />
+      <EducationEditor
+        education={resumeData.education}
+        setEducation={(newEducation) =>
+          handleFieldChange('education', newEducation)
+        }
+      />
+      <SkillsEditor
+        skills={resumeData.skills}
+        setSkills={(newSkills) => handleFieldChange('skills', newSkills)}
+      />
+      <ProjectsEditor
+        projects={resumeData.projects}
+        setProjects={(newProjects) =>
+          handleFieldChange('projects', newProjects)
+        }
+      />
+
+      {/* Render the template component but keep it hidden */}
+      <div style={{ display: 'none' }}>
+        <ResumeTemplate ref={componentRef} resumeData={resumeData} />
+      </div>
+    </>
   );
 }
 
