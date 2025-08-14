@@ -1,0 +1,77 @@
+.modern-template-preview-page {
+  font-family: 'Helvetica', Arial, sans-serif;
+  font-size: 11px;
+  padding: 40px;
+  line-height: 1.4;
+  color: #333;
+  background-color: white;
+  width: 210mm; /* A4 width */
+  height: 297mm; /* A4 height */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+}
+.modern-header {
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+}
+.modern-name {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+}
+.modern-contact {
+  font-size: 11px;
+  margin-top: 5px;
+}
+.modern-section {
+  margin-bottom: 15px;
+}
+.modern-section-title {
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.modern-item {
+  margin-bottom: 10px;
+}
+.modern-item-header,
+.modern-item-subheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modern-item-header {
+  margin-bottom: 2px;
+}
+.modern-item-subheader {
+  margin-bottom: 3px;
+  font-style: italic;
+}
+.modern-item-title {
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0;
+}
+.modern-item-date,
+.modern-item-location {
+  font-size: 10px;
+  color: #666;
+}
+.modern-item-description {
+  font-size: 10px;
+  white-space: pre-wrap;
+  margin: 0;
+}
+.modern-skills-text {
+  font-size: 10px;
+}
+.modern-project-link {
+  color: #0056b3;
+  text-decoration: none;
+  font-size: 9px;
+}

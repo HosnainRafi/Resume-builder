@@ -1,0 +1,64 @@
+.exec-page {
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  width: 210mm;
+  height: 297mm;
+  margin: 2rem auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: #f8f9fa;
+}
+.exec-left-col {
+  width: 33%;
+  background: #343a40; /* Charcoal */
+  color: #f8f9fa;
+  padding: 30px;
+}
+.exec-right-col {
+  width: 67%;
+  padding: 30px;
+}
+.exec-name {
+  font-size: 32px;
+  color: #c5a572; /* Muted Gold */
+  margin: 0;
+  line-height: 1.2;
+}
+.exec-title {
+  font-size: 16px;
+  font-weight: 300;
+  border-bottom: 1px solid #495057;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.exec-left-section h3 {
+  color: #c5a572;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.exec-left-section {
+  font-size: 11px;
+  line-height: 1.6;
+}
+.exec-left-section ul {
+  padding-left: 1em;
+}
+.exec-right-title {
+  font-size: 20px;
+  color: #343a40;
+  margin-bottom: 15px;
+}
+.exec-right-section {
+  margin-bottom: 25px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.exec-item-title {
+  font-size: 14px;
+  font-weight: bold;
+}
+.exec-item-subheader {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+  margin-bottom: 5px;
+}

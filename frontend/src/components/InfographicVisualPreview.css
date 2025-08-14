@@ -1,0 +1,100 @@
+.info-page {
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  width: 210mm;
+  height: 297mm;
+  margin: 2rem auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.info-left-col {
+  width: 35%;
+  background-color: #008080; /* Teal */
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+.info-right-col {
+  width: 65%;
+  background-color: #fff;
+  padding: 30px;
+}
+.info-photo-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 auto 15px auto;
+  border: 3px solid white;
+}
+.info-name {
+  font-size: 26px;
+  margin: 0;
+}
+.info-title {
+  font-size: 14px;
+  font-weight: 300;
+  margin-bottom: 25px;
+}
+.info-left-title {
+  text-align: left;
+  font-size: 14px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.info-left-section {
+  text-align: left;
+  font-size: 11px;
+  margin-bottom: 20px;
+}
+.info-skill-name {
+  margin: 8px 0 4px 0;
+}
+.info-dots {
+  display: flex;
+  gap: 4px;
+}
+.info-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+.info-dot.filled {
+  background-color: white;
+}
+.info-right-title {
+  font-size: 18px;
+  color: #008080;
+  border-bottom: 2px solid #008080;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+.info-item {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 15px;
+  border-left: 2px solid #eee;
+}
+.info-item::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #008080;
+}
+.info-item-date {
+  font-size: 10px;
+  color: #888;
+}
+.info-item-title {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 2px 0;
+}
+.info-item-company {
+  font-size: 12px;
+  font-style: italic;
+}

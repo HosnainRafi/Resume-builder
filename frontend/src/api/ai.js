@@ -5,11 +5,9 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
-export const generateDescription = async ({ jobTitle, company }) => {
-  const { data } = await apiClient.post('/api/ai/generate', {
-    jobTitle,
-    company,
-  });
-  // The backend sends back { data: { description: "..." } }
-  return data.data.description;
+// FIX: This function now matches your backend's /api/ai/enhance endpoint
+export const enhanceText = async ({ text, context }) => {
+  const { data } = await apiClient.post('/api/ai/enhance', { text, context });
+  // Your backend returns { data: { enhancedText: "..." } }
+  return data.data.enhancedText;
 };

@@ -1,5 +1,15 @@
 import { Router } from 'express';
-import { create, getById, getAll, update, remove } from './resume.controller';
+import {
+  create,
+  getById,
+  getAll,
+  update,
+  remove,
+  scoreResume,
+  analyzeKeywords,
+  getSharedResume,
+  createShareLink,
+} from './resume.controller';
 import { authMiddleware } from '../../middleware/auth.middleware';
 
 const router = Router();
@@ -12,5 +22,9 @@ router.get('/', getAll); // Get all resumes for a user
 router.get('/:id', getById); // Get a single resume by its ID
 router.patch('/:id', update); // Update a resume by its ID
 router.delete('/:id', remove); // Delete a resume by its ID
+router.get('/:resumeId/score', scoreResume);
+router.post('/:resumeId/analyze', analyzeKeywords);
+router.post('/:resumeId/share', authMiddleware, createShareLink);
+router.get('/shared/:token', getSharedResume);
 
 export default router;

@@ -17,6 +17,7 @@ import ResumesPage from './pages/ResumesPage';
 import ResumeEditorPage from './pages/ResumeEditorPage';
 import NotFoundPage from './pages/NotFoundPage'; // <-- 1. Import the new page
 import { useAuthStore } from './store/authStore';
+import ShareResumePage from './pages/ShareResumePage';
 
 const queryClient = new QueryClient();
 
@@ -53,7 +54,7 @@ function App() {
               )
             }
           />
-
+          <Route path="/share/:token" element={<ShareResumePage />} />
           {/* 2. Add the catch-all route at the very end */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

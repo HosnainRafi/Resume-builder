@@ -1,3 +1,4 @@
+/* --- THIS IS THE CORRECTED, VALID CSS --- */
 .resume-container {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
@@ -76,11 +77,11 @@
   white-space: pre-wrap; /* Preserve line breaks from textarea */
 }
 
-a {
+.resume-container a {
   color: #0056b3;
   text-decoration: none;
 }
 
-a:hover {
+.resume-container a:hover {
   text-decoration: underline;
 }

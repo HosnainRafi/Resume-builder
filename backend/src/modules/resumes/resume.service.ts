@@ -98,3 +98,110 @@ export const deleteResume = async (
     );
   }
 };
+
+const actionVerbs = new Set([
+  'achieved',
+  'created',
+  'developed',
+  'designed',
+  'implemented',
+  'launched',
+  'led',
+  'managed',
+  'optimized',
+  'pioneered',
+  'reduced',
+  'increased',
+]);
+
+// This function calculates a score based on a set of rules.
+export const calculateScore = (resume: any) => {
+  let score = 0;
+  const feedback: string[] = [];
+
+  // Rule 1: Header completeness (+10)
+  if (resume.header?.name && resume.header?.email) {
+    score += 10;
+  } else {
+    feedback.push('Add your name and email to the header.');
+  }
+
+  // Rule 2: Experience section (+20 points base)
+  if (resume.experience && resume.experience.length > 0) {
+    score += 20;
+
+    // Rule 2a: Quantifiable achievements (+10) - checks for numbers in descriptions
+    const hasNumbers = resume.experience.some((exp: any) =>
+      /\d/.test(exp.description || '')
+    );
+    if (hasNumbers) {
+      score += 10;
+    } else {
+      feedback.push(
+        "Add measurable results to your experience (e.g., 'increased sales by 15%')."
+      );
+    }
+
+    // Rule 2b: Action Verbs (+10) - checks if descriptions start with strong verbs
+    const startsWithActionVerb = resume.experience.some((exp: any) => {
+      const firstWord = exp.description
+        ?.split(' ')[0]
+        ?.toLowerCase()
+        .replace(/[^a-z]/g, '');
+      return firstWord && actionVerbs.has(firstWord);
+    });
+    if (startsWithActionVerb) {
+      score += 10;
+    } else {
+      feedback.push(
+        "Start your experience bullet points with strong action verbs (e.g., 'Developed', 'Managed')."
+      );
+    }
+  } else {
+    feedback.push(
+      'Your resume is missing a work experience section. This is critical.'
+    );
+  }
+
+  // Rule 3: Education section (+15)
+  if (resume.education && resume.education.length > 0) {
+    score += 15;
+  } else {
+    feedback.push('Add at least one entry to your education section.');
+  }
+
+  // Rule 4: Skills section (+15)
+  if (resume.skills && resume.skills.length >= 5) {
+    score += 15;
+  } else if (resume.skills && resume.skills.length > 0) {
+    score += 5;
+    feedback.push(
+      'Aim for at least 5 key skills in your skills section for a better score.'
+    );
+  } else {
+    feedback.push(
+      'The skills section is empty. Add your most relevant skills.'
+    );
+  }
+
+  // Rule 5: Projects section (bonus +5)
+  if (resume.projects && resume.projects.length > 0) {
+    score += 5;
+  }
+
+  // Rule 6: Conciseness (bonus +5)
+  const resumeText = JSON.stringify(resume);
+  if (resumeText.length < 4000) {
+    // Simple length check
+    score += 5;
+  } else {
+    feedback.push(
+      'Your resume seems a bit long. Aim for conciseness and clarity.'
+    );
+  }
+
+  // Ensure the score does not exceed 100
+  score = Math.min(score, 100);
+
+  return { score, feedback };
+};

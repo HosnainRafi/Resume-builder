@@ -34,3 +34,17 @@ export const updateResume = async ({ resumeId, resumeData }) => {
 export const deleteResume = async (resumeId) => {
   await apiClient.delete(`/api/resumes/${resumeId}`);
 };
+
+export const shareResume = async ({ resumeId, template }) => {
+  const { data } = await axios.post(
+    `/api/resumes/${resumeId}/share`,
+    { template },
+    { withCredentials: true }
+  );
+  return data;
+};
+
+export const getSharedResume = async (token) => {
+  const { data } = await axios.get(`/api/resumes/shared/${token}`);
+  return data;
+};

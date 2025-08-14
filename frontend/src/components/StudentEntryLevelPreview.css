@@ -1,0 +1,67 @@
+.student-page {
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: #fff;
+  padding: 35px;
+  width: 210mm;
+  height: 297mm;
+  margin: 2rem auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 11px;
+}
+.student-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.student-name {
+  font-size: 30px;
+  margin: 0;
+  font-weight: 700;
+}
+.student-contact {
+  color: #555;
+  margin-top: 4px;
+}
+.student-columns {
+  display: flex;
+  gap: 25px;
+}
+.student-main-col {
+  flex: 2;
+}
+.student-side-col {
+  flex: 1;
+}
+.student-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4caf50; /* Green accent */
+  text-transform: uppercase;
+  border-bottom: 1.5px solid #eee;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+.student-item {
+  margin-bottom: 12px;
+}
+.student-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.student-item-title {
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0;
+}
+.student-item-date {
+  font-size: 10px;
+  color: #666;
+}
+.student-item-subheader,
+.student-coursework,
+.student-skills-list,
+.student-item-description {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 2px 0;
+}

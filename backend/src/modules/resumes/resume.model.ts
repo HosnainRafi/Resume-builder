@@ -1,50 +1,44 @@
 import { Schema, model } from 'mongoose';
-import {
-  IResume,
-  IExperience,
-  IEducation,
-  ISkill,
-  IProject,
-} from './resume.interface';
+import { IResume } from './resume.interface';
 import { basePlugin } from '../../utils/mongoose.plugins';
 
 // --- Sub-document Schemas ---
-
-const experienceSchema = new Schema<IExperience>({
-  jobTitle: { type: String, required: true, trim: true },
-  company: { type: String, required: true, trim: true },
-  location: { type: String, trim: true },
-  startDate: { type: Date },
-  endDate: { type: Date },
-  isCurrent: { type: Boolean, default: false },
-  description: [{ type: String, trim: true }],
-});
-
-const educationSchema = new Schema<IEducation>({
-  institution: { type: String, required: true, trim: true },
-  degree: { type: String, required: true, trim: true },
-  fieldOfStudy: { type: String, trim: true },
-  startDate: { type: Date },
-  endDate: { type: Date },
-  gpa: { type: Number },
-});
-
-const skillSchema = new Schema<ISkill>({
-  name: { type: String, required: true, trim: true },
-  level: {
-    type: String,
-    enum: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
+const experienceSchema = new Schema(
+  {
+    jobTitle: { type: String, required: true },
+    company: { type: String, required: true },
+    location: { type: String },
+    // FIX: Changed from Date to String to match frontend data
+    startDate: { type: String },
+    endDate: { type: String },
+    // FIX: Changed from an array of strings to a single string
+    description: { type: String },
   },
-});
+  { _id: false }
+);
 
-const projectSchema = new Schema<IProject>({
-  name: { type: String, required: true, trim: true },
-  description: [{ type: String, trim: true }],
-  url: { type: String, trim: true },
-});
+const educationSchema = new Schema(
+  {
+    institution: { type: String, required: true },
+    degree: { type: String, required: true },
+    location: { type: String },
+    // FIX: Changed from Date to String
+    graduationDate: { type: String },
+  },
+  { _id: false }
+);
+
+const projectSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    description: { type: String },
+    technologies: { type: String },
+    link: { type: String },
+  },
+  { _id: false }
+);
 
 // --- Main Resume Schema ---
-
 const resumeSchema = new Schema<IResume>({
   title: {
     type: String,
@@ -58,7 +52,6 @@ const resumeSchema = new Schema<IResume>({
     required: true,
     index: true,
   },
-  templateId: { type: String, trim: true },
   header: {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -69,7 +62,8 @@ const resumeSchema = new Schema<IResume>({
   summary: { type: String, trim: true },
   experience: [experienceSchema],
   education: [educationSchema],
-  skills: [skillSchema],
+  // FIX: Changed from [skillSchema] to a simple array of strings
+  skills: [String],
   projects: [projectSchema],
 });
 

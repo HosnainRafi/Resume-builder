@@ -1,0 +1,60 @@
+.corp-page {
+  font-family: 'Times New Roman', Times, serif;
+  background: #fff;
+  color: #111;
+  padding: 40px;
+  width: 210mm;
+  height: 297mm;
+  margin: 2rem auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+}
+.corp-header {
+  text-align: center;
+  border-bottom: 2px solid #0d2c54; /* Navy Blue */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.corp-name {
+  font-size: 28px;
+  margin: 0;
+}
+.corp-contact-info {
+  font-size: 11px;
+  margin: 5px 0 0 0;
+}
+.corp-section-title {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #0d2c54;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.corp-item {
+  margin-bottom: 15px;
+}
+.corp-item-header {
+  display: flex;
+  justify-content: space-between;
+}
+.corp-item-title {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0;
+}
+.corp-item-date {
+  font-style: italic;
+}
+.corp-item-company {
+  font-weight: bold;
+  margin: 2px 0 5px 0;
+}
+.corp-description-list {
+  margin: 0;
+  padding-left: 1.5em;
+  line-height: 1.5;
+}
+.corp-body-text {
+  line-height: 1.5;
+}

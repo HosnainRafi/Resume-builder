@@ -3,7 +3,7 @@ import env from '../../config';
 import logger from '../../utils/logger';
 import { CustomError } from '../../middleware/error-handler';
 
-// Initialize the OpenAI client with OpenRouter's configuration
+// This is your correctly configured client for OpenRouter
 const openrouter = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
   apiKey: env.OPENROUTER_API_KEY,
@@ -79,5 +79,45 @@ export const enhanceTextWithAI = async (
       error.message ||
       'An unknown error occurred with the AI service.';
     throw new CustomError(errorMessage, 'AI_SERVICE_ERROR', 502); // 502 Bad Gateway is appropriate here
+  }
+};
+
+/**
+ * Generates multiple resume bullet points based on a job title and company.
+ * @param jobTitle The user's job title.
+ * @param company The user's company.
+ * @returns An array of AI-generated bullet point strings.
+ */
+export const generateBulletPoints = async (
+  jobTitle: string,
+  company: string
+): Promise<string[]> => {
+  try {
+    const prompt = `Generate 3-4 professional, achievement-oriented resume bullet points for a ${jobTitle} at ${company}. Each bullet point should start with a strong action verb and be a separate line. Do not add any introductory text.`;
+
+    const response = await openrouter.chat.completions.create({
+      model: env.OPENROUTER_MODEL, // Use the same model as your other function for consistency
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 250,
+    });
+
+    const content = response.choices[0]?.message?.content?.trim() || '';
+
+    // Split the response into an array of bullet points, removing empty lines or hyphens
+    return content
+      .split('\n')
+      .map((line: string) => line.replace(/^- /, '').trim())
+      .filter((line: string) => line);
+  } catch (error: any) {
+    // Use the same robust error handling as your other function
+    logger.error(
+      { error },
+      'Failed to generate bullet points with OpenRouter AI'
+    );
+    const errorMessage =
+      error.response?.data?.error?.message ||
+      error.message ||
+      'An unknown error occurred with the AI service.';
+    throw new CustomError(errorMessage, 'AI_SERVICE_ERROR', 502);
   }
 };

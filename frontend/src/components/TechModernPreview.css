@@ -1,0 +1,113 @@
+.tech-modern-preview-page {
+  display: flex;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  color: #333;
+  background-color: #fff;
+  width: 210mm;
+  height: 297mm;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  margin: 2rem auto;
+}
+.tech-modern-sidebar {
+  width: 38%;
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 30px;
+}
+.tech-modern-main-content {
+  width: 62%;
+  padding: 30px;
+  line-height: 1.5;
+}
+.tech-modern-name {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.tech-modern-title {
+  font-size: 14px;
+  font-weight: 300;
+  color: #00bfff;
+  margin-top: 4px;
+  margin-bottom: 25px;
+}
+.tech-modern-sidebar-section {
+  margin-bottom: 20px;
+}
+.tech-modern-sidebar-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #00bfff;
+  border-bottom: 1px solid #4b5563;
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.tech-modern-contact-item {
+  font-size: 10px;
+  margin: 4px 0;
+}
+.tech-modern-link {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 10px;
+}
+.tech-modern-link:hover {
+  color: #00bfff;
+}
+.tech-skill-item {
+  margin-bottom: 10px;
+}
+.tech-skill-item p {
+  margin: 0 0 4px;
+  font-size: 11px;
+}
+.tech-skill-bar-container {
+  width: 100%;
+  height: 6px;
+  background-color: #4b5563;
+  border-radius: 3px;
+}
+.tech-skill-bar {
+  height: 100%;
+  background-color: #00bfff;
+  border-radius: 3px;
+}
+.tech-modern-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 5px;
+}
+.tech-modern-item {
+  margin-bottom: 15px;
+}
+.tech-modern-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+.tech-modern-item-subheader {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 2px 0 5px;
+}
+.tech-modern-item-description {
+  font-size: 11px;
+  color: #4b5563;
+  white-space: pre-wrap;
+  margin: 0;
+}

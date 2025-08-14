@@ -1,0 +1,82 @@
+.elegant-minimalist-page {
+  font-family: 'Garamond', 'Times New Roman', serif;
+  background: #fff;
+  padding: 40px;
+  color: #222;
+  width: 210mm;
+  height: 297mm;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+}
+.elegant-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+.elegant-name {
+  font-size: 32px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
+}
+.elegant-contact {
+  font-size: 11px;
+  margin-top: 5px;
+}
+.elegant-section {
+  margin-bottom: 20px;
+}
+.elegant-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 5px;
+}
+.elegant-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 1px;
+  background-color: #ccc;
+}
+.elegant-summary {
+  text-align: center;
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.elegant-item {
+  margin-bottom: 12px;
+}
+.elegant-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.elegant-item-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+.elegant-item-date,
+.elegant-item-subheader {
+  font-size: 11px;
+  color: #555;
+  font-style: italic;
+}
+.elegant-item-description {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0;
+}
+.elegant-skills {
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.8;
+}

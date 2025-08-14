@@ -1,17 +1,42 @@
 import React from 'react';
 import { Form, Button, Card, Row, Col, Spinner } from 'react-bootstrap';
 import { useMutation } from '@tanstack/react-query';
-import { generateDescription } from '../api/ai'; // <-- Import the new AI function
+import axios from 'axios';
 
-// This is a small, reusable component for the AI button
-function GenerateButton({ jobTitle, company, onGenerated, index }) {
+// API function to call our new bullet point generator
+const generateAIBulletPoints = async ({ jobTitle, company }) => {
+  const apiClient = axios.create({
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    withCredentials: true,
+  });
+  const { data } = await apiClient.post('/api/ai/generate-experience', {
+    jobTitle,
+    company,
+  });
+  return data.data.bulletPoints; // Expects an array of strings
+};
+
+// Reusable AI Writer button component
+function AIWriterButton({
+  jobTitle,
+  company,
+  onGenerated,
+  index,
+  currentDescription,
+}) {
   const mutation = useMutation({
-    mutationFn: generateDescription,
-    onSuccess: (generatedDescription) => {
-      onGenerated(index, 'description', generatedDescription);
+    mutationFn: generateAIBulletPoints,
+    onSuccess: (newBulletPoints) => {
+      // Append new bullet points to the existing description
+      const updatedDescription = [currentDescription, ...newBulletPoints]
+        .filter((line) => line)
+        .join('\n');
+      onGenerated(index, 'description', updatedDescription);
     },
     onError: (error) => {
-      alert(`AI Generation Failed: ${error.message}`);
+      alert(
+        `AI Writer Failed: ${error.response?.data?.message || error.message}`
+      );
     },
   });
 
@@ -24,17 +49,10 @@ function GenerateButton({ jobTitle, company, onGenerated, index }) {
     >
       {mutation.isPending ? (
         <>
-          <Spinner
-            as="span"
-            animation="border"
-            size="sm"
-            role="status"
-            aria-hidden="true"
-          />
-          {' Generating...'}
+          <Spinner as="span" animation="border" size="sm" /> Generating...
         </>
       ) : (
-        '✨ Generate with AI'
+        '✨ AI Writer'
       )}
     </Button>
   );
@@ -43,7 +61,7 @@ function GenerateButton({ jobTitle, company, onGenerated, index }) {
 function ExperienceEditor({ experience, setExperience }) {
   const handleAddExperience = () => {
     setExperience([
-      ...experience,
+      ...(experience || []),
       {
         jobTitle: '',
         company: '',
@@ -62,7 +80,7 @@ function ExperienceEditor({ experience, setExperience }) {
   };
 
   const handleRemoveExperience = (index) => {
-    const updatedExperience = experience.filter((_, i) => i !== index);
+    const updatedExperience = (experience || []).filter((_, i) => i !== index);
     setExperience(updatedExperience);
   };
 
@@ -70,7 +88,7 @@ function ExperienceEditor({ experience, setExperience }) {
     <Card className="mb-4">
       <Card.Header as="h5">Work Experience</Card.Header>
       <Card.Body>
-        {experience.map((exp, index) => (
+        {(experience || []).map((exp, index) => (
           <div key={index} className="mb-4 p-3 border rounded">
             <Row className="g-3">
               <Col md={6}>
@@ -78,7 +96,7 @@ function ExperienceEditor({ experience, setExperience }) {
                   <Form.Label>Job Title</Form.Label>
                   <Form.Control
                     type="text"
-                    value={exp.jobTitle}
+                    value={exp.jobTitle || ''}
                     onChange={(e) =>
                       handleExperienceChange(index, 'jobTitle', e.target.value)
                     }
@@ -90,7 +108,7 @@ function ExperienceEditor({ experience, setExperience }) {
                   <Form.Label>Company</Form.Label>
                   <Form.Control
                     type="text"
-                    value={exp.company}
+                    value={exp.company || ''}
                     onChange={(e) =>
                       handleExperienceChange(index, 'company', e.target.value)
                     }
@@ -103,7 +121,7 @@ function ExperienceEditor({ experience, setExperience }) {
                   <Form.Control
                     type="text"
                     placeholder="e.g., Jan 2022"
-                    value={exp.startDate}
+                    value={exp.startDate || ''}
                     onChange={(e) =>
                       handleExperienceChange(index, 'startDate', e.target.value)
                     }
@@ -116,7 +134,7 @@ function ExperienceEditor({ experience, setExperience }) {
                   <Form.Control
                     type="text"
                     placeholder="e.g., Present"
-                    value={exp.endDate}
+                    value={exp.endDate || ''}
                     onChange={(e) =>
                       handleExperienceChange(index, 'endDate', e.target.value)
                     }
@@ -129,7 +147,7 @@ function ExperienceEditor({ experience, setExperience }) {
                   <Form.Control
                     type="text"
                     placeholder="e.g., Remote"
-                    value={exp.location}
+                    value={exp.location || ''}
                     onChange={(e) =>
                       handleExperienceChange(index, 'location', e.target.value)
                     }
@@ -138,21 +156,23 @@ function ExperienceEditor({ experience, setExperience }) {
               </Col>
               <Col xs={12}>
                 <Form.Group>
-                  {/* FIX: Add a flex container for the label and AI button */}
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <Form.Label className="mb-0">Description</Form.Label>
-                    <GenerateButton
+                    <Form.Label className="mb-0">
+                      Description / Achievements
+                    </Form.Label>
+                    <AIWriterButton
                       jobTitle={exp.jobTitle}
                       company={exp.company}
                       onGenerated={handleExperienceChange}
                       index={index}
+                      currentDescription={exp.description}
                     />
                   </div>
                   <Form.Control
                     as="textarea"
-                    rows={5}
-                    placeholder="Describe your responsibilities and achievements, or let our AI generate it for you!"
-                    value={exp.description}
+                    rows={6}
+                    placeholder="Describe your responsibilities and achievements, or use the AI Writer to generate bullet points for you."
+                    value={exp.description || ''}
                     onChange={(e) =>
                       handleExperienceChange(
                         index,

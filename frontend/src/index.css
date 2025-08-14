@@ -89,3 +89,20 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+.editor-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem; /* Adds space between the columns */
+}
+
+.editor-forms {
+  flex: 1; /* Takes up the available space on the left */
+}
+
+.editor-preview {
+  flex-shrink: 0; /* Prevents the preview from shrinking */
+  width: 50%; /* Adjust width as needed */
+  position: sticky;
+  top: 1.5rem; /* Pushes it down slightly from the top */
+  height: calc(100vh - 3rem); /* Fills the vertical space, with margins */
+}

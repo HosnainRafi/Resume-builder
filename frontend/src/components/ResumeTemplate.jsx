@@ -1,14 +1,26 @@
 import React from 'react';
-import './ResumeTemplate.css'; // We will create this CSS file next
+import './ResumeTemplate.css';
 
-// Use a forwardRef to allow the parent component to get a ref to this DOM node
-const ResumeTemplate = React.forwardRef(({ resumeData }, ref) => {
+// The component is wrapped in React.forwardRef to accept a ref from its parent.
+const ResumeTemplate = React.forwardRef((props, ref) => {
+  const { resumeData } = props;
+
   if (!resumeData) {
     return null;
   }
 
-  const { header, experience, education, skills, projects } = resumeData;
+  // --- THE CRITICAL FIX ---
+  // We destructure resumeData and provide default empty values for every property.
+  // This prevents the component from crashing if a field is missing.
+  const {
+    header = { name: '', email: '', phone: '', website: '' },
+    experience = [],
+    education = [],
+    skills = [],
+    projects = [],
+  } = resumeData;
 
+  // The `ref` from the parent is attached to the root div of this component.
   return (
     <div ref={ref} className="resume-container">
       <header className="resume-header">
@@ -19,9 +31,9 @@ const ResumeTemplate = React.forwardRef(({ resumeData }, ref) => {
           {header.website && ` | ${header.website}`}
         </p>
       </header>
-
       <section className="resume-section">
         <h2>Work Experience</h2>
+        {/* This .map() is now always safe, even if experience is undefined in the data */}
         {experience.map((exp, index) => (
           <div key={index} className="resume-item">
             <div className="item-header">
@@ -38,7 +50,6 @@ const ResumeTemplate = React.forwardRef(({ resumeData }, ref) => {
           </div>
         ))}
       </section>
-
       <section className="resume-section">
         <h2>Education</h2>
         {education.map((edu, index) => (
@@ -54,12 +65,11 @@ const ResumeTemplate = React.forwardRef(({ resumeData }, ref) => {
           </div>
         ))}
       </section>
-
       <section className="resume-section">
         <h2>Skills</h2>
+        {/* This .join() is now always safe */}
         <p>{skills.join(', ')}</p>
       </section>
-
       <section className="resume-section">
         <h2>Projects</h2>
         {projects.map((proj, index) => (
