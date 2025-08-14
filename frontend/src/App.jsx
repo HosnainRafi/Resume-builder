@@ -6,12 +6,10 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-// Make sure index.css is imported
 import './index.css';
 
 // Components and Pages
-import ResumeHeader from './components/ResumeHeader';
+import Layout from './components/Layout'; // <-- Import the new Layout
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
@@ -27,40 +25,33 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        {/* FIX: Wrap the entire app in our new layout container */}
-        <div className="app-container">
-          <ResumeHeader />
+        <Routes>
+          {/* Public routes have their own simple layout */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
 
-          {/* FIX: Wrap the routes in a <main> tag that can grow */}
-          <main className="main-content">
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-
-              {/* Protected Routes */}
-              <Route element={<ProtectedRoute />}>
-                <Route path="/resumes" element={<ResumesPage />} />
-                <Route
-                  path="/resumes/:resumeId/edit"
-                  element={<ResumeEditorPage />}
-                />
-              </Route>
-
-              {/* Root redirect logic */}
+          {/* Protected routes are wrapped by the new Layout component */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout />}>
+              <Route path="/resumes" element={<ResumesPage />} />
               <Route
-                path="/"
-                element={
-                  isAuthenticated ? (
-                    <Navigate to="/resumes" />
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
+                path="/resumes/:resumeId/edit"
+                element={<ResumeEditorPage />}
               />
-            </Routes>
-          </main>
-        </div>
+            </Route>
+          </Route>
+
+          <Route
+            path="/"
+            element={
+              isAuthenticated ? (
+                <Navigate to="/resumes" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        </Routes>
       </Router>
     </QueryClientProvider>
   );
