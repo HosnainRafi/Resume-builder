@@ -106,3 +106,38 @@ button:focus-visible {
   top: 1.5rem; /* Pushes it down slightly from the top */
   height: calc(100vh - 3rem); /* Fills the vertical space, with margins */
 }
+.resume-nav-tabs {
+  border-bottom: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.resume-nav-tabs .nav-item {
+  margin-bottom: -1px; /* Overlap the border */
+}
+
+.resume-nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  color: #495057;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.resume-nav-tabs .nav-link.active {
+  color: #007bff;
+  background-color: #fff;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.resume-nav-tabs .nav-link:hover {
+  border-color: #e9ecef #e9ecef #dee2e6;
+}
+
+/* Remove padding from the Card inside the Tab Pane */
+.tab-content > .tab-pane > .card {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: none;
+}

@@ -39,12 +39,7 @@ const styles = StyleSheet.create({
 });
 
 const ModernExecutiveTemplate = ({ resumeData }) => {
-  const {
-    header = {},
-    experience = [],
-    education = [],
-    skills = [],
-  } = resumeData || {};
+  const { header = {}, experience = [], skills = [] } = resumeData || {};
   return (
     <Document>
       <Page size="A4" style={styles.page}>

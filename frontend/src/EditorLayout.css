@@ -1,0 +1,58 @@
+/* Main Editor Layout Styling */
+.editor-page-wrapper {
+  background-color: #f0f2f5; /* Light gray background like Rezi */
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.editor-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.editor-main-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+/* Left Panel: The Editor Forms */
+.editor-forms-panel {
+  flex: 1;
+  min-width: 400px;
+  max-width: 550px;
+}
+
+/* Right Panel: The Resume Preview */
+.editor-preview-panel {
+  flex: 1.5;
+  position: sticky;
+  top: 1.5rem; /* Sticks to the top during scroll */
+  height: calc(100vh - 3rem - 80px); /* Adjust height based on header */
+  overflow-y: auto;
+  background-color: #e9ecef;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1.5rem;
+}
+
+/* This ensures the preview document itself scales nicely */
+.editor-preview-panel > div {
+  transform-origin: top center;
+  transform: scale(0.8); /* Adjust scale to fit well */
+  transition: transform 0.2s ease-in-out;
+}

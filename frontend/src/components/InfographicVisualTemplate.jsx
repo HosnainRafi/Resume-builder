@@ -50,12 +50,7 @@ const styles = StyleSheet.create({
 });
 
 const InfographicVisualTemplate = ({ resumeData }) => {
-  const {
-    header = {},
-    experience = [],
-    skills = [],
-    education = [],
-  } = resumeData || {};
+  const { header = {}, experience = [], skills = [] } = resumeData || {};
   return (
     <Document>
       <Page size="A4" style={styles.page}>

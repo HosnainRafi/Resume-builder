@@ -2,12 +2,7 @@ import React from 'react';
 import './ModernExecutivePreview.css';
 
 function ModernExecutivePreview({ resumeData }) {
-  const {
-    header = {},
-    experience = [],
-    education = [],
-    skills = [],
-  } = resumeData || {};
+  const { header = {}, experience = [], skills = [] } = resumeData || {};
   return (
     <div className="exec-page">
       <div className="exec-left-col">

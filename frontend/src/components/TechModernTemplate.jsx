@@ -61,7 +61,6 @@ const TechModernTemplate = ({ resumeData }) => {
   const {
     header = {},
     experience = [],
-    education = [],
     skills = [],
     projects = [],
   } = resumeData || {};

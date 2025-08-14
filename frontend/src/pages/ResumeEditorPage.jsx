@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getResumeById, updateResume } from '../api/resumes';
-import { Form, Button, Spinner, Alert, Card } from 'react-bootstrap';
+import { getResumeById, updateResume, shareResume } from '../api/resumes';
+import { Button, Spinner, Alert, Card } from 'react-bootstrap';
 import { pdf } from '@react-pdf/renderer';
 
-// --- Form Editing Components ---
-import HeaderEditor from '../components/HeaderEditor';
-import ExperienceEditor from '../components/ExperienceEditor';
-import EducationEditor from '../components/EducationEditor';
-import SkillsEditor from '../components/SkillsEditor';
-import ProjectsEditor from '../components/ProjectsEditor';
+// --- Import NEW Layout CSS ---
+import '../EditorLayout.css'; // This controls the new Rezi-style layout
+
+// --- Import the Tabbed Editor Component ---
+import ResumeTabs from '../components/ResumeTabs';
+
+// --- Import Other Helper Components ---
 import KeywordAnalyzer from '../components/KeywordAnalyzer';
 import ResumeScorecard from '../components/ResumeScorecard';
 
@@ -24,9 +25,6 @@ import ProfessionalCorporateTemplate from '../components/ProfessionalCorporateTe
 import StudentEntryLevelTemplate from '../components/StudentEntryLevelTemplate';
 import InfographicVisualTemplate from '../components/InfographicVisualTemplate';
 import ModernExecutiveTemplate from '../components/ModernExecutiveTemplate';
-
-// --- Import ALL HTML/CSS Live Preview Templates ---
-
 import ClassicTemplatePreview from '../components/ClassicTemplate';
 import ModernTemplatePreview from '../components/ModernTemplate';
 import TechModernPreview from '../components/TechModernPreview';
@@ -37,12 +35,14 @@ import StudentEntryLevelPreview from '../components/StudentEntryLevelPreview';
 import InfographicVisualPreview from '../components/InfographicVisualPreview';
 import ModernExecutivePreview from '../components/ModernExecutivePreview';
 
+// --- Import ALL HTML/CSS Live Preview Templates ---
+
 // --- Master List of All Available Templates ---
 const TEMPLATES = [
   {
     id: 'classic',
     name: 'Classic',
-    component: ClassicTemplatePreview,
+    component: ClassicTemplate, // HTML preview
     pdf: ClassicTemplate,
   },
   {
@@ -132,7 +132,6 @@ function ResumeEditorPage() {
       TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
     const PdfComponent = currentTemplate.pdf;
     const doc = <PdfComponent resumeData={resumeData} />;
-
     const blob = await pdf(doc).toBlob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -144,9 +143,19 @@ function ResumeEditorPage() {
     URL.revokeObjectURL(url);
   };
 
-  //   const handleShare = async () => {
-  //     /* ... same as before ... */
-  //   };
+  const handleShare = async () => {
+    if (!resumeData) return;
+    try {
+      const { link } = await shareResume({
+        resumeId,
+        template: selectedTemplateId,
+      });
+      await navigator.clipboard.writeText(link);
+      alert(`Share link copied to clipboard:\n${link}`);
+    } catch (err) {
+      alert('Failed to create share link.', err);
+    }
+  };
 
   const renderPreview = () => {
     if (!resumeData) return null;
@@ -160,8 +169,8 @@ function ResumeEditorPage() {
   if (isError) return <Alert variant="danger">Error loading resume.</Alert>;
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="editor-page-wrapper">
+      <header className="editor-header">
         <h2>Editing: {resumeData?.title || 'New Resume'}</h2>
         <div>
           <Button
@@ -169,26 +178,27 @@ function ResumeEditorPage() {
             onClick={() => navigate('/resumes')}
             className="me-2"
           >
-            Back to List
+            Back
           </Button>
           <Button onClick={handleSave} disabled={updateMutation.isPending}>
-            {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+            {updateMutation.isPending ? 'Saving...' : 'Save'}
           </Button>
           <Button
             variant="success"
             className="ms-2"
             onClick={handleDownloadPDF}
           >
-            Download PDF
+            Download
           </Button>
-          {/* <Button variant="info" className="ms-2" onClick={handleShare}>
-            Share Resume
-          </Button> */}
+          <Button variant="info" className="ms-2" onClick={handleShare}>
+            Share
+          </Button>
         </div>
-      </div>
+      </header>
 
-      <div className="editor-layout" style={{ display: 'flex', gap: '2rem' }}>
-        <div className="editor-forms" style={{ flex: 1, minWidth: 0 }}>
+      <main className="editor-main-layout">
+        {/* Left Panel: Editor */}
+        <div className="editor-forms-panel">
           <Card className="mb-4">
             <Card.Header as="h5">Templates</Card.Header>
             <Card.Body className="d-flex flex-wrap" style={{ gap: '0.5rem' }}>
@@ -212,45 +222,18 @@ function ResumeEditorPage() {
           <ResumeScorecard resumeId={resumeId} />
           <KeywordAnalyzer resumeId={resumeId} />
 
+          {/* The New Tabbed Editing Interface */}
           {resumeData && (
-            <>
-              <HeaderEditor
-                header={resumeData.header}
-                setHeader={(v) => handleFieldChange('header', v)}
-              />
-              <ExperienceEditor
-                experience={resumeData.experience}
-                setExperience={(v) => handleFieldChange('experience', v)}
-              />
-              <EducationEditor
-                education={resumeData.education}
-                setEducation={(v) => handleFieldChange('education', v)}
-              />
-              <SkillsEditor
-                skills={resumeData.skills}
-                setSkills={(v) => handleFieldChange('skills', v)}
-              />
-              <ProjectsEditor
-                projects={resumeData.projects}
-                setProjects={(v) => handleFieldChange('projects', v)}
-              />
-            </>
+            <ResumeTabs
+              resumeData={resumeData}
+              onFieldChange={handleFieldChange}
+            />
           )}
         </div>
 
-        <div
-          className="editor-preview-container"
-          style={{
-            flex: 1.2,
-            backgroundColor: '#e9ecef',
-            padding: '1rem',
-            overflowY: 'auto',
-            height: 'calc(100vh - 100px)',
-          }}
-        >
-          {renderPreview()}
-        </div>
-      </div>
+        {/* Right Panel: Live HTML Preview */}
+        <aside className="editor-preview-panel">{renderPreview()}</aside>
+      </main>
     </div>
   );
 }

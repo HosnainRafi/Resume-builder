@@ -2,12 +2,7 @@ import React from 'react';
 import './ProfessionalCorporatePreview.css';
 
 function ProfessionalCorporatePreview({ resumeData }) {
-  const {
-    header = {},
-    experience = [],
-    education = [],
-    skills = [],
-  } = resumeData || {};
+  const { header = {}, experience = [], education = [] } = resumeData || {};
   return (
     <div className="corp-page">
       <header className="corp-header">

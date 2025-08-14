@@ -14,7 +14,6 @@ function TechModernPreview({ resumeData }) {
   const {
     header = {},
     experience = [],
-    education = [],
     skills = [],
     projects = [],
   } = resumeData || {};
