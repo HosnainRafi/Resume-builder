@@ -7,6 +7,9 @@ import {
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Make sure index.css is imported
+import './index.css';
+
 // Components and Pages
 import ResumeHeader from './components/ResumeHeader';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -24,33 +27,40 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <ResumeHeader />
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+        {/* FIX: Wrap the entire app in our new layout container */}
+        <div className="app-container">
+          <ResumeHeader />
 
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/resumes" element={<ResumesPage />} />
-            <Route
-              path="/resumes/:resumeId/edit"
-              element={<ResumeEditorPage />}
-            />
-          </Route>
+          {/* FIX: Wrap the routes in a <main> tag that can grow */}
+          <main className="main-content">
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
 
-          {/* Root redirect logic */}
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/resumes" />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-        </Routes>
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/resumes" element={<ResumesPage />} />
+                <Route
+                  path="/resumes/:resumeId/edit"
+                  element={<ResumeEditorPage />}
+                />
+              </Route>
+
+              {/* Root redirect logic */}
+              <Route
+                path="/"
+                element={
+                  isAuthenticated ? (
+                    <Navigate to="/resumes" />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+            </Routes>
+          </main>
+        </div>
       </Router>
     </QueryClientProvider>
   );

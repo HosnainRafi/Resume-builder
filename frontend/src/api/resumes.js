@@ -7,7 +7,10 @@ const apiClient = axios.create({
 
 export const getResumes = async () => {
   const { data } = await apiClient.get('/api/resumes');
-  return data.data;
+  // FIX: Return the entire response data object from the server.
+  // This standardizes the response format across all API calls.
+  console.log('1. Raw data from getResumes API call:', data);
+  return data;
 };
 
 export const getResumeById = async (resumeId) => {
@@ -17,8 +20,6 @@ export const getResumeById = async (resumeId) => {
 
 export const createResume = async (resumeData) => {
   const { data } = await apiClient.post('/api/resumes', resumeData);
-  // FIX: Return the entire 'data' object from the server's JSON response.
-  // This ensures we don't lose the nested structure.
   return data;
 };
 

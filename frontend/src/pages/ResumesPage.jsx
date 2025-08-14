@@ -18,7 +18,7 @@ function ResumesPage() {
   const { user } = useAuthStore();
 
   const {
-    data: resumes,
+    data: response,
     isLoading,
     isError,
     error,
@@ -27,34 +27,20 @@ function ResumesPage() {
     queryFn: getResumes,
   });
 
+  const resumes = response?.data;
+
   const createMutation = useMutation({
     mutationFn: () =>
       createResume({
         title: 'Untitled Resume',
         header: { name: user.name, email: user.email },
       }),
-    onSuccess: (newResume) => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ['resumes'] });
-      // --- FIX: Add a guard to ensure we have an ID before navigating ---
-      if (newResume && newResume._id) {
-        navigate(`/resumes/${newResume._id}/edit`);
-      } else {
-        // Handle the case where the new resume object or its ID is missing
-        console.error(
-          'Failed to create resume or get a valid ID from the server.',
-          newResume
-        );
-        alert(
-          'Sorry, something went wrong while creating your resume. Please try again.'
-        );
+      const newResume = response?.data;
+      if (newResume && newResume.id) {
+        navigate(`/resumes/${newResume.id}/edit`);
       }
-    },
-    onError: (error) => {
-      // --- NEW: Explicitly handle API errors ---
-      console.error('Error creating resume:', error);
-      alert(
-        `Could not create resume: ${error.message || 'Please check the server and try again.'}`
-      );
     },
   });
 
@@ -66,61 +52,82 @@ function ResumesPage() {
   });
 
   return (
-    <Container className="pt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Your Resumes</h1>
-        <Button
-          onClick={() => createMutation.mutate()}
-          disabled={createMutation.isPending}
+    // FIX: Use a Container with vertical padding (py-5) to center the content
+    <Container className="py-5">
+      <Card className="shadow-sm">
+        <Card.Header
+          as="h5"
+          className="p-3 d-flex justify-content-between align-items-center"
         >
-          {createMutation.isPending ? 'Creating...' : '+ New Resume'}
-        </Button>
-      </div>
+          Your Resumes
+          <Button
+            variant="primary"
+            onClick={() => createMutation.mutate()}
+            disabled={createMutation.isPending}
+          >
+            {createMutation.isPending ? (
+              <Spinner as="span" animation="border" size="sm" />
+            ) : (
+              '+ New Resume'
+            )}
+          </Button>
+        </Card.Header>
 
-      {isLoading && <Spinner animation="border" />}
-      {isError && <Alert variant="danger">Error: {error.message}</Alert>}
+        {isLoading && (
+          <Card.Body className="text-center p-5">
+            <Spinner animation="border" />
+          </Card.Body>
+        )}
+        {isError && (
+          <Alert variant="danger" className="m-3">
+            Error: {error.message}
+          </Alert>
+        )}
 
-      {resumes && resumes.length > 0 ? (
-        <ListGroup>
-          {resumes.map((resume) => (
-            <ListGroup.Item
-              key={resume._id}
-              className="d-flex justify-content-between align-items-center"
-            >
-              <div>
-                <h5>{resume.title}</h5>
-                <small className="text-muted">
-                  Last updated:{' '}
-                  {new Date(resume.updatedAt).toLocaleDateString()}
-                </small>
-              </div>
-              <div>
-                <Button
-                  as={Link}
-                  to={`/resumes/${resume._id}/edit`}
-                  variant="primary"
-                  className="me-2"
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="danger"
-                  onClick={() => deleteMutation.mutate(resume._id)}
-                  disabled={deleteMutation.isPending}
-                >
-                  Delete
-                </Button>
-              </div>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      ) : (
-        !isLoading && (
-          <Card body>
-            You don't have any resumes yet. Create one to get started!
-          </Card>
-        )
-      )}
+        {resumes && resumes.length > 0 ? (
+          <ListGroup variant="flush">
+            {resumes.map((resume) => (
+              <ListGroup.Item
+                key={resume.id}
+                className="p-3 d-flex justify-content-between align-items-center"
+              >
+                <div>
+                  <h6 className="mb-1">{resume.title}</h6>
+                  <small className="text-muted">
+                    Last updated:{' '}
+                    {new Date(resume.updatedAt).toLocaleDateString()}
+                  </small>
+                </div>
+                <div>
+                  <Button
+                    as={Link}
+                    to={`/resumes/${resume.id}/edit`}
+                    variant="outline-secondary"
+                    size="sm"
+                    className="me-2"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => deleteMutation.mutate(resume.id)}
+                    disabled={deleteMutation.isPending}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        ) : (
+          !isLoading && (
+            <Card.Body className="text-muted text-center p-5">
+              You don't have any resumes yet. Create one to get started!
+            </Card.Body>
+          )
+        )}
+      </Card>
     </Container>
   );
 }

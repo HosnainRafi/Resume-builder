@@ -16,7 +16,7 @@ function LoginPage() {
     mutationFn: login,
     onSuccess: (data) => {
       setUser(data.data.user, data.data.accessToken);
-      navigate('/dashboard'); // Redirect to a protected dashboard page on success
+      navigate('/resumes'); // Changed from /dashboard to /resumes
     },
   });
 
@@ -30,11 +30,12 @@ function LoginPage() {
   };
 
   return (
+    // FIX: Center the card on the page
     <Container
       className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: '100vh' }}
+      style={{ minHeight: 'calc(100vh - 56px)' }}
     >
-      <Card style={{ width: '24rem' }}>
+      <Card className="shadow-sm" style={{ width: '24rem' }}>
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {signupSuccess && (
@@ -47,22 +48,24 @@ function LoginPage() {
             </Alert>
           )}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
+            <Form.Group className="mb-3" id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
                 required
                 onChange={handleChange}
+                placeholder="Enter your email"
               />
             </Form.Group>
-            <Form.Group id="password">
+            <Form.Group className="mb-3" id="password">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 name="password"
                 required
                 onChange={handleChange}
+                placeholder="Enter your password"
               />
             </Form.Group>
             <Button
@@ -84,7 +87,7 @@ function LoginPage() {
             </Button>
           </Form>
         </Card.Body>
-        <Card.Footer className="text-center">
+        <Card.Footer className="text-center text-muted">
           Need an account? <Link to="/signup">Sign Up</Link>
         </Card.Footer>
       </Card>
