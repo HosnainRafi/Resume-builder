@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import env from '../../config';
-import logger from '../../utils/logger';
 import { CustomError } from '../../middleware/error-handler';
+import logger from 'backend/src/utils/logger';
 
 // This is your correctly configured client for OpenRouter
 const openrouter = new OpenAI({

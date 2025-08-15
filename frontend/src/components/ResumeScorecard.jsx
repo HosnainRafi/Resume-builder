@@ -1,3 +1,5 @@
+// src/components/ResumeScorecard.jsx
+
 import React from 'react';
 import {
   Card,
@@ -7,25 +9,40 @@ import {
   ProgressBar,
   Alert,
 } from 'react-bootstrap';
-import { useQuery } from '@tanstack/react-query';
+import useSWR from 'swr';
 import axios from 'axios';
 
 // API function to call our new scoring endpoint
-const fetchResumeScore = async (resumeId) => {
+const fetchResumeScore = async (url) => {
   const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
   });
-  const { data } = await apiClient.get(`/api/resumes/${resumeId}/score`);
+  const { data } = await apiClient.get(url);
   return data.data;
 };
 
 function ResumeScorecard({ resumeId }) {
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['resumeScore', resumeId],
-    queryFn: () => fetchResumeScore(resumeId),
-    enabled: false, // We only fetch when the user clicks the button.
-  });
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR(
+    // We use null as the key initially to prevent automatic fetching
+    null,
+    fetchResumeScore
+  );
+
+  // Manual trigger function for fetching score
+  const handleAnalyzeResume = async () => {
+    try {
+      // Manually trigger the SWR request with the proper URL
+      await refetch(`/api/resumes/${resumeId}/score`);
+    } catch (error) {
+      console.error('Failed to analyze resume:', error);
+    }
+  };
 
   const getScoreVariant = (score) => {
     if (score >= 80) return 'success';
@@ -39,7 +56,7 @@ function ResumeScorecard({ resumeId }) {
       <Card.Body>
         <div className="text-center">
           <Button
-            onClick={() => refetch()}
+            onClick={handleAnalyzeResume}
             disabled={isLoading}
             className="mb-3 w-100"
           >
@@ -51,7 +68,7 @@ function ResumeScorecard({ resumeId }) {
           </Button>
         </div>
 
-        {isError && (
+        {error && (
           <Alert variant="danger">
             Could not calculate score at this time.
           </Alert>

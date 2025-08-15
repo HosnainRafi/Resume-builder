@@ -1,25 +1,21 @@
+// src/modules/users/user.model.ts
+
 import { Schema, model } from 'mongoose';
 import { IUser } from './user.interface';
-import { basePlugin } from '../../utils/mongoose.plugins';
 
-const userSchema = new Schema<IUser>({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true,
+const userSchema = new Schema<IUser>(
+  {
+    // This will now match the IUser interface correctly
+    firebaseUid: { type: String, required: true, unique: true, index: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    name: { type: String },
+    plan: { type: String, enum: ['free', 'premium'], default: 'free' },
+    lastActiveAt: { type: Date, default: Date.now },
+    refreshTokenRotationCounter: { type: Number, default: 0 },
   },
-  name: { type: String, trim: true },
-  passwordHash: { type: String, required: true },
-  plan: { type: String, enum: ['free', 'premium'], default: 'free' },
-  planLimits: {
-    aiGenerations: { type: Number, default: 20 },
-  },
-  lastActiveAt: { type: Date, default: Date.now },
-  refreshTokenRotationCounter: { type: Number, default: 0 }, // <-- NEW FIELD for refresh token rotation
-});
-
-userSchema.plugin(basePlugin);
+  {
+    timestamps: true,
+  }
+);
 
 export const UserModel = model<IUser>('User', userSchema);

@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "noEmit": false,
-    "composite": true
+    "composite": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": ["src", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist"]

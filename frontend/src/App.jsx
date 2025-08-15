@@ -1,65 +1,139 @@
-import React from 'react';
+// src/App.jsx
+
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import './index.css';
+import { SWRConfig } from 'swr';
+import { useAuthStore } from './store/authStore';
 
-// Components and Pages
-import Layout from './components/Layout';
-import ProtectedRoute from './components/ProtectedRoute';
+// Styles
+import './styles/global.css';
+import './styles/navigation.css';
+import './styles/resume-page.css';
+
+// Components
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ResumesPage from './pages/ResumesPage';
+import CreateResumePage from './pages/CreateResumePage';
 import ResumeEditorPage from './pages/ResumeEditorPage';
-import NotFoundPage from './pages/NotFoundPage'; // <-- 1. Import the new page
-import { useAuthStore } from './store/authStore';
-import ShareResumePage from './pages/ShareResumePage';
 
-const queryClient = new QueryClient();
+// SWR configuration
+const swrConfig = {
+  revalidateOnFocus: false,
+  retry: 1,
+  dedupingInterval: 2000,
+};
+
+// Loading Component
+const LoadingScreen = () => (
+  <div className="rezi-loading-state">
+    <div className="loading-spinner"></div>
+    <p>Loading...</p>
+  </div>
+);
+
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuthStore();
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return user ? children : <Navigate to="/login" replace />;
+};
+
+// Public Route Component
+const PublicRoute = ({ children }) => {
+  const { user, loading } = useAuthStore();
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return user ? <Navigate to="/resumes" replace /> : children;
+};
 
 function App() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { initializeAuth } = useAuthStore();
+
+  useEffect(() => {
+    // Check if initializeAuth is actually a function
+    if (typeof initializeAuth !== 'function') {
+      console.error('initializeAuth is not a function. Check your auth store.');
+      return;
+    }
+
+    const unsubscribe = initializeAuth();
+
+    // Cleanup function
+    return () => {
+      if (unsubscribe && typeof unsubscribe === 'function') {
+        unsubscribe();
+      }
+    };
+  }, [initializeAuth]);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <SWRConfig value={swrConfig}>
       <Router>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+        <div className="App">
+          <Routes>
+            {/* Public Routes */}
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <LoginPage />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <SignupPage />
+                </PublicRoute>
+              }
+            />
 
-          {/* Protected routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<Layout />}>
-              <Route path="/resumes" element={<ResumesPage />} />
-              <Route
-                path="/resumes/:resumeId/edit"
-                element={<ResumeEditorPage />}
-              />
-            </Route>
-          </Route>
+            {/* Protected Routes */}
+            <Route
+              path="/resumes"
+              element={
+                <ProtectedRoute>
+                  <ResumesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resumes/create/:step"
+              element={
+                <ProtectedRoute>
+                  <CreateResumePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resumes/:resumeId/edit"
+              element={
+                <ProtectedRoute>
+                  <ResumeEditorPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Root path navigation */}
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/resumes" />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route path="/share/:token" element={<ShareResumePage />} />
-          {/* 2. Add the catch-all route at the very end */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/resumes" replace />} />
+          </Routes>
+        </div>
       </Router>
-    </QueryClientProvider>
+    </SWRConfig>
   );
 }
 

@@ -1,15 +1,12 @@
-import axios from 'axios';
-
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  withCredentials: true, // This is crucial for sending cookies
-});
+// src/api/auth.js
+import apiClient from './apiClient';
 
 export const signup = async (userData) => {
   const { data } = await apiClient.post('/api/auth/signup', userData);
   return data;
 };
 
+// This function expects 'credentials' to be { email: '...', password: '...' }
 export const login = async (credentials) => {
   const { data } = await apiClient.post('/api/auth/login', credentials);
   return data;

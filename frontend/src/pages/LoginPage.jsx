@@ -1,22 +1,29 @@
+// src/pages/LoginPage.jsx
+
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { login } from '../api/auth';
+import useSWRMutation from 'swr/mutation';
 import { useAuthStore } from '../store/authStore';
 import { Form, Button, Container, Card, Alert, Spinner } from 'react-bootstrap';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
+// Mutation function for login
+async function loginUser(url, { arg }) {
+  const { login, email, password } = arg;
+  return await login(email, password);
+}
+
 function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const setUser = useAuthStore((state) => state.setUser);
+  const { login } = useAuthStore(); // Get the login function from the store
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const signupSuccess = searchParams.get('signup') === 'success';
 
-  const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: (data) => {
-      setUser(data.data.user, data.data.accessToken);
-      navigate('/resumes'); // Changed from /dashboard to /resumes
+  const { trigger, isMutating, error } = useSWRMutation('/login', loginUser, {
+    onSuccess: () => {
+      // On successful login, Firebase's onAuthStateChanged will handle
+      // updating the user state. We just need to redirect.
+      navigate('/resumes');
     },
   });
 
@@ -26,70 +33,59 @@ function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutation.mutate(formData);
+    // Pass the login function and credentials to the mutation
+    trigger({
+      login,
+      email: formData.email,
+      password: formData.password,
+    });
   };
 
   return (
-    // FIX: Center the card on the page
     <Container
       className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: 'calc(100vh - 56px)' }}
+      style={{ minHeight: '100vh' }}
     >
-      <Card className="shadow-sm" style={{ width: '24rem' }}>
+      <Card style={{ width: '400px' }}>
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {signupSuccess && (
             <Alert variant="success">Signup successful! Please log in.</Alert>
           )}
-          {mutation.isError && (
+          {error && (
             <Alert variant="danger">
-              {mutation.error.response?.data?.error?.message ||
-                'An error occurred'}
+              {error.message || 'Invalid login credentials. Please try again.'}
             </Alert>
           )}
           <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" id="email">
+            <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
                 required
                 onChange={handleChange}
-                placeholder="Enter your email"
+                value={formData.email}
               />
             </Form.Group>
-            <Form.Group className="mb-3" id="password">
+            <Form.Group id="password">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
                 name="password"
                 required
                 onChange={handleChange}
-                placeholder="Enter your password"
+                value={formData.password}
               />
             </Form.Group>
-            <Button
-              disabled={mutation.isPending}
-              className="w-100 mt-3"
-              type="submit"
-            >
-              {mutation.isPending ? (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-              ) : (
-                'Log In'
-              )}
+            <Button disabled={isMutating} className="w-100 mt-3" type="submit">
+              {isMutating ? <Spinner animation="border" size="sm" /> : 'Log In'}
             </Button>
           </Form>
+          <div className="w-100 text-center mt-3">
+            Need an account? <Link to="/signup">Sign Up</Link>
+          </div>
         </Card.Body>
-        <Card.Footer className="text-center text-muted">
-          Need an account? <Link to="/signup">Sign Up</Link>
-        </Card.Footer>
       </Card>
     </Container>
   );

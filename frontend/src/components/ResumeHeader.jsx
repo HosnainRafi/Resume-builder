@@ -1,27 +1,42 @@
+// src/components/ResumeHeader.jsx
+
 import React from 'react';
 import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { logout } from '../api/auth';
+import useSWRMutation from 'swr/mutation';
+import { mutate } from 'swr';
+
+// Logout mutation function
+const logoutUser = async (url) => {
+  // Assuming you have a logout API endpoint
+  // If logout is handled entirely by Firebase/auth store, you can skip the API call
+  const response = await fetch('/api/auth/logout', {
+    method: 'POST',
+    credentials: 'include',
+  });
+  return response.ok;
+};
 
 function ResumeHeader() {
-  const { isAuthenticated, clearAuth, user } = useAuthStore();
+  const { user, logout: logoutFromStore } = useAuthStore();
+  const isAuthenticated = !!user;
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const logoutMutation = useMutation({
-    mutationFn: logout,
-    onSuccess: () => {
-      clearAuth();
-      queryClient.clear();
-      navigate('/login');
-    },
-  });
+  const { trigger: handleLogout, isMutating: isLoggingOut } = useSWRMutation(
+    '/logout',
+    logoutUser,
+    {
+      onSuccess: () => {
+        logoutFromStore(); // Clear auth state
+        mutate(() => true, undefined, { revalidate: false }); // Clear all SWR cache
+        navigate('/login');
+      },
+    }
+  );
 
   return (
     <Navbar bg="primary" data-bs-theme="dark" expand="lg">
-      {/* FIX: Use a fluid container to make the navbar background span the full width */}
       <Container fluid className="px-md-4">
         <Navbar.Brand as={Link} to={isAuthenticated ? '/resumes' : '/'}>
           AI Resume Builder
@@ -36,9 +51,10 @@ function ResumeHeader() {
                 </Navbar.Text>
                 <Button
                   variant="outline-light"
-                  onClick={() => logoutMutation.mutate()}
+                  onClick={() => handleLogout()}
+                  disabled={isLoggingOut}
                 >
-                  Logout
+                  {isLoggingOut ? 'Logging out...' : 'Logout'}
                 </Button>
               </>
             ) : (

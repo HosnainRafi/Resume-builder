@@ -1,154 +1,47 @@
+// src/modules/auth/auth.controller.ts
+
 import { Request, Response, NextFunction } from 'express';
-import { RegisterSchema, LoginSchema } from './auth.validation';
-import {
-  registerUser,
-  loginUser,
-  refreshAuthTokens,
-  logoutUser,
-} from './auth.service';
+import * as authService from './auth.service';
 import { CustomError } from '../../middleware/error-handler';
-import { findUserByEmail } from '../users/user.service';
-import { z, ZodSchema } from 'zod';
 
-// Utility for validation
-const validate = <T extends ZodSchema>(schema: T, data: any): z.infer<T> => {
-  const parsed = schema.safeParse(data);
-  if (!parsed.success) {
-    // FIX: Combine both form-level and field-level errors for a complete error message.
-    const errorDetails = {
-      formErrors: parsed.error.flatten().formErrors,
-      fieldErrors: parsed.error.flatten().fieldErrors,
-    };
-
-    throw new CustomError(
-      'Validation failed',
-      'VALIDATION_FAILED',
-      400,
-      errorDetails // Pass the complete details object
-    );
-  }
-  return parsed.data;
-};
-
-export const register = async (
+/**
+ * Controller to get the current user's profile.
+ * It expects the firebaseAuthMiddleware to have already run and attached
+ * the user object (with uid and email) to the request.
+ * It then finds or creates a user profile in the local MongoDB.
+ */
+export const getMe = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { email, password, name } = validate(RegisterSchema, req.body);
-    const user = await registerUser(email, password, name);
-    res
-      .status(201)
-      .json({
-        data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            plan: user.plan,
-          },
-        },
-      });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { email, password } = validate(LoginSchema, req.body);
-    const { user, tokens } = await loginUser(req, res, email, password);
-    res
-      .status(200)
-      .json({
-        data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            plan: user.plan,
-          },
-          accessToken: tokens.accessToken,
-        },
-      });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const refresh = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const incomingRefreshToken = req.cookies.refreshToken;
-    if (!incomingRefreshToken) {
-      throw new CustomError('Refresh token not found', 'NO_REFRESH_TOKEN', 401);
+    // 1. Check if the user object was attached by the middleware
+    if (!req.user || !req.user.uid) {
+      throw new CustomError(
+        'User information not found in request. Authentication middleware might have failed.',
+        'UNAUTHENTICATED',
+        401
+      );
     }
 
-    const { user, tokens } = await refreshAuthTokens(
-      req,
-      res,
-      incomingRefreshToken
-    );
-    res
-      .status(200)
-      .json({
-        data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            plan: user.plan,
-          },
-          accessToken: tokens.accessToken,
-        },
-      });
-  } catch (error) {
-    next(error);
-  }
-};
+    const { uid, email, name } = req.user;
 
-export const logout = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logoutUser(res);
-    res.status(200).json({ message: 'Logged out successfully' });
-  } catch (error) {
-    next(error);
-  }
-};
+    // 2. Find or create the user in our local database
+    const localUser = await authService.findOrCreateUser(uid, email, name);
 
-export const getCurrentUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    if (!req.user || !req.user.userId) {
-      throw new CustomError('Not authenticated', 'NOT_AUTHENTICATED', 401);
-    }
-    const user = await findUserByEmail(req.user.email);
-    if (!user) {
-      throw new CustomError('User not found', 'USER_NOT_FOUND', 404);
-    }
-    res
-      .status(200)
-      .json({
-        data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            plan: user.plan,
-          },
-        },
-      });
+    // 3. Respond with the local user profile data
+    // We don't send back passwords or sensitive info, just the public profile
+    res.status(200).json({
+      success: true,
+      data: {
+        id: localUser._id, // The MongoDB ID
+        firebaseUid: localUser.firebaseUid,
+        email: localUser.email,
+        name: localUser.name,
+        plan: localUser.plan,
+      },
+    });
   } catch (error) {
     next(error);
   }

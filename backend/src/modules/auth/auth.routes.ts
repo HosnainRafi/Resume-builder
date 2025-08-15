@@ -1,19 +1,14 @@
+// src/modules/auth/auth.routes.ts
+
 import { Router } from 'express';
-import {
-  register,
-  login,
-  refresh,
-  logout,
-  getCurrentUser,
-} from './auth.controller';
-import { authMiddleware } from '../../middleware/auth.middleware'; // Will create this next
+import { firebaseAuthMiddleware } from '../../middleware/firebase-auth.middleware';
+import { getMe } from './auth.controller';
 
 const router = Router();
 
-router.post('/signup', register);
-router.post('/login', login);
-router.post('/refresh', refresh);
-router.post('/logout', logout);
-router.get('/me', authMiddleware, getCurrentUser); // Protected route
+// This is the only route this module needs. It fetches the user's
+// profile from our local DB after they've been authenticated by Firebase.
+// The frontend can call this route on app startup to get user details.
+router.get('/me', firebaseAuthMiddleware, getMe);
 
 export default router;

@@ -1,0 +1,177 @@
+/* src/styles/resume-page.css */
+
+.rezi-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.rezi-page-content {
+  flex: 1;
+  padding: var(--space-2xl) var(--space-md);
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.rezi-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-2xl);
+}
+
+.rezi-page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.rezi-page-subtitle {
+  color: var(--color-gray-600);
+  margin: var(--space-xs) 0 0 0;
+  font-size: 0.875rem;
+}
+
+/* Empty State */
+.rezi-empty-state {
+  text-align: center;
+  padding: var(--space-2xl) var(--space-md);
+  max-width: 400px;
+  margin: var(--space-2xl) auto;
+}
+
+.rezi-empty-icon {
+  font-size: 4rem;
+  margin-bottom: var(--space-lg);
+  opacity: 0.6;
+}
+
+.rezi-empty-state h3 {
+  font-size: 1.5rem;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-sm);
+}
+
+.rezi-empty-state p {
+  color: var(--color-gray-600);
+  margin-bottom: var(--space-xl);
+}
+
+/* Resume Grid */
+.rezi-resume-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+.rezi-resume-card {
+  background: white;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.rezi-resume-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.rezi-resume-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+}
+
+.rezi-resume-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.rezi-resume-card-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.rezi-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.rezi-action-btn:hover {
+  background: var(--color-gray-100);
+}
+
+.rezi-action-btn-danger:hover {
+  background: #fef2f2;
+  color: var(--color-danger);
+}
+
+.rezi-resume-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-lg);
+}
+
+.rezi-meta-item {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.rezi-resume-card-actions-main {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.rezi-resume-card-actions-main .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+/* Loading State */
+.rezi-loading-state {
+  text-align: center;
+  padding: var(--space-2xl);
+}
+
+.rezi-loading-state p {
+  margin-top: var(--space-md);
+  color: var(--color-gray-600);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rezi-page-header {
+    flex-direction: column;
+    gap: var(--space-lg);
+    align-items: stretch;
+  }
+
+  .rezi-resume-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rezi-resume-card-actions-main {
+    flex-direction: column;
+  }
+}

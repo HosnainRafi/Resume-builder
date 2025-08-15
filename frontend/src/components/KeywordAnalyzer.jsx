@@ -1,17 +1,18 @@
+// src/components/KeywordAnalyzer.jsx
+
 import React, { useState } from 'react';
 import { Card, Form, Button, Spinner, Badge, Alert } from 'react-bootstrap';
-import { useMutation } from '@tanstack/react-query';
+import useSWRMutation from 'swr/mutation';
 import axios from 'axios';
 
 // API function to call our new endpoint
-const analyzeResumeKeywords = async ({ resumeId, jobDescription }) => {
+const analyzeResumeKeywords = async (url, { arg }) => {
+  const { jobDescription } = arg;
   const apiClient = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
   });
-  const { data } = await apiClient.post(`/api/resumes/${resumeId}/analyze`, {
-    jobDescription,
-  });
+  const { data } = await apiClient.post(url, { jobDescription });
   return data.data;
 };
 
@@ -19,20 +20,23 @@ function KeywordAnalyzer({ resumeId }) {
   const [jobDescription, setJobDescription] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
 
-  const mutation = useMutation({
-    mutationFn: analyzeResumeKeywords,
-    onSuccess: (data) => {
-      setAnalysisResult(data);
-    },
-    onError: (error) => {
-      alert(
-        `Analysis failed: ${error.response?.data?.message || error.message}`
-      );
-    },
-  });
+  const { trigger, isMutating, error } = useSWRMutation(
+    `/api/resumes/${resumeId}/analyze`,
+    analyzeResumeKeywords,
+    {
+      onSuccess: (data) => {
+        setAnalysisResult(data);
+      },
+      onError: (error) => {
+        alert(
+          `Analysis failed: ${error.response?.data?.message || error.message}`
+        );
+      },
+    }
+  );
 
   const handleAnalyze = () => {
-    mutation.mutate({ resumeId, jobDescription });
+    trigger({ jobDescription });
   };
 
   return (
@@ -51,13 +55,9 @@ function KeywordAnalyzer({ resumeId }) {
         </Form.Group>
         <Button
           onClick={handleAnalyze}
-          disabled={mutation.isPending || !jobDescription}
+          disabled={isMutating || !jobDescription}
         >
-          {mutation.isPending ? (
-            <Spinner as="span" size="sm" />
-          ) : (
-            'Analyze Keywords'
-          )}
+          {isMutating ? <Spinner as="span" size="sm" /> : 'Analyze Keywords'}
         </Button>
 
         {analysisResult && (

@@ -1,7 +1,7 @@
 import * as argon2 from 'argon2';
 import { UserModel } from './user.model';
-import logger from '../../utils/logger';
 import { IUser } from './user.interface';
+import logger from 'backend/src/utils/logger';
 
 export const hashPassword = async (password: string): Promise<string> => {
   try {

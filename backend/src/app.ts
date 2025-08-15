@@ -1,50 +1,40 @@
+// src/app.ts
+
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import pinoHttp from 'pino-http';
-import cookieParser from 'cookie-parser'; // <-- NEW IMPORT
-import env from './config';
+import cookieParser from 'cookie-parser';
 import logger from './utils/logger';
 import errorHandler from './middleware/error-handler';
+
+// --- Route Imports ---
 import healthRoutes from './routes/health.routes';
-import authRoutes from './modules/auth/auth.routes'; // <-- NEW IMPORT
-import aiRoutes from './modules/ai/ai.routes'; // <-- NEW IMPORT
-import resumeRoutes from './modules/resumes/resume.routes'; // <-- NEW IMPORT
+import authRoutes from './modules/auth/auth.routes';
+import aiRoutes from './modules/ai/ai.routes';
+import resumeRoutes from './modules/resumes/resume.routes';
 
 const app = express();
 
-// Use Pino for HTTP request logging
 app.use(pinoHttp({ logger }));
-
-// Security Middleware
 app.use(helmet());
 
-// CORS Configuration
-const corsOptions = {
-  origin: env.APP_URL, // Allow requests only from your frontend URL
-  credentials: true, // Allow cookies to be sent
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'X-Requested-With',
-    'Accept',
-    'Origin',
-  ],
-};
-app.use(cors(corsOptions));
+// --- FIX: Updated CORS Configuration to Allow All Origins ---
+// This will allow requests from any domain.
+// Note: When using a wildcard ('*'), credentials (like cookies) are generally not allowed by browsers.
+// Since we are now using Firebase Bearer tokens, this is acceptable.
+app.use(cors({ origin: '*' }));
 
-// Compression Middleware
 app.use(compression());
 
 // Rate Limiting
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: {
     error: {
       code: 'TOO_MANY_REQUESTS',
@@ -53,20 +43,21 @@ const apiLimiter = rateLimit({
     },
   },
 });
-app.use(apiLimiter); // Apply to all requests for now, can be specific later
 
-// Body Parsers
-app.use(express.json()); // Parses JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parses URL-encoded bodies
-app.use(cookieParser()); // <-- NEW: Parse cookies from incoming requests
+app.use(apiLimiter);
 
-// Routes
-app.use('/health', healthRoutes); // Health check routes
-app.use('/api/auth', authRoutes); // <-- NEW: Auth routes
+// Body Parsers & Cookie Parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Still useful for any other potential cookie needs
+
+// --- API Routes ---
+app.use('/health', healthRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/resumes', resumeRoutes);
 
-// Global Error Handler (MUST be the last middleware)
+// Global Error Handler
 app.use(errorHandler);
 
 export default app;

@@ -1,6 +1,8 @@
-import React from 'react';
+// src/components/ExperienceEditor.jsx
+
+import React, { useState } from 'react';
 import { Form, Button, Card, Row, Col, Spinner } from 'react-bootstrap';
-import { useMutation } from '@tanstack/react-query';
+import { mutate } from 'swr';
 import axios from 'axios';
 
 // API function to call our new bullet point generator
@@ -16,6 +18,35 @@ const generateAIBulletPoints = async ({ jobTitle, company }) => {
   return data.data.bulletPoints; // Expects an array of strings
 };
 
+// Custom mutation hook for SWR (since SWR doesn't have built-in mutations)
+function useAsyncMutation(mutationFn, options = {}) {
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
+
+  const mutate = async (variables) => {
+    setIsPending(true);
+    setError(null);
+
+    try {
+      const result = await mutationFn(variables);
+      if (options.onSuccess) {
+        options.onSuccess(result);
+      }
+      return result;
+    } catch (err) {
+      setError(err);
+      if (options.onError) {
+        options.onError(err);
+      }
+      throw err;
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  return { mutate, isPending, error };
+}
+
 // Reusable AI Writer button component
 function AIWriterButton({
   jobTitle,
@@ -24,8 +55,7 @@ function AIWriterButton({
   index,
   currentDescription,
 }) {
-  const mutation = useMutation({
-    mutationFn: generateAIBulletPoints,
+  const mutation = useAsyncMutation(generateAIBulletPoints, {
     onSuccess: (newBulletPoints) => {
       // Append new bullet points to the existing description
       const updatedDescription = [currentDescription, ...newBulletPoints]

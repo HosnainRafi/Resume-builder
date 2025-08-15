@@ -1,56 +1,50 @@
+// src/modules/resumes/resume.interface.ts
+
 import { Document } from 'mongoose';
-import { IUser } from '../users/user.interface';
 
-// --- Sub-document Interfaces ---
-
-export interface IExperience extends Document {
-  jobTitle: string;
-  company: string;
+// Define the structure of the nested objects for better type safety
+interface IHeader {
+  name?: string;
+  email?: string;
+  phone?: string;
+  linkedin?: string;
+  github?: string;
+  website?: string;
   location?: string;
-  startDate?: Date;
-  endDate?: Date;
-  isCurrent?: boolean;
-  description: string[]; // Array of bullet points
 }
 
-export interface IEducation extends Document {
-  institution: string;
-  degree: string;
+interface IExperience {
+  company?: string;
+  role?: string;
+  startDate?: string;
+  endDate?: string;
+  description?: string;
+}
+
+interface IEducation {
+  institution?: string;
+  degree?: string;
   fieldOfStudy?: string;
-  startDate?: Date;
-  endDate?: Date;
-  gpa?: number;
+  graduationYear?: string;
 }
 
-export interface ISkill extends Document {
-  name: string;
-  level?: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
-}
-
-export interface IProject extends Document {
-  name: string;
-  description: string[];
+interface IProject {
+  name?: string;
+  description?: string;
   url?: string;
 }
 
-// --- Main Resume Interface ---
-
+// Main Resume Interface
 export interface IResume extends Document {
+  user: string;
   title: string;
-  user: IUser['_id']; // Reference to the user who owns the resume
-  templateId?: string; // Optional reference to a Template
-  header: {
-    name: string;
-    email: string;
-    phone?: string;
-    website?: string;
-    location?: string;
-  };
+  header?: IHeader;
   summary?: string;
-  experience: IExperience[];
-  education: IEducation[];
-  skills: ISkill[];
-  projects: IProject[];
-  createdAt: Date;
-  updatedAt: Date;
+  experience?: IExperience[];
+  education?: IEducation[];
+  skills?: string[];
+  projects?: IProject[];
+
+  // --- FIX: Add the optional template property to match the schema ---
+  template?: string;
 }

@@ -1,12 +1,14 @@
+// src/modules/resumes/resume.controller.ts
+
 import { Request, Response, NextFunction } from 'express';
 import * as resumeService from './resume.service';
 import { CreateResumeSchema, UpdateResumeSchema } from './resume.validation';
 import { CustomError } from '../../middleware/error-handler';
-import { z, ZodSchema } from 'zod';
+import { z, ZodError, ZodSchema } from 'zod';
 import mongoose from 'mongoose';
 import { ResumeModel } from './resume.model';
 import sharelinkModel from './sharelink.model';
-import { randomBytes } from 'crypto'; // <-- FIX: Correctly import randomBytes
+import { randomBytes } from 'crypto';
 
 // Generic validation utility
 const validate = <T extends ZodSchema>(schema: T, data: any): z.infer<T> => {
@@ -29,11 +31,30 @@ export const create = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.user!.userId;
-    const resumeData = validate(CreateResumeSchema, req.body);
-    const newResume = await resumeService.createResume(userId, resumeData);
+    const uid = req.user!.uid;
+
+    // --- FIX 2: Validate directly and add detailed error logging ---
+    const resumeData = CreateResumeSchema.parse(req.body);
+
+    const newResume = await resumeService.createResume(uid, resumeData);
     res.status(201).json({ data: newResume });
   } catch (error) {
+    // Check if the error is a Zod validation error
+    if (error instanceof ZodError) {
+      console.error(
+        'Zod Validation Error:',
+        JSON.stringify(error.flatten(), null, 2)
+      );
+      return next(
+        new CustomError(
+          'Validation failed. Please check the provided data.',
+          'VALIDATION_FAILED',
+          400,
+          error.flatten()
+        )
+      );
+    }
+    // Pass any other errors to the global error handler
     next(error);
   }
 };
@@ -45,14 +66,15 @@ export const getById = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.user!.userId;
+    // Use .uid from Firebase user object
+    const uid = req.user!.uid;
     const { id: resumeId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(resumeId)) {
       throw new CustomError('Invalid resume ID format.', 'BAD_REQUEST', 400);
     }
 
-    const resume = await resumeService.findResumeById(userId, resumeId);
+    const resume = await resumeService.findResumeById(uid, resumeId);
     if (!resume) {
       throw new CustomError('Resume not found.', 'NOT_FOUND', 404);
     }
@@ -69,8 +91,9 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.user!.userId;
-    const resumes = await resumeService.findResumesByUser(userId);
+    // Use .uid from Firebase user object
+    const uid = req.user!.uid;
+    const resumes = await resumeService.findResumesByUser(uid);
     res.status(200).json({ data: resumes });
   } catch (error) {
     next(error);
@@ -84,7 +107,8 @@ export const update = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.user!.userId;
+    // Use .uid from Firebase user object
+    const uid = req.user!.uid;
     const { id: resumeId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(resumeId)) {
@@ -93,7 +117,7 @@ export const update = async (
 
     const updateData = validate(UpdateResumeSchema, req.body);
     const updatedResume = await resumeService.updateResume(
-      userId,
+      uid,
       resumeId,
       updateData
     );
@@ -110,10 +134,11 @@ export const remove = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.user!.userId;
+    // Use .uid from Firebase user object
+    const uid = req.user!.uid;
     const resumeId = req.params.id;
-    await resumeService.deleteResume(userId, resumeId);
-    res.status(204).send(); // 204 No Content for successful deletion
+    await resumeService.deleteResume(uid, resumeId);
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
@@ -137,7 +162,6 @@ export const analyzeKeywords = async (
       );
     }
 
-    // This part can also be moved to the service layer later
     const resume = await ResumeModel.findById(resumeId);
     if (!resume) {
       throw new CustomError('Resume not found.', 'NOT_FOUND', 404);
@@ -189,10 +213,7 @@ export const scoreResume = async (
   }
 };
 
-// =======================================================
-// Hardened Share Link Functions
-// =======================================================
-
+// Create Share Link
 export const createShareLink = async (
   req: Request,
   res: Response,
@@ -200,16 +221,15 @@ export const createShareLink = async (
 ) => {
   try {
     const { resumeId, template } = req.body;
-    const userId = req.user!.userId;
+    // Use .uid from Firebase user object
+    const uid = req.user!.uid;
 
-    // 1. Validate environment variable
     if (!process.env.APP_URL) {
       console.error('FATAL ERROR: APP_URL environment variable is not set.');
       throw new CustomError('Server configuration error.', 'SERVER_ERROR', 500);
     }
 
-    // 2. Use service to find resume and check ownership
-    const resume = await resumeService.findResumeById(userId, resumeId);
+    const resume = await resumeService.findResumeById(uid, resumeId);
     if (!resume) {
       throw new CustomError(
         'Resume not found or you do not have permission.',
@@ -218,7 +238,6 @@ export const createShareLink = async (
       );
     }
 
-    // 3. Generate token and create link
     const token = randomBytes(16).toString('hex');
     await sharelinkModel.create({
       token,
@@ -235,6 +254,7 @@ export const createShareLink = async (
   }
 };
 
+// Get Shared Resume
 export const getSharedResume = async (
   req: Request,
   res: Response,

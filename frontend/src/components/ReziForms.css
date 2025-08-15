@@ -1,0 +1,218 @@
+/* Rezi-inspired Form Styling */
+.rezi-tabs-header {
+  background: #fafbfc;
+  border-bottom: 1px solid #f0f4f8;
+  padding: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+.rezi-nav-tabs {
+  display: flex;
+  padding: 0.5rem;
+  margin: 0;
+  gap: 0.25rem;
+  border: none;
+}
+
+.rezi-tab-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: none !important;
+  background: transparent;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.rezi-tab-link:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.rezi-tab-link.active {
+  background: #667eea;
+  color: white;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.rezi-tab-link.completed {
+  background: #48bb78;
+  color: white;
+}
+
+.rezi-tab-icon {
+  font-size: 1rem;
+}
+
+.rezi-tab-text {
+  font-weight: 500;
+}
+
+.rezi-tab-check {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.rezi-progress-bar {
+  height: 3px;
+  background: #e2e8f0;
+  margin: 0 0.5rem 0.5rem;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rezi-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #48bb78);
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.rezi-tab-content {
+  border: none;
+}
+
+.rezi-section-content {
+  padding: 2rem;
+}
+
+/* Form Elements */
+.rezi-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.rezi-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.rezi-input,
+.rezi-textarea,
+.rezi-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.rezi-input:focus,
+.rezi-textarea:focus,
+.rezi-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.rezi-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.rezi-btn-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.rezi-btn-add {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rezi-btn-add:hover {
+  background: #5a67d8;
+  transform: translateY(-1px);
+}
+
+.rezi-btn-remove {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rezi-btn-remove:hover {
+  background: #dc2626;
+}
+
+/* Section Cards */
+.rezi-section-card {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.rezi-section-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.rezi-section-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.rezi-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+/* AI Assistance Panel */
+.rezi-ai-panel {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.rezi-ai-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rezi-ai-suggestion {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}

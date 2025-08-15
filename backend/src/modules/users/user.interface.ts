@@ -1,17 +1,18 @@
+// src/modules/users/user.interface.ts
+
 import { Document } from 'mongoose';
 
 export interface IUser extends Document {
-  id: string;
+  // --- FIX: Add the firebaseUid property ---
+  firebaseUid: string;
+
   email: string;
   name?: string;
-  passwordHash: string;
-  plan: 'free' | 'premium';
-  planLimits: {
-    aiGenerations: number;
-    // other limits can go here
-  };
-  lastActiveAt: Date;
-  refreshTokenRotationCounter: number; // <-- NEW FIELD
-  createdAt: Date;
-  updatedAt: Date;
+  plan: 'free' | 'premium'; // Using a union type for better type safety
+
+  // You can safely remove passwordHash now
+  // passwordHash: string;
+
+  lastActiveAt?: Date;
+  refreshTokenRotationCounter?: number;
 }

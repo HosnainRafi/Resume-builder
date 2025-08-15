@@ -47,8 +47,41 @@ export const findResumeById = async (
  * @param userId The ID of the user whose resumes to find.
  * @returns An array of resume documents.
  */
-export const findResumesByUser = async (userId: string): Promise<IResume[]> => {
-  return ResumeModel.find({ user: userId }).sort({ updatedAt: -1 });
+export const findResumesByUser = async (uid: string): Promise<IResume[]> => {
+  // --- START: Diagnostic Logging ---
+  console.log('--- [START] Executing findResumesByUser Service ---');
+  console.log(
+    `Step 1: Received request to find resumes for Firebase UID: "${uid}"`
+  );
+
+  // Step 2: Executing the database query
+  console.log(
+    `Step 2: Querying the 'resumes' collection for documents where user === "${uid}"`
+  );
+  const resumes = await ResumeModel.find({ user: uid }).sort({
+    updatedAt: -1,
+  });
+
+  // Step 3: Logging the results of the query
+  console.log(
+    `Step 3: Database query finished. Found ${resumes.length} document(s).`
+  );
+
+  if (resumes.length > 0) {
+    // If we found resumes, log their titles for confirmation
+    const titles = resumes.map((r) => r.title);
+    console.log(`   - Resume titles found: [${titles.join(', ')}]`);
+  } else {
+    // If no resumes were found, explain the likely reason
+    console.log(
+      '   - IMPORTANT: This means no resume documents in your database have a "user" field that matches the provided Firebase UID.'
+    );
+  }
+
+  console.log('--- [END] Finished findResumesByUser Service ---');
+  // --- END: Diagnostic Logging ---
+
+  return resumes;
 };
 
 /**
@@ -204,4 +237,33 @@ export const calculateScore = (resume: any) => {
   score = Math.min(score, 100);
 
   return { score, feedback };
+};
+
+export const analyzeResumeKeywords = async (
+  resumeId: string,
+  jobDescription: string
+) => {
+  const resume = await ResumeModel.findById(resumeId);
+  if (!resume) {
+    throw new CustomError('Resume not found.', 'NOT_FOUND', 404);
+  }
+
+  const extractKeywords = (text: string) => {
+    return text.toLowerCase().match(/\b(\w{3,})\b/g) || [];
+  };
+
+  const jobKeywords = new Set(extractKeywords(jobDescription));
+  const resumeText = JSON.stringify(resume.toObject());
+  const resumeKeywords = new Set(extractKeywords(resumeText));
+
+  const missingKeywords = [...jobKeywords].filter(
+    (k) => !resumeKeywords.has(k)
+  );
+  const presentKeywords = [...jobKeywords].filter((k) => resumeKeywords.has(k));
+
+  return {
+    requiredKeywords: [...jobKeywords],
+    presentKeywords,
+    missingKeywords,
+  };
 };

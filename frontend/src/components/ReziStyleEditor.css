@@ -1,0 +1,427 @@
+.rezi-style-editor {
+  display: flex;
+  gap: 24px;
+  height: calc(100vh - 140px); /* Fixed height */
+  background: #f8fafc;
+  padding: 20px;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  overflow: hidden; /* Prevent main container overflow */
+}
+
+/* Customization Sidebar - Also needs scroll */
+.customization-sidebar {
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Full height */
+  max-height: calc(100vh - 180px);
+  overflow: hidden; /* Container doesn't scroll */
+}
+
+.customization-sections {
+  padding: 20px;
+  overflow-y: auto; /* Only the sections scroll */
+  flex: 1;
+  /* Custom scrollbar for sidebar too */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.customization-sections::-webkit-scrollbar {
+  width: 6px;
+}
+
+.customization-sections::-webkit-scrollbar-track {
+  background: #f7fafc;
+  border-radius: 3px;
+}
+
+.customization-sections::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.customization-sections::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.customization-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.control-group {
+  margin-bottom: 20px;
+}
+
+.control-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+/* Font Select */
+.font-select .react-select__control {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  min-height: 44px;
+  box-shadow: none;
+  transition: border-color 0.2s ease;
+}
+
+.font-select .react-select__control:hover {
+  border-color: #d1d5db;
+}
+
+.font-select .react-select__control--is-focused {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.font-select .react-select__menu {
+  border-radius: 8px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.font-select .react-select__option {
+  padding: 12px 16px;
+}
+
+.font-select .react-select__option--is-selected {
+  background-color: #3b82f6;
+}
+
+.font-select .react-select__option--is-focused {
+  background-color: #eff6ff;
+  color: #1e40af;
+}
+
+/* Range Sliders */
+.range-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease;
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.range-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Color Input */
+.color-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.color-preview {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.color-preview:hover {
+  border-color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.color-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  transition: border-color 0.2s ease;
+}
+
+.color-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Color Picker Popup */
+.color-picker-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-picker-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+}
+
+.color-picker-container {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  position: relative;
+  z-index: 1001;
+}
+
+/* Reset Button */
+.reset-button {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-button:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Resume Preview Area */
+.resume-preview-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.preview-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  text-align: center;
+}
+
+.preview-header h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.preview-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Resume Document */
+.resume-document {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+  background: white;
+  max-width: 794px; /* A4 width */
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Sortable Sections */
+.sortable-section {
+  position: relative;
+  transition: all 0.2s ease;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  padding: 16px;
+  background: transparent;
+  border: 2px dashed transparent;
+}
+
+.sortable-section:hover {
+  background: rgba(59, 130, 246, 0.02);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.sortable-section.dragging {
+  opacity: 0.8;
+  transform: rotate(1deg);
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background: white;
+  border-color: #3b82f6;
+  z-index: 1000;
+}
+
+/* Drag Handle */
+.drag-handle {
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: #3b82f6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  opacity: 0;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.sortable-section:hover .drag-handle {
+  opacity: 1;
+}
+
+.drag-handle:hover {
+  background: #2563eb;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Resume Content Styles */
+.resume-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .rezi-style-editor {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .customization-sidebar {
+    width: 100%;
+    max-height: 400px;
+  }
+
+  .resume-document {
+    padding: 20px;
+  }
+
+  .drag-handle {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    opacity: 1;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .resume-preview-area {
+    max-height: calc(100vh - 300px);
+  }
+
+  .resume-document {
+    transform: scale(0.8);
+  }
+}
+/* Mobile adjustments for scrolling */
+@media (max-width: 1200px) {
+  .rezi-style-editor {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 140px);
+  }
+
+  .customization-sidebar {
+    width: 100%;
+    max-height: 400px;
+    margin-bottom: 1rem;
+  }
+
+  .resume-preview-area {
+    max-height: calc(100vh - 600px);
+    min-height: 500px;
+  }
+
+  .resume-document {
+    padding: 20px;
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+
+  .drag-handle {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    opacity: 1;
+    margin-bottom: 8px;
+  }
+}
