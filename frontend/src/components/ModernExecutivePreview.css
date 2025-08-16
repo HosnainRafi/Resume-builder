@@ -1,64 +1,162 @@
+/* Modern Executive Template Styles - Fixed for Editor */
 .exec-page {
-  font-family: 'Montserrat', sans-serif;
-  display: flex;
-  width: 210mm;
-  height: 297mm;
-  margin: 2rem auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background: #f8f9fa;
+  font-family: 'Montserrat', sans-serif !important;
+  display: flex !important;
+  width: 100% !important;
+  max-width: 794px !important;
+  min-height: 1123px !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  background: #f8f9fa !important;
+  box-sizing: border-box !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
 }
+
 .exec-left-col {
-  width: 33%;
-  background: #343a40; /* Charcoal */
-  color: #f8f9fa;
-  padding: 30px;
+  width: 33% !important;
+  background: #343a40 !important; /* Charcoal */
+  color: #f8f9fa !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
+
 .exec-right-col {
-  width: 67%;
-  padding: 30px;
+  width: 67% !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  background: #f8f9fa !important;
 }
+
 .exec-name {
-  font-size: 32px;
-  color: #c5a572; /* Muted Gold */
-  margin: 0;
-  line-height: 1.2;
+  font-size: 32px !important;
+  color: #c5a572 !important; /* Muted Gold */
+  margin: 0 0 10px 0 !important;
+  line-height: 1.2 !important;
+  font-weight: bold !important;
 }
+
 .exec-title {
-  font-size: 16px;
-  font-weight: 300;
-  border-bottom: 1px solid #495057;
-  padding-bottom: 15px;
-  margin-bottom: 20px;
+  font-size: 16px !important;
+  font-weight: 300 !important;
+  border-bottom: 1px solid #495057 !important;
+  padding-bottom: 15px !important;
+  margin-bottom: 25px !important;
+  color: #f8f9fa !important;
 }
-.exec-left-section h3 {
-  color: #c5a572;
-  font-size: 14px;
-  text-transform: uppercase;
-}
+
 .exec-left-section {
-  font-size: 11px;
-  line-height: 1.6;
+  font-size: 11px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 25px !important;
+  color: #f8f9fa !important;
 }
+
+.exec-left-section h3 {
+  color: #c5a572 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 10px !important;
+  font-weight: bold !important;
+}
+
+.exec-left-section div {
+  color: #f8f9fa !important;
+  margin-bottom: 4px !important;
+  font-size: 11px !important;
+}
+
 .exec-left-section ul {
-  padding-left: 1em;
+  padding-left: 1em !important;
+  margin: 0 !important;
+  color: #f8f9fa !important;
 }
-.exec-right-title {
-  font-size: 20px;
-  color: #343a40;
-  margin-bottom: 15px;
+
+.exec-left-section li {
+  margin-bottom: 4px !important;
+  color: #f8f9fa !important;
+  font-size: 11px !important;
 }
+
 .exec-right-section {
-  margin-bottom: 25px;
-  font-size: 12px;
-  line-height: 1.6;
+  margin-bottom: 25px !important;
+  font-size: 12px !important;
+  line-height: 1.6 !important;
 }
+
+.exec-right-title {
+  font-size: 20px !important;
+  color: #343a40 !important;
+  margin-bottom: 15px !important;
+  font-weight: bold !important;
+  display: block !important;
+  width: 100% !important;
+}
+
 .exec-item-title {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  color: #343a40 !important;
+  margin: 0 0 5px 0 !important;
+  display: block !important;
 }
+
 .exec-item-subheader {
-  font-size: 12px;
-  color: #6c757d;
-  font-style: italic;
-  margin-bottom: 5px;
+  font-size: 12px !important;
+  color: #6c757d !important;
+  font-style: italic !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .exec-page {
+  transform: scale(0.8) !important;
+  transform-origin: top center !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure proper spacing in editor */
+.exec-page * {
+  box-sizing: border-box !important;
+}
+
+/* Force block display for all major elements */
+.exec-left-col > *,
+.exec-right-col > *,
+.exec-right-section > * {
+  display: block !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .rezi-preview-document .exec-page {
+    transform: scale(0.7) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-document .exec-page {
+    transform: scale(0.6) !important;
+    flex-direction: column !important;
+  }
+
+  .exec-left-col,
+  .exec-right-col {
+    width: 100% !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .exec-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
 }

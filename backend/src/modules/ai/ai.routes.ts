@@ -3,6 +3,7 @@ import { Router } from 'express';
 import {
   generateSummaryController,
   generateExperienceController,
+  generateJobDescriptionController,
 } from './ai.controller'; // Import new controller
 import logger from '../../utils/logger';
 
@@ -25,5 +26,13 @@ logger.info('✅ Route POST /api/ai/generate-summary has been defined.');
  */
 router.post('/generate-experience', generateExperienceController); // New route
 logger.info('✅ Route POST /api/ai/generate-experience has been defined.');
+
+/**
+ * @route POST /api/ai/generate-job-description
+ * @description Generates a professional job description based on job title and company details.
+ * @access Public (or authenticated)
+ */
+router.post('/generate-job-description', generateJobDescriptionController);
+logger.info('✅ Route POST /api/ai/generate-job-description has been defined.');
 
 export default router;

@@ -1,155 +1,14 @@
+/* ========================================= */
+/* BASE STYLES */
+/* ========================================= */
+
+/* Main page wrapper for all editor pages */
 .rezi-page-wrapper {
   min-height: 100vh;
   background-color: #f8f9fa;
 }
 
-.rezi-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.rezi-header-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1;
-}
-
-.rezi-back-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 0.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.rezi-back-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateX(-2px);
-}
-
-.rezi-title-section {
-  display: flex;
-  flex-direction: column;
-}
-
-.rezi-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.rezi-subtitle {
-  font-size: 0.875rem;
-  opacity: 0.8;
-  font-weight: 400;
-}
-
-.rezi-header-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.rezi-view-toggle {
-  display: flex;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 4px;
-  gap: 2px;
-}
-
-.rezi-toggle-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.rezi-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.rezi-toggle-btn.active {
-  background: rgba(255, 255, 255, 0.9);
-  color: #667eea;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.rezi-header-right {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.rezi-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.rezi-btn {
-  border: none;
-  padding: 0.625rem 1.25rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-}
-
-.rezi-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.rezi-btn-outline {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.rezi-btn-outline:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.rezi-btn-primary {
-  background: #28a745;
-  color: white;
-}
-
-.rezi-btn-primary:hover:not(:disabled) {
-  background: #218838;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
+/* Shared button spinner animation */
 .rezi-btn-spinner {
   width: 14px;
   height: 14px;
@@ -168,96 +27,177 @@
   }
 }
 
-/* Loading and Error States */
-.rezi-loading-container,
-.rezi-error-container {
+/* Progress bar animations */
+.progress-bar {
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+/* ========================================= */
+/* LIGHT HEADER (Dashboard and general pages) */
+/* ========================================= */
+
+.rezi-header {
+  background: #ffffff;
+  color: #222;
+  padding: 1rem 2rem;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #f8f9fa;
-}
-
-.rezi-loading,
-.rezi-error {
-  text-align: center;
-  padding: 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Template Selector Enhancement */
-.rezi-template-selector {
-  padding: 1rem;
-  background: white;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.rezi-header .rezi-header-left {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex: 1;
 }
 
-.rezi-template-selector label {
-  font-weight: 500;
+.rezi-header .rezi-back-btn {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
   color: #495057;
-  margin: 0;
-}
-
-.rezi-template-dropdown {
-  padding: 0.5rem 1rem;
-  border: 2px solid #e9ecef;
+  padding: 0.5rem;
   border-radius: 8px;
-  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rezi-header .rezi-back-btn:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  transform: translateX(-2px);
+}
+
+.rezi-header .rezi-title-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.rezi-header .rezi-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+  color: #212529;
+}
+
+.rezi-header .rezi-subtitle {
   font-size: 0.875rem;
-  transition: border-color 0.2s ease;
-  min-width: 200px;
+  opacity: 0.7;
+  font-weight: 400;
+  color: #6c757d;
 }
 
-.rezi-template-dropdown:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+.rezi-header .rezi-header-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .rezi-header {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .rezi-header-left,
-  .rezi-header-center,
-  .rezi-header-right {
-    flex: none;
-  }
-
-  .rezi-title {
-    font-size: 1.25rem;
-  }
-
-  .rezi-actions {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
+.rezi-header .rezi-view-toggle {
+  display: flex;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  padding: 4px;
+  gap: 2px;
 }
 
-@media (max-width: 768px) {
-  .rezi-view-toggle {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .rezi-toggle-btn {
-    justify-content: center;
-  }
-
-  .rezi-btn span {
-    display: none;
-  }
+.rezi-header .rezi-toggle-btn {
+  background: transparent;
+  border: none;
+  color: #495057;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
-/* Enhanced Editor Layout */
+
+.rezi-header .rezi-toggle-btn:hover {
+  background: #e9ecef;
+  color: #212529;
+}
+
+.rezi-header .rezi-toggle-btn.active {
+  background: #007bff;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.rezi-header .rezi-header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rezi-header .rezi-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.rezi-header .rezi-btn {
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.rezi-header .rezi-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rezi-header .rezi-btn-outline {
+  background: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.rezi-header .rezi-btn-outline:hover:not(:disabled) {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.rezi-header .rezi-btn-primary {
+  background: #28a745;
+  color: white;
+  border: 1px solid #28a745;
+}
+
+.rezi-header .rezi-btn-primary:hover:not(:disabled) {
+  background: #218838;
+  border-color: #1e7e34;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* ========================================= */
+/* DARK EDITOR HEADER (Resume editor specific) */
+/* ========================================= */
+
 .rezi-editor-workspace {
   display: flex;
   flex-direction: column;
@@ -281,77 +221,169 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
   position: sticky;
   top: 0;
   z-index: 1000;
-}
-
-.rezi-editor-main {
-  flex: 1;
-  overflow: hidden;
-}
-
-.rezi-split-layout {
-  display: flex;
-  height: 100%;
-}
-
-.rezi-edit-sidebar {
-  width: 400px;
-  background: white;
-  border-right: 1px solid #e9ecef;
-  overflow-y: auto;
   flex-shrink: 0;
 }
 
-.rezi-preview-area {
+.rezi-editor-header .rezi-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.rezi-editor-header .rezi-back-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rezi-editor-header .rezi-back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-2px);
+}
+
+.rezi-editor-header .rezi-title-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.rezi-editor-header .rezi-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+  color: white;
+}
+
+.rezi-editor-header .rezi-subtitle {
+  font-size: 0.875rem;
+  opacity: 0.8;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2px;
+}
+
+/* Save status indicators for editor header */
+.save-status-saving {
+  color: #ffc107 !important;
+}
+.save-status-saved {
+  color: #28a745 !important;
+}
+.save-status-error {
+  color: #dc3545 !important;
+}
+.save-status-unsaved {
+  color: #fd7e14 !important;
+}
+
+.rezi-editor-header .rezi-header-center {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  justify-content: center;
 }
 
-.rezi-preview-full {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.rezi-edit-panel {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.rezi-view-controls {
+.rezi-editor-header .rezi-view-controls {
   display: flex;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0.25rem;
+  gap: 0.25rem;
 }
 
-.rezi-view-btn {
+.rezi-editor-header .rezi-view-btn {
   background: none;
   border: none;
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
-.rezi-view-btn:hover {
+.rezi-editor-header .rezi-view-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-.rezi-view-btn.active {
+.rezi-editor-header .rezi-view-btn.active {
   background: rgba(255, 255, 255, 0.9);
   color: #667eea;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.rezi-template-select {
+.rezi-editor-header .rezi-header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rezi-editor-header .rezi-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.rezi-editor-header .rezi-btn {
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.rezi-editor-header .rezi-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.rezi-editor-header .rezi-btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.rezi-editor-header .rezi-btn-outline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rezi-editor-header .rezi-btn-primary {
+  background: #28a745;
+  color: white;
+  border: 1px solid #28a745;
+}
+
+.rezi-editor-header .rezi-btn-primary:hover:not(:disabled) {
+  background: #218838;
+  border-color: #1e7e34;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.rezi-editor-header .rezi-template-select {
   background: white;
   border: 2px solid #e9ecef;
   border-radius: 6px;
@@ -359,37 +391,658 @@
   font-size: 0.875rem;
   margin-right: 1rem;
   min-width: 150px;
+  color: #495057;
+  transition: all 0.2s ease;
 }
 
-/* Responsive Design */
+.rezi-editor-header .rezi-template-select:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+
+/* ========================================= */
+/* EDITOR LAYOUT AND VIEW MODES */
+/* ========================================= */
+
+.rezi-editor-main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.rezi-split-layout {
+  display: flex;
+  height: 100%;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+/* View mode classes for different layouts */
+.rezi-split-layout.view-split {
+  display: flex;
+}
+.rezi-split-layout.view-edit-only {
+  display: block;
+}
+.rezi-split-layout.view-preview-only {
+  display: flex;
+}
+
+/* Edit sidebar - left panel for forms */
+.rezi-edit-sidebar {
+  width: 50%;
+  background: white;
+  border-right: 1px solid #e9ecef;
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+}
+
+.rezi-split-layout.view-edit-only .rezi-edit-sidebar {
+  width: 100%;
+  border-right: none;
+}
+
+.rezi-split-layout.view-preview-only .rezi-edit-sidebar {
+  display: none;
+}
+
+/* Preview area - right panel for resume preview */
+.rezi-preview-area {
+  width: 50%;
+  background: #f5f5f5;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+}
+
+.rezi-split-layout.view-edit-only .rezi-preview-area {
+  display: none;
+}
+
+.rezi-split-layout.view-preview-only .rezi-preview-area {
+  width: 100%;
+}
+
+/* Edit panel container */
+.rezi-edit-panel {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Preview document container and scaling */
+.rezi-preview-document {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.rezi-preview-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  max-width: 100%;
+}
+
+.rezi-preview-container:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+/* Preview scaling based on view mode */
+.rezi-split-layout.view-split .rezi-preview-document {
+  padding: 15px;
+}
+
+.rezi-split-layout.view-split .rezi-preview-container {
+  transform: scale(0.8);
+  transform-origin: top center;
+}
+
+.rezi-split-layout.view-preview-only .rezi-preview-document {
+  padding: 30px;
+}
+
+.rezi-split-layout.view-preview-only .rezi-preview-container {
+  transform: scale(0.9);
+  transform-origin: top center;
+}
+
+/* ========================================= */
+/* VIEW MODE SPECIFIC STYLES */
+/* ========================================= */
+
+/* Edit-only mode styling */
+.view-edit-only {
+  background: #f8f9fa;
+}
+
+.view-edit-only .rezi-edit-panel {
+  background: white;
+  border-radius: 12px;
+  margin: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+}
+
+/* Split view enhancements */
+.view-split .rezi-edit-sidebar {
+  border-right: 2px solid #e9ecef;
+}
+
+.view-split .rezi-preview-area {
+  background: #f8f9fa;
+}
+
+/* Preview-only view styling */
+.view-preview-only .rezi-preview-area {
+  background: #f0f2f5;
+}
+
+/* Template selector for preview area */
+.rezi-template-selector {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.rezi-template-selector label {
+  font-weight: 600;
+  color: #495057;
+  margin: 0;
+  font-size: 14px;
+}
+
+.rezi-template-dropdown {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  min-width: 180px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.rezi-template-dropdown:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* ========================================= */
+/* TAB NAVIGATION AND CONTENT (Resume tabs) */
+/* ========================================= */
+
+/* Tab navigation bar */
+.resume-nav-tabs {
+  overflow-x: auto !important;
+  white-space: nowrap !important;
+  flex-wrap: nowrap !important;
+  border-bottom: 1px solid #dee2e6;
+  background: white;
+  padding: 8px 20px !important;
+  margin: 0;
+  min-height: 50px !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-shrink: 0;
+}
+
+.resume-nav-tabs .nav-item {
+  display: flex !important;
+  align-items: center !important;
+  height: 40px !important;
+}
+
+.resume-nav-tabs .nav-link {
+  white-space: normal !important;
+  min-width: max-content !important;
+  font-weight: 500;
+  color: #6c757d;
+  border: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  padding: 12px 16px !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.resume-nav-tabs .nav-link:hover {
+  color: #495057;
+  border-bottom-color: #dee2e6;
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+.resume-nav-tabs .nav-link.active {
+  color: #667eea;
+  border-bottom-color: #667eea;
+  background: none;
+  font-weight: 600 !important;
+}
+
+/* AI badge for summary tab */
+.ai-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 4px;
+}
+
+/* Tab content area */
+.tab-content {
+  flex: 1;
+  overflow-y: auto !important;
+  padding: 0 !important;
+  background: white;
+}
+
+.tab-pane {
+  padding: 20px !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* EDIT-ONLY MODE TAB SCROLLING */
+.rezi-split-layout.view-edit-only .tab-content {
+  max-height: calc(100vh - 200px) !important;
+  overflow-y: auto !important;
+}
+
+.rezi-split-layout.view-edit-only .tab-pane {
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+}
+
+/* ========================================= */
+/* FLOATING ANALYSIS TOOLS MENU */
+/* ========================================= */
+
+/* Hide old analysis tools */
+.rezi-analysis-tools {
+  display: none !important;
+}
+
+/* Floating analysis menu */
+.rezi-analysis-menu {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050;
+  width: 320px;
+  max-height: 450px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rezi-analysis-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.rezi-analysis-menu-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.rezi-analysis-menu-title {
+  font-weight: 600;
+  color: #495057;
+  margin: 0;
+  font-size: 15px;
+}
+
+.rezi-analysis-menu-close {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+  font-size: 18px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rezi-analysis-menu-close:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.rezi-analysis-menu-content {
+  padding: 15px 20px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.rezi-analysis-menu-content .card {
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+.rezi-analysis-menu-content .card-header {
+  padding: 10px 15px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.rezi-analysis-menu-content .card-body {
+  padding: 12px 15px;
+  font-size: 12px;
+}
+
+/* ========================================= */
+/* SCROLLBAR CUSTOMIZATIONS */
+/* ========================================= */
+
+/* Main scrollbars */
+.rezi-edit-sidebar::-webkit-scrollbar,
+.tab-content::-webkit-scrollbar,
+.rezi-analysis-menu-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rezi-edit-sidebar::-webkit-scrollbar-track,
+.tab-content::-webkit-scrollbar-track,
+.rezi-analysis-menu-content::-webkit-scrollbar-track {
+  background: #f1f3f4;
+  border-radius: 4px;
+}
+
+.rezi-edit-sidebar::-webkit-scrollbar-thumb,
+.tab-content::-webkit-scrollbar-thumb,
+.rezi-analysis-menu-content::-webkit-scrollbar-thumb {
+  background: #c1c8cd;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.rezi-edit-sidebar::-webkit-scrollbar-thumb:hover,
+.tab-content::-webkit-scrollbar-thumb:hover,
+.rezi-analysis-menu-content::-webkit-scrollbar-thumb:hover {
+  background: #a0a7ac;
+}
+
+/* Textarea scrollbars */
+.summary-textarea-manual,
+.ai-generated-summary {
+  scrollbar-width: thin;
+  scrollbar-color: #6c757d #f1f3f4;
+}
+
+.summary-textarea-manual::-webkit-scrollbar,
+.ai-generated-summary::-webkit-scrollbar {
+  width: 8px;
+}
+
+.summary-textarea-manual::-webkit-scrollbar-track,
+.ai-generated-summary::-webkit-scrollbar-track {
+  background: #f1f3f4;
+  border-radius: 4px;
+}
+
+.summary-textarea-manual::-webkit-scrollbar-thumb,
+.ai-generated-summary::-webkit-scrollbar-thumb {
+  background: #6c757d;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.summary-textarea-manual::-webkit-scrollbar-thumb:hover,
+.ai-generated-summary::-webkit-scrollbar-thumb:hover {
+  background: #5a6268;
+}
+
+/* Consistent textarea behavior */
+.card-body textarea {
+  overflow-y: auto !important;
+  resize: vertical !important;
+  max-height: 200px !important;
+  min-height: 80px !important;
+}
+
+/* ========================================= */
+/* LOADING AND ERROR STATES */
+/* ========================================= */
+
+.rezi-loading-container,
+.rezi-error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.rezi-loading,
+.rezi-error {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Tips and helper text styling */
+.card-body ul li {
+  margin-bottom: 4px;
+}
+
+/* ========================================= */
+/* RESPONSIVE DESIGN */
+/* ========================================= */
+
+/* Large screens (1200px+) */
+@media (max-width: 1200px) {
+  .rezi-split-layout.view-split .rezi-edit-sidebar {
+    width: 45%;
+  }
+
+  .rezi-split-layout.view-split .rezi-preview-area {
+    width: 55%;
+  }
+
+  .rezi-split-layout.view-split .rezi-preview-container {
+    transform: scale(0.75);
+  }
+}
+
+/* Tablets (1024px and below) */
 @media (max-width: 1024px) {
-  .rezi-split-layout {
-    flex-direction: column;
-  }
-
-  .rezi-edit-sidebar {
-    width: 100%;
-    max-height: 40vh;
-  }
-
-  .rezi-preview-area {
-    min-height: 60vh;
-  }
-}
-
-@media (max-width: 768px) {
+  .rezi-header,
   .rezi-editor-header {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
   }
 
-  .rezi-view-controls {
+  .rezi-header .rezi-header-left,
+  .rezi-header .rezi-header-center,
+  .rezi-header .rezi-header-right,
+  .rezi-editor-header .rezi-header-left,
+  .rezi-editor-header .rezi-header-center,
+  .rezi-editor-header .rezi-header-right {
+    flex: none;
+  }
+
+  .rezi-header .rezi-title,
+  .rezi-editor-header .rezi-title {
+    font-size: 1.25rem;
+  }
+
+  .rezi-header .rezi-actions,
+  .rezi-editor-header .rezi-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* Force vertical stacking on tablets */
+  .rezi-split-layout {
+    flex-direction: column !important;
+  }
+
+  .rezi-split-layout.view-split .rezi-edit-sidebar {
+    width: 100% !important;
+    height: 50vh;
+    border-right: none;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .rezi-split-layout.view-split .rezi-preview-area {
+    width: 100% !important;
+    height: 50vh;
+  }
+
+  .rezi-split-layout.view-split .rezi-preview-container {
+    transform: scale(0.7);
+  }
+
+  .rezi-split-layout.view-edit-only .rezi-edit-sidebar {
+    height: calc(100vh - 120px);
+  }
+
+  .rezi-split-layout.view-preview-only .rezi-preview-area {
+    height: calc(100vh - 120px);
+  }
+}
+
+/* Mobile phones (768px and below) */
+@media (max-width: 768px) {
+  .rezi-header .rezi-view-toggle,
+  .rezi-editor-header .rezi-view-controls {
+    flex-direction: column;
     width: 100%;
   }
 
-  .rezi-view-btn {
+  .rezi-header .rezi-toggle-btn,
+  .rezi-editor-header .rezi-view-btn {
+    justify-content: center;
     flex: 1;
     text-align: center;
+  }
+
+  .rezi-header .rezi-btn span,
+  .rezi-editor-header .rezi-btn span {
+    display: none;
+  }
+
+  .resume-nav-tabs {
+    padding: 6px 10px !important;
+    min-height: 55px !important;
+  }
+
+  .resume-nav-tabs .nav-link {
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+  }
+
+  .rezi-template-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .rezi-template-dropdown {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .rezi-split-layout.view-split .rezi-preview-container {
+    transform: scale(0.6);
+  }
+
+  .rezi-split-layout.view-preview-only .rezi-preview-container {
+    transform: scale(0.7);
+  }
+
+  .rezi-analysis-menu {
+    width: calc(100vw - 40px);
+    max-width: 350px;
+    bottom: 90px;
+    right: 20px;
+  }
+}
+
+/* Small mobile phones (480px and below) */
+@media (max-width: 480px) {
+  .rezi-editor-header .rezi-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .rezi-editor-header .rezi-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .rezi-preview-container {
+    transform: scale(0.6);
+    transform-origin: top center;
+  }
+
+  .tab-pane {
+    padding: 15px !important;
+  }
+
+  .rezi-header .rezi-subtitle,
+  .rezi-editor-header .rezi-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .rezi-analysis-menu {
+    width: calc(100vw - 20px);
+    bottom: 80px;
+    right: 10px;
+    left: 10px;
   }
 }

@@ -94,24 +94,67 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
     }
   };
 
+  // Style for scrollable textarea
+  const textareaStyle = {
+    minHeight: '120px',
+    maxHeight: '200px',
+    overflowY: 'auto',
+    resize: 'vertical',
+    lineHeight: '1.5',
+    padding: '12px',
+    fontSize: '14px',
+    border: '1px solid #ced4da',
+    borderRadius: '6px',
+    transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+  };
+
+  const textareaFocusStyle = {
+    ...textareaStyle,
+    borderColor: '#86b7fe',
+    boxShadow: '0 0 0 0.25rem rgba(13, 110, 253, 0.25)',
+  };
+
   return (
-    <Card className="mb-4">
-      <Card.Header className="d-flex justify-content-between align-items-center">
-        <h5 className="mb-0">✨ AI Summary Generator</h5>
+    <Card className="mb-4" style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+      <Card.Header
+        className="d-flex justify-content-between align-items-center"
+        style={{
+          backgroundColor: '#f8f9fa',
+          borderBottom: '1px solid #dee2e6',
+        }}
+      >
+        <h5 className="mb-0" style={{ color: '#495057', fontWeight: '600' }}>
+          ✨ AI Summary Generator
+        </h5>
         {!showForm && (
-          <Button variant="primary" size="sm" onClick={() => setShowForm(true)}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setShowForm(true)}
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '6px 16px',
+              fontWeight: '500',
+            }}
+          >
             Generate with AI
           </Button>
         )}
       </Card.Header>
 
-      <Card.Body>
+      <Card.Body style={{ padding: '24px' }}>
         {showForm && (
           <div className="mb-4">
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Job Title *</Form.Label>
+                  <Form.Label
+                    style={{ fontWeight: '500', marginBottom: '8px' }}
+                  >
+                    Job Title *
+                  </Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="e.g., Senior Software Developer"
@@ -119,12 +162,17 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
                     onChange={(e) =>
                       handleInputChange('jobTitle', e.target.value)
                     }
+                    style={{ borderRadius: '6px', padding: '10px 12px' }}
                   />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Years of Experience *</Form.Label>
+                  <Form.Label
+                    style={{ fontWeight: '500', marginBottom: '8px' }}
+                  >
+                    Years of Experience *
+                  </Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="e.g., 5 years"
@@ -132,18 +180,22 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
                     onChange={(e) =>
                       handleInputChange('yearsExperience', e.target.value)
                     }
+                    style={{ borderRadius: '6px', padding: '10px 12px' }}
                   />
                 </Form.Group>
               </Col>
             </Row>
 
             <Form.Group className="mb-3">
-              <Form.Label>Experience Level</Form.Label>
+              <Form.Label style={{ fontWeight: '500', marginBottom: '8px' }}>
+                Experience Level
+              </Form.Label>
               <Form.Select
                 value={formData.experienceLevel}
                 onChange={(e) =>
                   handleInputChange('experienceLevel', e.target.value)
                 }
+                style={{ borderRadius: '6px', padding: '10px 12px' }}
               >
                 <option value="entry-level">Entry Level</option>
                 <option value="mid-level">Mid Level</option>
@@ -153,12 +205,15 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Key Skills</Form.Label>
+              <Form.Label style={{ fontWeight: '500', marginBottom: '8px' }}>
+                Key Skills
+              </Form.Label>
               <Form.Control
                 type="text"
                 placeholder="e.g., React, Node.js, Python, AWS"
                 value={formData.keySkills}
                 onChange={(e) => handleInputChange('keySkills', e.target.value)}
+                style={{ borderRadius: '6px', padding: '10px 12px' }}
               />
               <Form.Text className="text-muted">
                 Separate skills with commas
@@ -166,7 +221,9 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Career Highlights (Optional)</Form.Label>
+              <Form.Label style={{ fontWeight: '500', marginBottom: '8px' }}>
+                Career Highlights (Optional)
+              </Form.Label>
               <Form.Control
                 as="textarea"
                 rows={2}
@@ -175,14 +232,29 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
                 onChange={(e) =>
                   handleInputChange('careerHighlights', e.target.value)
                 }
+                style={{
+                  ...textareaStyle,
+                  minHeight: '60px',
+                  maxHeight: '120px',
+                }}
               />
             </Form.Group>
 
-            <div className="d-flex gap-2">
+            <div className="d-flex gap-2 flex-wrap">
               <Button
                 variant="primary"
                 onClick={handleGenerate}
                 disabled={isGenerating}
+                style={{
+                  background: isGenerating
+                    ? '#6c757d'
+                    : 'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '10px 20px',
+                  fontWeight: '500',
+                  minWidth: '140px',
+                }}
               >
                 {isGenerating ? (
                   <>
@@ -196,13 +268,23 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
               <Button
                 variant="outline-secondary"
                 onClick={() => setShowForm(false)}
+                style={{
+                  borderRadius: '6px',
+                  padding: '10px 20px',
+                  fontWeight: '500',
+                }}
               >
                 Cancel
               </Button>
             </div>
 
             {error && (
-              <Alert variant="danger" className="mt-3">
+              <Alert
+                variant="danger"
+                className="mt-3"
+                style={{ borderRadius: '6px' }}
+              >
+                <strong>Error:</strong>{' '}
                 {error.message ||
                   'Failed to generate summary. Please try again.'}
               </Alert>
@@ -213,25 +295,80 @@ function AIResumeSummaryGenerator({ currentSummary = '', onSummaryGenerated }) {
         {generatedSummary && (
           <div>
             <Form.Group>
-              <Form.Label>Generated Summary</Form.Label>
+              <Form.Label
+                style={{
+                  fontWeight: '600',
+                  marginBottom: '12px',
+                  fontSize: '16px',
+                }}
+              >
+                📝 Generated Summary
+              </Form.Label>
               <Form.Control
                 as="textarea"
-                rows={4}
+                rows={6}
                 value={generatedSummary}
                 onChange={(e) => setGeneratedSummary(e.target.value)}
-                className="mb-3"
+                className="mb-3 ai-generated-summary"
+                style={textareaStyle}
+                onFocus={(e) => {
+                  Object.assign(e.target.style, textareaFocusStyle);
+                }}
+                onBlur={(e) => {
+                  Object.assign(e.target.style, textareaStyle);
+                }}
+                placeholder="Your AI-generated summary will appear here..."
               />
+              <div
+                style={{
+                  fontSize: '12px',
+                  color: '#6c757d',
+                  marginBottom: '16px',
+                  fontStyle: 'italic',
+                }}
+              >
+                💡 Tip: You can edit the summary above before using it. The text
+                area will scroll if content exceeds the visible area.
+              </div>
             </Form.Group>
-            <div className="d-flex gap-2">
-              <Button variant="success" onClick={handleUseSummary}>
-                Use This Summary
+            <div className="d-flex gap-2 flex-wrap">
+              <Button
+                variant="success"
+                onClick={handleUseSummary}
+                style={{
+                  background:
+                    'linear-gradient(135deg, #28a745 0%, #20c997 100%)',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '10px 20px',
+                  fontWeight: '500',
+                }}
+              >
+                ✅ Use This Summary
               </Button>
               <Button
                 variant="outline-primary"
                 size="sm"
                 onClick={() => setShowForm(true)}
+                style={{
+                  borderRadius: '6px',
+                  padding: '8px 16px',
+                  fontWeight: '500',
+                }}
               >
-                Regenerate
+                🔄 Regenerate
+              </Button>
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() => setGeneratedSummary('')}
+                style={{
+                  borderRadius: '6px',
+                  padding: '8px 16px',
+                  fontWeight: '500',
+                }}
+              >
+                🗑️ Clear
               </Button>
             </div>
           </div>

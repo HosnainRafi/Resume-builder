@@ -27,18 +27,18 @@ const Navigation = () => {
         </div>
 
         <div className="rezi-navbar-menu">
-          <Link
+          {/* <Link
             to="/resumes"
             className={`rezi-nav-link ${isActive('/resumes') ? 'active' : ''}`}
           >
             My Resumes
-          </Link>
-          <Link
+          </Link> */}
+          {/* <Link
             to="/templates"
             className={`rezi-nav-link ${isActive('/templates') ? 'active' : ''}`}
           >
             Templates
-          </Link>
+          </Link> */}
         </div>
 
         <div className="rezi-navbar-user">

@@ -1,67 +1,208 @@
+/* Student Entry Level Template Styles - Fixed for Editor */
 .student-page {
-  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  background: #fff;
-  padding: 35px;
-  width: 210mm;
-  height: 297mm;
-  margin: 2rem auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-size: 11px;
+  font-family:
+    'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  background: #fff !important;
+  padding: 35px !important;
+  width: 100% !important;
+  max-width: 794px !important;
+  min-height: 1123px !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  font-size: 11px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
 }
+
 .student-header {
-  text-align: center;
-  margin-bottom: 20px;
+  text-align: center !important;
+  margin-bottom: 20px !important;
 }
+
 .student-name {
-  font-size: 30px;
-  margin: 0;
-  font-weight: 700;
+  font-size: 30px !important;
+  margin: 0 !important;
+  font-weight: 700 !important;
+  color: #111 !important;
 }
+
 .student-contact {
-  color: #555;
-  margin-top: 4px;
+  color: #555 !important;
+  margin-top: 4px !important;
+  font-size: 11px !important;
 }
+
 .student-columns {
-  display: flex;
-  gap: 25px;
+  display: flex !important;
+  gap: 25px !important;
 }
+
 .student-main-col {
-  flex: 2;
+  flex: 2 !important;
+  min-width: 0 !important;
 }
+
 .student-side-col {
-  flex: 1;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
+
+.student-section {
+  margin-bottom: 20px !important;
+  display: block !important;
+  width: 100% !important;
+}
+
 .student-section-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #4caf50; /* Green accent */
-  text-transform: uppercase;
-  border-bottom: 1.5px solid #eee;
-  padding-bottom: 4px;
-  margin-bottom: 12px;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #4caf50 !important; /* Green accent */
+  text-transform: uppercase !important;
+  border-bottom: 1.5px solid #eee !important;
+  padding-bottom: 4px !important;
+  margin-bottom: 12px !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .student-item {
-  margin-bottom: 12px;
+  margin-bottom: 15px !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .student-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 4px !important;
+  flex-wrap: wrap !important;
 }
+
 .student-item-title {
-  font-size: 12px;
-  font-weight: 700;
-  margin: 0;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  color: #111 !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
+
 .student-item-date {
-  font-size: 10px;
-  color: #666;
+  font-size: 10px !important;
+  color: #666 !important;
+  white-space: nowrap !important;
+  margin-left: 10px !important;
 }
-.student-item-subheader,
-.student-coursework,
-.student-skills-list,
+
+.student-item-subheader {
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  margin: 2px 0 !important;
+  color: #555 !important;
+  display: block !important;
+}
+
+.student-coursework {
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  margin: 6px 0 !important;
+  color: #333 !important;
+  display: block !important;
+}
+
+.student-skills-list {
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  margin: 2px 0 !important;
+  color: #333 !important;
+  display: block !important;
+}
+
 .student-item-description {
-  font-size: 11px;
-  line-height: 1.5;
-  margin: 2px 0;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  margin: 6px 0 !important;
+  color: #333 !important;
+  white-space: pre-wrap !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Links styling */
+.student-item-description a {
+  color: #4caf50 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.student-item-description a:hover {
+  text-decoration: underline !important;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .student-page {
+  transform: scale(0.8) !important;
+  transform-origin: top center !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure proper spacing in editor */
+.student-page * {
+  box-sizing: border-box !important;
+}
+
+/* Force block display for all major elements */
+.student-main-col > *,
+.student-side-col > *,
+.student-section > *,
+.student-item > * {
+  display: block !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .rezi-preview-document .student-page {
+    transform: scale(0.7) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-document .student-page {
+    transform: scale(0.6) !important;
+  }
+
+  .student-columns {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+
+  .student-main-col,
+  .student-side-col {
+    flex: unset !important;
+    width: 100% !important;
+  }
+
+  .student-item-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .student-item-date {
+    margin-left: 0 !important;
+    margin-top: 2px !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .student-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
 }

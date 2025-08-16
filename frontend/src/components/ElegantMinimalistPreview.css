@@ -1,82 +1,203 @@
+/* Elegant Minimalist Template Styles - Fixed for Editor */
 .elegant-minimalist-page {
-  font-family: 'Garamond', 'Times New Roman', serif;
-  background: #fff;
-  padding: 40px;
-  color: #222;
-  width: 210mm;
-  height: 297mm;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 2rem auto;
+  font-family: 'Garamond', 'Times New Roman', serif !important;
+  background: #fff !important;
+  padding: 40px !important;
+  color: #222 !important;
+  width: 100% !important;
+  max-width: 794px !important;
+  min-height: 1123px !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
 }
+
 .elegant-header {
-  text-align: center;
-  margin-bottom: 25px;
+  text-align: center !important;
+  margin-bottom: 25px !important;
+  padding-bottom: 20px !important;
+  border-bottom: 1px solid #eee !important;
 }
+
 .elegant-name {
-  font-size: 32px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin: 0;
+  font-size: 32px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  margin: 0 0 10px 0 !important;
+  color: #222 !important;
+  font-weight: normal !important;
+  font-family: 'Garamond', 'Times New Roman', serif !important;
 }
+
 .elegant-contact {
-  font-size: 11px;
-  margin-top: 5px;
+  font-size: 11px !important;
+  margin-top: 10px !important;
+  color: #555 !important;
+  font-style: italic !important;
 }
+
 .elegant-section {
-  margin-bottom: 20px;
+  margin-bottom: 25px !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .elegant-section-title {
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 15px;
-  position: relative;
-  padding-bottom: 5px;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 20px !important;
+  position: relative !important;
+  padding-bottom: 8px !important;
+  color: #222 !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .elegant-section-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50px;
-  height: 1px;
-  background-color: #ccc;
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 60px !important;
+  height: 1px !important;
+  background-color: #ccc !important;
 }
+
 .elegant-summary {
-  text-align: center;
-  font-style: italic;
-  font-size: 12px;
-  line-height: 1.6;
+  text-align: center !important;
+  font-style: italic !important;
+  font-size: 12px !important;
+  line-height: 1.8 !important;
+  color: #333 !important;
+  max-width: 80% !important;
+  margin: 0 auto !important;
 }
+
 .elegant-item {
-  margin-bottom: 12px;
+  margin-bottom: 18px !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .elegant-item-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 6px !important;
+  flex-wrap: wrap !important;
 }
+
 .elegant-item-title {
-  font-size: 13px;
-  font-weight: 700;
-  margin: 0;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  color: #222 !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
-.elegant-item-date,
+
+.elegant-item-date {
+  font-size: 11px !important;
+  color: #555 !important;
+  font-style: italic !important;
+  white-space: nowrap !important;
+  margin-left: 10px !important;
+}
+
 .elegant-item-subheader {
-  font-size: 11px;
-  color: #555;
-  font-style: italic;
+  font-size: 11px !important;
+  color: #555 !important;
+  font-style: italic !important;
+  margin-bottom: 6px !important;
+  display: block !important;
 }
+
 .elegant-item-description {
-  font-size: 12px;
-  line-height: 1.6;
-  margin: 0;
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+  margin: 0 0 8px 0 !important;
+  color: #333 !important;
+  white-space: pre-wrap !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .elegant-skills {
-  text-align: center;
-  font-size: 12px;
-  line-height: 1.8;
+  text-align: center !important;
+  font-size: 12px !important;
+  line-height: 1.8 !important;
+  color: #333 !important;
+  font-style: italic !important;
+  max-width: 90% !important;
+  margin: 0 auto !important;
+}
+
+.elegant-link {
+  color: #222 !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid #ccc !important;
+  font-style: italic !important;
+}
+
+.elegant-link:hover {
+  border-bottom-color: #222 !important;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .elegant-minimalist-page {
+  transform: scale(0.8) !important;
+  transform-origin: top center !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure proper spacing in editor */
+.elegant-minimalist-page * {
+  box-sizing: border-box !important;
+}
+
+/* Force block display for all major elements */
+.elegant-section > *,
+.elegant-item > * {
+  display: block !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .rezi-preview-document .elegant-minimalist-page {
+    transform: scale(0.7) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-document .elegant-minimalist-page {
+    transform: scale(0.6) !important;
+  }
+
+  .elegant-item-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .elegant-item-date {
+    margin-left: 0 !important;
+    margin-top: 4px !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .elegant-minimalist-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
 }

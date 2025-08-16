@@ -28,10 +28,13 @@ const resumeSchema = new Schema<IResume>(
     experience: [
       {
         company: String,
-        role: String,
+        jobTitle: String, // Change from 'role' to 'jobTitle'
+        location: String, // Add location
         startDate: String,
         endDate: String,
         description: String,
+        industry: String, // Add industry
+        aiGenerated: { type: Boolean, default: false }, // Add AI flag
       },
     ],
     education: [

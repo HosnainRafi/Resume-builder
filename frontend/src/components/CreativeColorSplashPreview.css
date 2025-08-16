@@ -1,162 +1,254 @@
+/* Creative Color Splash Template Styles - Fixed for Editor */
 .creative-page {
-  font-family: 'Montserrat', sans-serif;
-  background: #fff;
-  width: 210mm;
-  height: 297mm;
-  margin: 2rem auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-size: 11px;
+  font-family: 'Montserrat', sans-serif !important;
+  background: #fff !important;
+  width: 100% !important;
+  max-width: 794px !important;
+  min-height: 1123px !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  font-size: 11px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
 }
 
 .creative-header {
-  background-color: #ff6b6b; /* A vibrant coral color */
-  color: white;
-  padding: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background-color: #ff6b6b !important; /* A vibrant coral color */
+  color: white !important;
+  padding: 30px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
 }
 
 .creative-header-text {
-  flex: 1;
+  flex: 1 !important;
 }
 
 .creative-name {
-  font-size: 34px;
-  margin: 0;
+  font-size: 34px !important;
+  margin: 0 !important;
+  color: white !important;
+  font-weight: bold !important;
 }
 
 .creative-title {
-  font-size: 16px;
-  margin: 5px 0 0 0;
-  font-weight: 300;
+  font-size: 16px !important;
+  margin: 5px 0 0 0 !important;
+  font-weight: 300 !important;
+  color: white !important;
 }
 
 .creative-photo-placeholder {
-  width: 90px;
-  height: 90px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
+  width: 90px !important;
+  height: 90px !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
 }
 
 .creative-body {
-  display: flex;
+  display: flex !important;
+  min-height: calc(100% - 140px) !important;
 }
 
 .creative-sidebar {
-  width: 35%;
-  background: #f7f7f7;
-  padding: 20px;
-  line-height: 1.6;
+  width: 35% !important;
+  background: #f7f7f7 !important;
+  padding: 20px !important;
+  line-height: 1.6 !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
 
 .creative-sidebar-section {
-  margin-bottom: 20px;
+  margin-bottom: 20px !important;
+  display: block !important;
+  width: 100% !important;
 }
 
 .creative-sidebar-title {
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #ff6b6b;
-  margin-bottom: 10px;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  color: #ff6b6b !important;
+  margin-bottom: 10px !important;
+  display: block !important;
 }
 
 .creative-main {
-  width: 65%;
-  padding: 20px;
+  width: 65% !important;
+  padding: 20px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
 
 .creative-main-title {
-  font-size: 18px;
-  color: #333;
-  margin-bottom: 15px;
-  font-weight: 600;
-  text-transform: uppercase;
-  border-bottom: 2px solid #ff6b6b;
-  padding-bottom: 5px;
+  font-size: 18px !important;
+  color: #333 !important;
+  margin-bottom: 15px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  border-bottom: 2px solid #ff6b6b !important;
+  padding-bottom: 5px !important;
+  display: block !important;
+  width: 100% !important;
 }
 
 .creative-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
 }
 
 .creative-tag {
-  background: #e0e0e0;
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 10px;
-  color: #333;
+  background: #e0e0e0 !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  font-size: 10px !important;
+  color: #333 !important;
+  display: inline-block !important;
 }
 
 .creative-item {
-  border-left: 3px solid #ff6b6b;
-  padding-left: 15px;
-  margin-bottom: 20px;
+  border-left: 3px solid #ff6b6b !important;
+  padding-left: 15px !important;
+  margin-bottom: 20px !important;
+  display: block !important;
+  width: 100% !important;
 }
 
 .creative-item-date {
-  font-size: 10px;
-  color: #888;
-  margin-bottom: 2px;
-  font-weight: 500;
+  font-size: 10px !important;
+  color: #888 !important;
+  margin-bottom: 2px !important;
+  font-weight: 500 !important;
+  display: block !important;
 }
 
 .creative-item-title {
-  font-size: 14px;
-  margin: 0 0 3px 0;
-  font-weight: 600;
-  color: #333;
+  font-size: 14px !important;
+  margin: 0 0 3px 0 !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  display: block !important;
 }
 
 .creative-item-company {
-  font-size: 12px;
-  font-style: italic;
-  margin-bottom: 5px;
-  color: #666;
+  font-size: 12px !important;
+  font-style: italic !important;
+  margin-bottom: 5px !important;
+  color: #666 !important;
+  display: block !important;
 }
 
 .creative-item-description {
-  font-size: 11px;
-  line-height: 1.5;
-  color: #333;
-  margin: 0;
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  color: #333 !important;
+  margin: 0 !important;
+  white-space: pre-wrap !important;
+  display: block !important;
+  width: 100% !important;
 }
 
 .creative-link {
-  color: #ff6b6b;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 11px;
+  color: #ff6b6b !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  font-size: 11px !important;
 }
 
 .creative-link:hover {
-  text-decoration: underline;
+  text-decoration: underline !important;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .creative-page {
+  transform: scale(0.8) !important;
+  transform-origin: top center !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure proper spacing in editor */
+.creative-page * {
+  box-sizing: border-box !important;
+}
+
+/* Force block display for all major elements */
+.creative-sidebar > *,
+.creative-main > *,
+.creative-item > * {
+  display: block !important;
 }
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
-  .creative-page {
-    width: 100%;
-    margin: 1rem auto;
-    transform: scale(0.9);
-    transform-origin: top center;
+  .rezi-preview-document .creative-page {
+    transform: scale(0.7) !important;
   }
 }
 
 @media (max-width: 768px) {
+  .rezi-preview-document .creative-page {
+    transform: scale(0.6) !important;
+  }
+
   .creative-body {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   .creative-sidebar,
   .creative-main {
-    width: 100%;
+    width: 100% !important;
   }
+}
 
+/* Print styles */
+@media print {
   .creative-page {
-    transform: scale(0.8);
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
   }
+}
+
+/* Fix for white text in About Me and Contact sections */
+.creative-sidebar-section p {
+  color: #444444 !important; /* Dark grey for better readability */
+  font-size: 12px !important;
+  line-height: 1.6 !important;
+  margin-top: 0 !important;
+  margin-bottom: 1em !important;
+}
+
+/* Also fix any other text elements in the sidebar */
+.creative-sidebar-section div {
+  color: #555555 !important; /* Slightly lighter grey for contact items */
+  font-size: 11px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Keep the sidebar titles coral colored */
+.creative-sidebar-title {
+  color: #ff6b6b !important; /* Keep coral accent color */
+}
+
+/* Fix general sidebar text color */
+.creative-sidebar {
+  color: #333333 !important; /* Default dark text for the sidebar */
+}
+
+/* Ensure links are visible */
+.creative-sidebar a {
+  color: #ff6b6b !important;
+  text-decoration: none !important;
+}
+
+.creative-sidebar a:hover {
+  text-decoration: underline !important;
 }

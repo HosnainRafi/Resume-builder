@@ -1,60 +1,167 @@
+/* Professional Corporate Template Styles - Fixed for Editor */
 .corp-page {
-  font-family: 'Times New Roman', Times, serif;
-  background: #fff;
-  color: #111;
-  padding: 40px;
-  width: 210mm;
-  height: 297mm;
-  margin: 2rem auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-size: 12px;
+  font-family: 'Times New Roman', Times, serif !important;
+  background: #fff !important;
+  color: #111 !important;
+  padding: 40px !important;
+  width: 100% !important;
+  max-width: 794px !important;
+  min-height: 1123px !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  font-size: 12px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  line-height: 1.5 !important;
 }
+
 .corp-header {
-  text-align: center;
-  border-bottom: 2px solid #0d2c54; /* Navy Blue */
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  text-align: center !important;
+  border-bottom: 2px solid #0d2c54 !important; /* Navy Blue */
+  padding-bottom: 10px !important;
+  margin-bottom: 20px !important;
 }
+
 .corp-name {
-  font-size: 28px;
-  margin: 0;
+  font-size: 28px !important;
+  margin: 0 !important;
+  color: #111 !important;
+  font-weight: bold !important;
 }
+
 .corp-contact-info {
-  font-size: 11px;
-  margin: 5px 0 0 0;
+  font-size: 11px !important;
+  margin: 5px 0 0 0 !important;
+  color: #333 !important;
 }
+
+.corp-section {
+  margin-bottom: 20px !important;
+  display: block !important;
+  width: 100% !important;
+}
+
 .corp-section-title {
-  font-size: 14px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #0d2c54;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  color: #0d2c54 !important; /* Navy Blue */
+  letter-spacing: 1px !important;
+  margin-bottom: 10px !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .corp-item {
-  margin-bottom: 15px;
+  margin-bottom: 15px !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .corp-item-header {
-  display: flex;
-  justify-content: space-between;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 5px !important;
+  flex-wrap: wrap !important;
 }
+
 .corp-item-title {
-  font-size: 13px;
-  font-weight: bold;
-  margin: 0;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  margin: 0 !important;
+  color: #111 !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
+
 .corp-item-date {
-  font-style: italic;
+  font-style: italic !important;
+  font-size: 11px !important;
+  color: #666 !important;
+  white-space: nowrap !important;
+  margin-left: 10px !important;
 }
+
 .corp-item-company {
-  font-weight: bold;
-  margin: 2px 0 5px 0;
+  font-weight: bold !important;
+  margin: 2px 0 5px 0 !important;
+  color: #333 !important;
+  font-size: 12px !important;
+  display: block !important;
 }
+
 .corp-description-list {
-  margin: 0;
-  padding-left: 1.5em;
-  line-height: 1.5;
+  margin: 0 !important;
+  padding-left: 1.5em !important;
+  line-height: 1.5 !important;
+  color: #333 !important;
 }
+
+.corp-description-list li {
+  margin-bottom: 3px !important;
+  font-size: 11px !important;
+  color: #333 !important;
+}
+
 .corp-body-text {
-  line-height: 1.5;
+  line-height: 1.5 !important;
+  color: #333 !important;
+  font-size: 11px !important;
+  margin: 0 !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .corp-page {
+  transform: scale(0.8) !important;
+  transform-origin: top center !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure proper spacing in editor */
+.corp-page * {
+  box-sizing: border-box !important;
+}
+
+/* Force block display for all major elements */
+.corp-section > *,
+.corp-item > * {
+  display: block !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .rezi-preview-document .corp-page {
+    transform: scale(0.7) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-document .corp-page {
+    transform: scale(0.6) !important;
+  }
+
+  .corp-item-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .corp-item-date {
+    margin-left: 0 !important;
+    margin-top: 2px !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .corp-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
 }

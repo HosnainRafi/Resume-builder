@@ -1,113 +1,223 @@
-.tech-modern-preview-page {
-  display: flex;
-  font-family:
-    'Inter',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
-  color: #333;
-  background-color: #fff;
-  width: 210mm;
-  height: 297mm;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-  margin: 2rem auto;
+/* Tech Modern Template Styles */
+.tech-modern-page {
+  font-family: 'Inter', 'Helvetica', Arial, sans-serif !important;
+  display: flex !important;
+  width: 100% !important;
+  max-width: 794px !important;
+  min-height: 1123px !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  background: white !important;
+  box-sizing: border-box !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
 }
-.tech-modern-sidebar {
-  width: 38%;
-  background-color: #1f2937;
-  color: #f9fafb;
-  padding: 30px;
+
+.tech-sidebar {
+  width: 38% !important;
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
-.tech-modern-main-content {
-  width: 62%;
-  padding: 30px;
-  line-height: 1.5;
+
+.tech-name {
+  font-size: 24px !important;
+  font-weight: bold !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  margin: 0 0 5px 0 !important;
+  line-height: 1.2 !important;
 }
-.tech-modern-name {
-  font-size: 28px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+
+.tech-title {
+  font-size: 13px !important;
+  color: #00bfff !important;
+  margin: 4px 0 25px 0 !important;
+  font-weight: 400 !important;
 }
-.tech-modern-title {
-  font-size: 14px;
-  font-weight: 300;
-  color: #00bfff;
-  margin-top: 4px;
-  margin-bottom: 25px;
+
+.tech-sidebar-section {
+  margin-bottom: 25px !important;
+  display: block !important;
+  width: 100% !important;
 }
-.tech-modern-sidebar-section {
-  margin-bottom: 20px;
+
+.tech-sidebar-title {
+  font-size: 13px !important;
+  font-weight: bold !important;
+  color: #00bfff !important;
+  border-bottom: 1px solid #4b5563 !important;
+  padding-bottom: 5px !important;
+  margin-bottom: 12px !important;
+  text-transform: uppercase !important;
+  display: block !important;
+  width: 100% !important;
 }
-.tech-modern-sidebar-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #00bfff;
-  border-bottom: 1px solid #4b5563;
-  padding-bottom: 5px;
-  margin-bottom: 12px;
-  text-transform: uppercase;
+
+.tech-contact-item {
+  font-size: 10px !important;
+  margin-bottom: 6px !important;
+  color: #f9fafb !important;
+  display: block !important;
+  width: 100% !important;
+  word-wrap: break-word !important;
 }
-.tech-modern-contact-item {
-  font-size: 10px;
-  margin: 4px 0;
+
+.tech-link {
+  color: #9ca3af !important;
+  text-decoration: none !important;
+  font-size: 10px !important;
 }
-.tech-modern-link {
-  color: #9ca3af;
-  text-decoration: none;
-  font-size: 10px;
+
+.tech-link:hover {
+  color: #00bfff !important;
+  text-decoration: underline !important;
 }
-.tech-modern-link:hover {
-  color: #00bfff;
-}
+
 .tech-skill-item {
-  margin-bottom: 10px;
+  margin-bottom: 12px !important;
+  display: block !important;
+  width: 100% !important;
 }
-.tech-skill-item p {
-  margin: 0 0 4px;
-  font-size: 11px;
+
+.tech-skill-name {
+  margin-bottom: 4px !important;
+  font-size: 10px !important;
+  color: #f9fafb !important;
+  display: block !important;
 }
+
 .tech-skill-bar-container {
-  width: 100%;
-  height: 6px;
-  background-color: #4b5563;
-  border-radius: 3px;
+  width: 100% !important;
+  height: 6px !important;
+  background-color: #4b5563 !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
 }
+
 .tech-skill-bar {
-  height: 100%;
-  background-color: #00bfff;
-  border-radius: 3px;
+  height: 100% !important;
+  background-color: #00bfff !important;
+  border-radius: 3px !important;
+  transition: width 0.3s ease !important;
 }
-.tech-modern-section-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 5px;
+
+.tech-main-content {
+  width: 62% !important;
+  padding: 30px !important;
+  line-height: 1.5 !important;
+  font-size: 11px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
-.tech-modern-item {
-  margin-bottom: 15px;
+
+.tech-section {
+  margin-bottom: 25px !important;
+  display: block !important;
+  width: 100% !important;
 }
-.tech-modern-item-title {
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0;
+
+.tech-section-title {
+  font-size: 15px !important;
+  font-weight: bold !important;
+  color: #1f2937 !important;
+  margin-bottom: 15px !important;
+  border-bottom: 2px solid #e5e7eb !important;
+  padding-bottom: 5px !important;
+  display: block !important;
+  width: 100% !important;
 }
-.tech-modern-item-subheader {
-  font-size: 11px;
-  color: #6b7280;
-  margin: 2px 0 5px;
+
+.tech-item {
+  margin-bottom: 20px !important;
+  display: block !important;
+  width: 100% !important;
 }
-.tech-modern-item-description {
-  font-size: 11px;
-  color: #4b5563;
-  white-space: pre-wrap;
-  margin: 0;
+
+.tech-item-title {
+  font-size: 12px !important;
+  font-weight: bold !important;
+  color: #1f2937 !important;
+  margin: 0 0 5px 0 !important;
+  display: block !important;
+}
+
+.tech-item-subheader {
+  font-size: 10px !important;
+  color: #6b7280 !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+.tech-tech-stack {
+  font-size: 10px !important;
+  color: #4b5563 !important;
+  margin-bottom: 8px !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+.tech-item-description {
+  color: #4b5563 !important;
+  font-size: 10px !important;
+  line-height: 1.5 !important;
+  white-space: pre-wrap !important;
+  margin: 0 !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .tech-modern-page {
+  transform: scale(0.8) !important;
+  transform-origin: top center !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure proper spacing in editor */
+.tech-modern-page * {
+  box-sizing: border-box !important;
+}
+
+/* Force block display for all major elements */
+.tech-sidebar > *,
+.tech-main-content > *,
+.tech-section > *,
+.tech-item > * {
+  display: block !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .rezi-preview-document .tech-modern-page {
+    transform: scale(0.7) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-document .tech-modern-page {
+    transform: scale(0.6) !important;
+    flex-direction: column !important;
+  }
+
+  .tech-sidebar,
+  .tech-main-content {
+    width: 100% !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .tech-modern-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
 }

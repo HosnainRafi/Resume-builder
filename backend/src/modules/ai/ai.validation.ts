@@ -33,3 +33,12 @@ export const GenerateExperienceSchema = z.object({
   previousResponsibilities: z.string().optional(), // Existing bullet points or context
   targetSkills: z.string().optional(),
 });
+
+export const GenerateJobDescriptionSchema = z.object({
+  jobTitle: z.string().trim().min(1, { message: 'Job Title is required.' }),
+  company: z.string().trim().min(1, { message: 'Company name is required.' }),
+  industry: z.string().optional(),
+  yearsExperience: z.string().optional(),
+  responsibilities: z.string().optional(),
+  targetSkills: z.string().optional(),
+});

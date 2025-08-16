@@ -20,12 +20,14 @@ const HeaderSchema = z.object({
 
 const ExperienceSchema = z.object({
   company: z.string().optional().default(''),
-  role: z.string().optional().default(''),
+  jobTitle: z.string().optional().default(''), // Change from 'role' to 'jobTitle'
+  location: z.string().optional().default(''), // Add location field
   startDate: z.string().optional().default(''),
   endDate: z.string().optional().default(''),
   description: z.string().optional().default(''),
+  industry: z.string().optional().default(''), // Add industry field for AI
+  aiGenerated: z.boolean().optional().default(false), // Add AI flag
 });
-
 const EducationSchema = z.object({
   institution: z.string().optional().default(''),
   degree: z.string().optional().default(''),

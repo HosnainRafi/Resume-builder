@@ -1,6 +1,6 @@
 // src/pages/ResumeEditorPage.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 import { pdf } from '@react-pdf/renderer';
@@ -11,10 +11,8 @@ import '../EditorLayout.css';
 import ResumeTabs from '../components/ResumeTabs';
 import KeywordAnalyzer from '../components/KeywordAnalyzer';
 import ResumeScorecard from '../components/ResumeScorecard';
-import LivePreviewPane from '../components/LivePreviewPane'; // New component
-import PreviewToolbar from '../components/PreviewToolbar'; // New component
 
-// --- Import All Templates ---
+// --- Import PDF Templates (for download) ---
 import ClassicTemplate from '../components/ClassicTemplate';
 import ModernTemplate from '../components/ModernTemplate';
 import TechModernTemplate from '../components/TechModernTemplate';
@@ -24,6 +22,17 @@ import ProfessionalCorporateTemplate from '../components/ProfessionalCorporateTe
 import StudentEntryLevelTemplate from '../components/StudentEntryLevelTemplate';
 import InfographicVisualTemplate from '../components/InfographicVisualTemplate';
 import ModernExecutiveTemplate from '../components/ModernExecutiveTemplate';
+
+// --- Import HTML Preview Components (for editor) ---
+import ClassicTemplatePreview from '../components/ClassicTemplatePreview';
+import CreativeColorSplashPreview from '../components/CreativeColorSplashPreview';
+import ElegantMinimalistPreview from '../components/ElegantMinimalistPreview';
+import InfographicVisualPreview from '../components/InfographicVisualPreview';
+import ModernExecutivePreview from '../components/ModernExecutivePreview';
+import ModernTemplatePreview from '../components/ModernTemplatePreview';
+import TechModernPreview from '../components/TechModernPreview';
+import ProfessionalCorporatePreview from '../components/ProfessionalCorporatePreview';
+import StudentEntryLevelPreview from '../components/StudentEntryLevelPreview';
 
 const DEFAULT_RESUME_STRUCTURE = {
   title: 'Untitled Resume',
@@ -42,72 +51,79 @@ const DEFAULT_RESUME_STRUCTURE = {
   skills: [],
   projects: [],
   template: 'classic',
-  sectionOrder: [
-    'header',
-    'summary',
-    'experience',
-    'education',
-    'skills',
-    'projects',
-  ], // Add section order
 };
 
 const TEMPLATES = [
   {
     id: 'classic',
     name: 'Classic',
-    component: ClassicTemplate,
-    pdf: ClassicTemplate,
+    previewComponent: ClassicTemplatePreview,
+    pdfComponent: ClassicTemplate,
   },
   {
     id: 'modern',
     name: 'Modern',
-    component: ModernTemplate,
-    pdf: ModernTemplate,
+    previewComponent: ModernTemplatePreview,
+    pdfComponent: ModernTemplate,
   },
   {
     id: 'tech-modern',
     name: 'Tech Modern',
-    component: TechModernTemplate,
-    pdf: TechModernTemplate,
+    previewComponent: TechModernPreview,
+    pdfComponent: TechModernTemplate,
   },
   {
     id: 'elegant-minimalist',
     name: 'Elegant Minimalist',
-    component: ElegantMinimalistTemplate,
-    pdf: ElegantMinimalistTemplate,
+    previewComponent: ElegantMinimalistPreview,
+    pdfComponent: ElegantMinimalistTemplate,
   },
   {
     id: 'creative-colorsplash',
     name: 'Creative Color Splash',
-    component: CreativeColorSplashTemplate,
-    pdf: CreativeColorSplashTemplate,
+    previewComponent: CreativeColorSplashPreview,
+    pdfComponent: CreativeColorSplashTemplate,
   },
   {
     id: 'professional-corporate',
     name: 'Professional Corporate',
-    component: ProfessionalCorporateTemplate,
-    pdf: ProfessionalCorporateTemplate,
+    previewComponent: ProfessionalCorporatePreview,
+    pdfComponent: ProfessionalCorporateTemplate,
   },
   {
     id: 'student-entry-level',
     name: 'Student Entry Level',
-    component: StudentEntryLevelTemplate,
-    pdf: StudentEntryLevelTemplate,
+    previewComponent: StudentEntryLevelPreview,
+    pdfComponent: StudentEntryLevelTemplate,
   },
   {
     id: 'infographic-visual',
     name: 'Infographic Visual',
-    component: InfographicVisualTemplate,
-    pdf: InfographicVisualTemplate,
+    previewComponent: InfographicVisualPreview,
+    pdfComponent: InfographicVisualTemplate,
   },
   {
     id: 'modern-executive',
     name: 'Modern Executive',
-    component: ModernExecutiveTemplate,
-    pdf: ModernExecutiveTemplate,
+    previewComponent: ModernExecutivePreview,
+    pdfComponent: ModernExecutiveTemplate,
   },
 ];
+
+// Enhanced debounce hook
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 function useAsyncMutation(mutationFn, options = {}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -123,6 +139,10 @@ function useAsyncMutation(mutationFn, options = {}) {
     } catch (err) {
       setError(err);
       if (options.onError) options.onError(err);
+      if (err.response?.status === 429) {
+        console.warn('Rate limited - save will be retried automatically');
+        return;
+      }
       throw err;
     } finally {
       setIsLoading(false);
@@ -132,6 +152,17 @@ function useAsyncMutation(mutationFn, options = {}) {
   return { mutate: mutateAsync, isLoading, error };
 }
 
+const swrConfig = {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  refreshWhenOffline: false,
+  refreshWhenHidden: false,
+  refreshInterval: 0,
+  dedupingInterval: 10000,
+  errorRetryCount: 1,
+  errorRetryInterval: 5000,
+};
+
 const fetcher = (url) => apiClient.get(url).then((res) => res.data.data);
 
 function ResumeEditorPage() {
@@ -140,18 +171,28 @@ function ResumeEditorPage() {
 
   const [formData, setFormData] = useState(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState('classic');
-  const [viewMode, setViewMode] = useState('split'); // 'split', 'preview-only', 'edit-only'
-  const [previewScale, setPreviewScale] = useState(0.8);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [viewMode, setViewMode] = useState('split'); // 'split' or 'edit-only'
+  const [saveStatus, setSaveStatus] = useState('saved');
+  const [showAnalysisMenu, setShowAnalysisMenu] = useState(false);
+  const [templateManuallyChanged, setTemplateManuallyChanged] = useState(false); // NEW: Track manual template changes
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false); // NEW: Track initial load
+
+  // Refs for tracking save state
+  const lastSavedData = useRef(null);
+  const saveTimeoutRef = useRef(null);
+  const hasUnsavedChanges = useRef(false);
 
   const {
     data: initialResumeData,
     error,
     isLoading,
-  } = useSWR(resumeId ? `/api/resumes/${resumeId}` : null, fetcher);
+  } = useSWR(resumeId ? `/api/resumes/${resumeId}` : null, fetcher, swrConfig);
+
+  // 10-second debounce
+  const debouncedFormData = useDebounce(formData, 10000);
 
   useEffect(() => {
-    if (initialResumeData) {
+    if (initialResumeData && !initialDataLoaded) {
       const mergedData = {
         ...DEFAULT_RESUME_STRUCTURE,
         ...initialResumeData,
@@ -163,45 +204,116 @@ function ResumeEditorPage() {
         education: initialResumeData.education || [],
         skills: initialResumeData.skills || [],
         projects: initialResumeData.projects || [],
-        sectionOrder:
-          initialResumeData.sectionOrder ||
-          DEFAULT_RESUME_STRUCTURE.sectionOrder,
         template:
           initialResumeData.template || DEFAULT_RESUME_STRUCTURE.template,
       };
+
       setFormData(mergedData);
-      setSelectedTemplateId(mergedData.template);
+
+      // Only set template from server data on initial load
+      if (initialResumeData.template) {
+        setSelectedTemplateId(initialResumeData.template);
+      }
+
+      lastSavedData.current = JSON.stringify(mergedData);
+      hasUnsavedChanges.current = false;
+      setInitialDataLoaded(true); // Mark as initially loaded
     }
-  }, [initialResumeData]);
+  }, [initialResumeData, initialDataLoaded]);
 
   const updateMutation = useAsyncMutation(
     (updatedData) => apiClient.patch(`/api/resumes/${resumeId}`, updatedData),
     {
-      onSuccess: () => {
-        mutate(`/api/resumes/${resumeId}`);
-        mutate('/api/resumes');
+      onSuccess: (result) => {
+        setSaveStatus('saved');
+        const updatedDataString = JSON.stringify({
+          ...debouncedFormData,
+          template: selectedTemplateId,
+        });
+        lastSavedData.current = updatedDataString;
+        hasUnsavedChanges.current = false;
+        setTemplateManuallyChanged(false); // Reset manual change flag after successful save
+        mutate(`/api/resumes/${resumeId}`, result, false);
       },
-      onError: (err) => console.error('Failed to save resume:', err),
+      onError: (err) => {
+        console.error('Failed to save resume:', err);
+        if (err.response?.status !== 429) {
+          setSaveStatus('error');
+        }
+      },
     }
   );
 
-  // Auto-save functionality
+  // Conservative auto-save with debounce protection
   useEffect(() => {
-    if (!formData || !resumeId) return;
+    if (!debouncedFormData || !resumeId) return;
 
-    const timeoutId = setTimeout(() => {
-      updateMutation.mutate({ ...formData, template: selectedTemplateId });
-    }, 2000); // Auto-save after 2 seconds of inactivity
+    const currentDataString = JSON.stringify({
+      ...debouncedFormData,
+      template: selectedTemplateId,
+    });
 
-    return () => clearTimeout(timeoutId);
-  }, [formData, selectedTemplateId, resumeId]);
+    if (
+      currentDataString === lastSavedData.current ||
+      !hasUnsavedChanges.current
+    ) {
+      return;
+    }
+
+    if (updateMutation.isLoading) {
+      return;
+    }
+
+    // Add small delay to prevent rapid template changes
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      console.log('Auto-saving resume changes...');
+      setSaveStatus('saving');
+      updateMutation.mutate({
+        ...debouncedFormData,
+        template: selectedTemplateId,
+      });
+    }, 500); // 500ms delay to batch rapid changes
+  }, [debouncedFormData, selectedTemplateId, resumeId, updateMutation]);
+
+  const handleFieldChange = useCallback((field, data) => {
+    setFormData((prev) => ({ ...prev, [field]: data }));
+    hasUnsavedChanges.current = true;
+    setSaveStatus('unsaved');
+  }, []);
+
+  const handleManualSave = useCallback(async () => {
+    if (!formData || !resumeId || updateMutation.isLoading) return;
+
+    try {
+      setSaveStatus('saving');
+      await updateMutation.mutate({
+        ...formData,
+        template: selectedTemplateId,
+      });
+    } catch (error) {
+      console.error('Manual save failed:', error);
+    }
+  }, [formData, resumeId, selectedTemplateId, updateMutation]);
 
   const handleDownloadPDF = async () => {
     if (!formData) return;
+
     try {
+      if (hasUnsavedChanges.current) {
+        setSaveStatus('saving');
+        await updateMutation.mutate({
+          ...formData,
+          template: selectedTemplateId,
+        });
+      }
+
       const currentTemplate =
         TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
-      const PdfComponent = currentTemplate.pdf;
+      const PdfComponent = currentTemplate.pdfComponent;
       const doc = <PdfComponent resumeData={formData} />;
       const blob = await pdf(doc).toBlob();
       const url = URL.createObjectURL(blob);
@@ -218,10 +330,49 @@ function ResumeEditorPage() {
     }
   };
 
-  const handleSectionReorder = (newSectionOrder) => {
-    setFormData((prev) => ({ ...prev, sectionOrder: newSectionOrder }));
+  // FIXED: Template change handler with optimistic updates
+  const handleTemplateChange = useCallback(
+    (templateId) => {
+      // Optimistic update - update UI immediately
+      setSelectedTemplateId(templateId);
+      setTemplateManuallyChanged(true); // Mark as manually changed
+
+      // Immediately update formData to prevent reversion
+      setFormData((prev) => ({
+        ...prev,
+        template: templateId,
+      }));
+
+      // Mark as changed and trigger save
+      hasUnsavedChanges.current = true;
+      setSaveStatus('unsaved');
+
+      // Update the "last saved" reference to prevent reversion during re-renders
+      const updatedData = {
+        ...formData,
+        template: templateId,
+      };
+      lastSavedData.current = JSON.stringify(updatedData);
+
+      console.log(`Template changed to: ${templateId}`);
+    },
+    [formData]
+  );
+
+  // Toggle analysis menu
+  const toggleAnalysisMenu = () => {
+    setShowAnalysisMenu(!showAnalysisMenu);
   };
 
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Loading and error states
   if (isLoading) {
     return (
       <div className="rezi-loading-container">
@@ -257,11 +408,74 @@ function ResumeEditorPage() {
   const currentTemplate =
     TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
 
+  // Save status display
+  const getSaveStatusDisplay = () => {
+    switch (saveStatus) {
+      case 'saving':
+        return (
+          <>
+            <div className="rezi-btn-spinner"></div>
+            <span>Saving...</span>
+          </>
+        );
+      case 'unsaved':
+        return (
+          <>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span>Unsaved Changes</span>
+          </>
+        );
+      case 'error':
+        return (
+          <>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+            <span>Save Error</span>
+          </>
+        );
+      default:
+        return (
+          <>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <polyline points="20,6 9,17 4,12" />
+            </svg>
+            <span>Saved</span>
+          </>
+        );
+    }
+  };
+
   return (
-    <div
-      className={`rezi-editor-workspace ${isFullscreen ? 'fullscreen' : ''}`}
-    >
-      {/* Enhanced Header */}
+    <div className="rezi-editor-workspace">
+      {/* Header */}
       <header className="rezi-editor-header">
         <div className="rezi-header-left">
           <button
@@ -281,8 +495,8 @@ function ResumeEditorPage() {
           </button>
           <div className="rezi-title-section">
             <h1 className="rezi-title">{formData.title}</h1>
-            <span className="rezi-subtitle">
-              {updateMutation.isLoading ? 'Auto-saving...' : 'Saved'}
+            <span className={`rezi-subtitle save-status-${saveStatus}`}>
+              {getSaveStatusDisplay()}
             </span>
           </div>
         </div>
@@ -293,19 +507,13 @@ function ResumeEditorPage() {
               className={`rezi-view-btn ${viewMode === 'edit-only' ? 'active' : ''}`}
               onClick={() => setViewMode('edit-only')}
             >
-              📝 Edit
+              📝 Edit Only
             </button>
             <button
               className={`rezi-view-btn ${viewMode === 'split' ? 'active' : ''}`}
               onClick={() => setViewMode('split')}
             >
-              📊 Split
-            </button>
-            <button
-              className={`rezi-view-btn ${viewMode === 'preview-only' ? 'active' : ''}`}
-              onClick={() => setViewMode('preview-only')}
-            >
-              👁️ Preview
+              📊 Edit + Preview
             </button>
           </div>
         </div>
@@ -314,7 +522,7 @@ function ResumeEditorPage() {
           <div className="rezi-actions">
             <select
               value={selectedTemplateId}
-              onChange={(e) => setSelectedTemplateId(e.target.value)}
+              onChange={(e) => handleTemplateChange(e.target.value)}
               className="rezi-template-select"
             >
               {TEMPLATES.map((t) => (
@@ -324,8 +532,57 @@ function ResumeEditorPage() {
               ))}
             </select>
 
+            {/* Score Button */}
+            <button
+              className={`rezi-btn rezi-btn-outline ${showAnalysisMenu ? 'active' : ''}`}
+              onClick={toggleAnalysisMenu}
+              title="Resume Score & Analysis"
+              style={{
+                background: showAnalysisMenu
+                  ? 'rgba(255, 255, 255, 0.2)'
+                  : 'rgba(255, 255, 255, 0.1)',
+                borderColor: showAnalysisMenu
+                  ? '#00bfff'
+                  : 'rgba(255, 255, 255, 0.3)',
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M3 3v5h5M3 21v-5h5M21 3v5h-5M21 21v-5h-5" />
+                <path d="M3 12h18" />
+              </svg>
+              Score
+            </button>
+
             <button
               className="rezi-btn rezi-btn-outline"
+              onClick={handleManualSave}
+              disabled={updateMutation.isLoading || saveStatus === 'saved'}
+              title="Force Save"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                <polyline points="17,21 17,13 7,13 7,21" />
+                <polyline points="7,3 7,8 15,8" />
+              </svg>
+              Save
+            </button>
+
+            <button
+              className="rezi-btn rezi-btn-primary"
               onClick={handleDownloadPDF}
             >
               <svg
@@ -346,77 +603,59 @@ function ResumeEditorPage() {
         </div>
       </header>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <main className="rezi-editor-main">
         {viewMode === 'edit-only' && (
-          <div className="rezi-edit-panel">
-            <ResumeTabs
-              resumeData={formData}
-              onFieldChange={(field, data) => {
-                setFormData((prev) => ({ ...prev, [field]: data }));
-              }}
-            />
-            <div className="rezi-analysis-tools">
-              <ResumeScorecard resumeId={resumeId} />
-              <KeywordAnalyzer resumeId={resumeId} />
+          <div className={`rezi-split-layout view-edit-only`}>
+            <div className="rezi-edit-sidebar">
+              <ResumeTabs
+                resumeData={formData}
+                onFieldChange={handleFieldChange}
+              />
             </div>
           </div>
         )}
 
         {viewMode === 'split' && (
-          <div className="rezi-split-layout">
+          <div className={`rezi-split-layout view-split`}>
             <div className="rezi-edit-sidebar">
               <ResumeTabs
                 resumeData={formData}
-                onFieldChange={(field, data) => {
-                  setFormData((prev) => ({ ...prev, [field]: data }));
-                }}
+                onFieldChange={handleFieldChange}
               />
-              <div className="rezi-analysis-tools-compact">
-                <ResumeScorecard resumeId={resumeId} />
-                <KeywordAnalyzer resumeId={resumeId} />
-              </div>
             </div>
             <div className="rezi-preview-area">
-              <PreviewToolbar
-                scale={previewScale}
-                onScaleChange={setPreviewScale}
-                isFullscreen={isFullscreen}
-                onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
-                template={currentTemplate}
-                onTemplateChange={setSelectedTemplateId}
-              />
-              <LivePreviewPane
-                resumeData={formData}
-                template={currentTemplate}
-                scale={previewScale}
-                onSectionReorder={handleSectionReorder}
-                isEditable={true}
-              />
+              {/* Preview using dedicated preview component */}
+              <div className="rezi-preview-document">
+                <div className="rezi-preview-container">
+                  {React.createElement(currentTemplate.previewComponent, {
+                    resumeData: formData,
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-
-        {viewMode === 'preview-only' && (
-          <div className="rezi-preview-full">
-            <PreviewToolbar
-              scale={previewScale}
-              onScaleChange={setPreviewScale}
-              isFullscreen={isFullscreen}
-              onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
-              template={currentTemplate}
-              onTemplateChange={setSelectedTemplateId}
-            />
-            <LivePreviewPane
-              resumeData={formData}
-              template={currentTemplate}
-              scale={previewScale}
-              onSectionReorder={handleSectionReorder}
-              isEditable={true}
-            />
           </div>
         )}
       </main>
+
+      {/* Floating Analysis Menu */}
+      {showAnalysisMenu && (
+        <div className="rezi-analysis-menu open">
+          <div className="rezi-analysis-menu-header">
+            <h6 className="rezi-analysis-menu-title">📊 Resume Analysis</h6>
+            <button
+              className="rezi-analysis-menu-close"
+              onClick={toggleAnalysisMenu}
+            >
+              ×
+            </button>
+          </div>
+          <div className="rezi-analysis-menu-content">
+            <ResumeScorecard resumeId={resumeId} />
+            <KeywordAnalyzer resumeId={resumeId} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

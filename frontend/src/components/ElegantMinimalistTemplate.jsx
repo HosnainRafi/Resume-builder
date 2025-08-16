@@ -1,5 +1,12 @@
+// src/components/ElegantMinimalistTemplate.jsx
+
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+
+// SafeText component to prevent null/undefined crashes
+const SafeText = ({ children, style }) => (
+  <Text style={style}>{String(children || '')}</Text>
+);
 
 const styles = StyleSheet.create({
   page: {
@@ -9,91 +16,207 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 1.6,
   },
-  header: { textAlign: 'center', marginBottom: 25 },
-  name: { fontSize: 30, letterSpacing: 2, textTransform: 'uppercase' },
-  contact: { fontSize: 10, marginTop: 5 },
-  section: { marginBottom: 15 },
+  header: {
+    textAlign: 'center',
+    marginBottom: 25,
+    paddingBottom: 20,
+    borderBottom: 1,
+    borderBottomColor: '#eee',
+  },
+  name: {
+    fontSize: 30,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    marginBottom: 10,
+  },
+  contact: {
+    fontSize: 10,
+    marginTop: 10,
+    color: '#555',
+    fontStyle: 'italic',
+  },
+  section: { marginBottom: 20 },
   sectionTitle: {
     fontSize: 13,
     fontWeight: 'bold',
     textAlign: 'center',
     letterSpacing: 1,
     textTransform: 'uppercase',
-    marginBottom: 12,
-    paddingBottom: 5,
+    marginBottom: 15,
+    paddingBottom: 8,
     borderBottom: 1,
     borderBottomColor: '#ccc',
   },
-  summary: { textAlign: 'center', fontStyle: 'italic' },
-  item: { marginBottom: 10 },
+  summary: {
+    textAlign: 'center',
+    fontStyle: 'italic',
+    fontSize: 12,
+    lineHeight: 1.8,
+    marginHorizontal: 40,
+  },
+  item: { marginBottom: 12 },
   itemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 3,
+    marginBottom: 4,
   },
-  itemTitle: { fontSize: 12, fontWeight: 'bold' },
-  itemDate: { fontSize: 10, color: '#555', fontStyle: 'italic' },
-  itemDescription: { fontSize: 11 },
-  skills: { textAlign: 'center', fontSize: 11 },
+  itemTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  itemDate: {
+    fontSize: 10,
+    color: '#555',
+    fontStyle: 'italic',
+  },
+  itemSubheader: {
+    fontSize: 10,
+    color: '#555',
+    fontStyle: 'italic',
+    marginBottom: 4,
+  },
+  itemDescription: {
+    fontSize: 11,
+    lineHeight: 1.6,
+    color: '#333',
+  },
+  skills: {
+    textAlign: 'center',
+    fontSize: 11,
+    fontStyle: 'italic',
+    lineHeight: 1.8,
+  },
 });
 
 const ElegantMinimalistTemplate = ({ resumeData }) => {
   const {
     header = {},
+    summary = '',
     experience = [],
     education = [],
     skills = [],
+    projects = [], // Added projects
   } = resumeData || {};
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.name}>{header.name || ''}</Text>
-          <Text
-            style={styles.contact}
-          >{`${header.email || ''} | ${header.phone || ''} | ${header.website || ''}`}</Text>
+          <SafeText style={styles.name}>{header.name || 'Your Name'}</SafeText>
+          <SafeText style={styles.contact}>
+            {[header.email, header.phone, header.website, header.location]
+              .filter(Boolean)
+              .join(' | ')}
+          </SafeText>
         </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Professional Summary</Text>
-          <Text style={styles.summary}>{header.summary || ''}</Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Experience</Text>
-          {(Array.isArray(experience) ? experience : []).map((exp, i) => (
-            <View key={i} style={styles.item}>
-              <View style={styles.itemHeader}>
-                <Text
-                  style={styles.itemTitle}
-                >{`${exp.jobTitle || ''} at ${exp.company || ''}`}</Text>
-                <Text
-                  style={styles.itemDate}
-                >{`${exp.location || ''} | ${exp.startDate || ''} - ${exp.endDate || ''}`}</Text>
+
+        {/* Professional Summary */}
+        {summary && (
+          <View style={styles.section}>
+            <SafeText style={styles.sectionTitle}>
+              Professional Summary
+            </SafeText>
+            <SafeText style={styles.summary}>{summary}</SafeText>
+          </View>
+        )}
+
+        {/* Experience */}
+        {experience && experience.length > 0 && (
+          <View style={styles.section}>
+            <SafeText style={styles.sectionTitle}>Experience</SafeText>
+            {experience.map((exp, index) => (
+              <View key={index} style={styles.item}>
+                <View style={styles.itemHeader}>
+                  <SafeText style={styles.itemTitle}>
+                    {exp.jobTitle || 'Job Title'} at {exp.company || 'Company'}
+                  </SafeText>
+                  <SafeText style={styles.itemDate}>
+                    {exp.location || 'Location'} | {exp.startDate || 'Date'} -{' '}
+                    {exp.endDate || 'Present'}
+                  </SafeText>
+                </View>
+                <SafeText style={styles.itemDescription}>
+                  {exp.description ||
+                    'Description of responsibilities and key achievements.'}
+                </SafeText>
               </View>
-              <Text style={styles.itemDescription}>
-                {exp.description || ''}
-              </Text>
-            </View>
-          ))}
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Education</Text>
-          {(Array.isArray(education) ? education : []).map((edu, i) => (
-            <View key={i} style={styles.item}>
-              <Text style={styles.itemTitle}>{edu.degree || ''}</Text>
-              <Text
-                style={styles.itemDate}
-              >{`${edu.institution || ''}, ${edu.graduationDate || ''}`}</Text>
-            </View>
-          ))}
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Core Competencies</Text>
-          <Text style={styles.skills}>
-            {(Array.isArray(skills) ? skills : []).join(' · ')}
-          </Text>
-        </View>
+            ))}
+          </View>
+        )}
+
+        {/* Projects */}
+        {projects && projects.length > 0 && (
+          <View style={styles.section}>
+            <SafeText style={styles.sectionTitle}>Projects</SafeText>
+            {projects.map((proj, index) => (
+              <View key={index} style={styles.item}>
+                <View style={styles.itemHeader}>
+                  <SafeText style={styles.itemTitle}>
+                    {proj.name || 'Project Name'}
+                  </SafeText>
+                  <SafeText style={styles.itemDate}>
+                    {proj.year || 'Year'}
+                  </SafeText>
+                </View>
+                <SafeText style={styles.itemSubheader}>
+                  {proj.technologies || 'Technologies Used'}
+                </SafeText>
+                <SafeText style={styles.itemDescription}>
+                  {proj.description ||
+                    'Project description and key achievements.'}
+                </SafeText>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Education */}
+        {education && education.length > 0 && (
+          <View style={styles.section}>
+            <SafeText style={styles.sectionTitle}>Education</SafeText>
+            {education.map((edu, index) => (
+              <View key={index} style={styles.item}>
+                <View style={styles.itemHeader}>
+                  <SafeText style={styles.itemTitle}>
+                    {edu.degree || 'Degree'}
+                  </SafeText>
+                  <SafeText style={styles.itemDate}>
+                    {edu.graduationDate || 'Year'}
+                  </SafeText>
+                </View>
+                <SafeText style={styles.itemSubheader}>
+                  {edu.institution || 'University'},{' '}
+                  {edu.location || 'Location'}
+                </SafeText>
+                {edu.gpa && (
+                  <SafeText style={styles.itemDescription}>
+                    GPA: {edu.gpa}
+                  </SafeText>
+                )}
+                {edu.honors && (
+                  <SafeText style={styles.itemDescription}>
+                    {edu.honors}
+                  </SafeText>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Skills */}
+        {skills && skills.length > 0 && (
+          <View style={styles.section}>
+            <SafeText style={styles.sectionTitle}>Core Competencies</SafeText>
+            <SafeText style={styles.skills}>
+              {(Array.isArray(skills) ? skills : []).join(' · ')}
+            </SafeText>
+          </View>
+        )}
       </Page>
     </Document>
   );
 };
+
 export default ElegantMinimalistTemplate;

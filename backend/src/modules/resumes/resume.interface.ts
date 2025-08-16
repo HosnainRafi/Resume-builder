@@ -15,10 +15,13 @@ interface IHeader {
 
 interface IExperience {
   company?: string;
-  role?: string;
+  jobTitle?: string; // Change from 'role' to 'jobTitle'
+  location?: string; // Add location
   startDate?: string;
   endDate?: string;
   description?: string;
+  industry?: string; // Add industry
+  aiGenerated?: boolean; // Add AI flag
 }
 
 interface IEducation {

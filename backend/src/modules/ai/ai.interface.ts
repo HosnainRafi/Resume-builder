@@ -20,3 +20,11 @@ export interface IExperienceRequest {
   previousResponsibilities?: string;
   targetSkills?: string;
 }
+export interface IJobDescriptionRequest {
+  jobTitle: string;
+  company: string;
+  industry?: string;
+  yearsExperience?: string;
+  responsibilities?: string;
+  targetSkills?: string;
+}

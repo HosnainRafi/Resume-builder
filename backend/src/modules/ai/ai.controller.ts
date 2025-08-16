@@ -3,10 +3,12 @@ import { Request, Response, NextFunction } from 'express';
 import {
   GenerateSummarySchema,
   GenerateExperienceSchema,
+  GenerateJobDescriptionSchema,
 } from './ai.validation'; // Import new schema
 import {
   generateAISummary,
   generateAIExperienceBulletPoints,
+  generateAIJobDescription,
 } from './ai.service'; // Import new service function
 import logger from '../../utils/logger';
 
@@ -58,6 +60,28 @@ export const generateExperienceController = async (
     });
   } catch (error) {
     logger.error({ err: error }, 'Error in generateExperienceController');
+    next(error);
+  }
+};
+
+export const generateJobDescriptionController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const validatedData = GenerateJobDescriptionSchema.parse(req.body);
+    logger.info('Job description generation request passed validation.');
+
+    const jobDescription = await generateAIJobDescription(validatedData);
+
+    res.status(200).json({
+      success: true,
+      message: 'Job description generated successfully.',
+      data: { jobDescription },
+    });
+  } catch (error) {
+    logger.error({ err: error }, 'Error in generateJobDescriptionController');
     next(error);
   }
 };

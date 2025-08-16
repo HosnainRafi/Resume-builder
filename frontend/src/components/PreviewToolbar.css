@@ -1,44 +1,50 @@
 .preview-toolbar {
-  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 100; /* High z-index to stay above all content */
+  background: #ffffff; /* Solid white background - no transparency */
   border-bottom: 1px solid #e9ecef;
   padding: 0.75rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add shadow for visual separation */
+  backdrop-filter: blur(8px); /* Optional: adds blur behind if needed */
 }
 
+/* Ensure toolbar elements don't overlap */
 .toolbar-left,
+.toolbar-center,
 .toolbar-right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  z-index: 101; /* Higher than toolbar itself */
 }
 
-.toolbar-center {
-  flex: 1;
-  text-align: center;
-}
-
+/* Fix scale controls background and spacing */
 .scale-controls {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: #f8f9fa;
+  background: #f8f9fa; /* Light gray background */
   border-radius: 6px;
   padding: 0.25rem;
+  border: 1px solid #dee2e6; /* Add border for definition */
 }
 
 .scale-btn {
-  background: none;
-  border: none;
+  /* background: #ffffff; Solid white background */
+  border: 1px solid #dee2e6;
   padding: 0.25rem;
   cursor: pointer;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 102;
 }
 
 .scale-btn:hover:not(:disabled) {
@@ -51,27 +57,32 @@
 }
 
 .scale-select {
-  border: none;
-  background: none;
+  /* border: none;
+  background: none; */
   padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   cursor: pointer;
   border-radius: 4px;
 }
 
-.scale-select:focus {
+/* .scale-select:focus {
   outline: none;
   background: #e9ecef;
-}
+} */
 
 .template-name {
   font-weight: 500;
   color: #495057;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
+  background: #ffffff; /* Solid background */
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
 }
 
+/* Fix toolbar buttons */
 .toolbar-btn {
-  background: none;
+  /* background: #ffffff; Solid white background */
   border: 1px solid #dee2e6;
   padding: 0.5rem;
   cursor: pointer;
@@ -80,11 +91,37 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 102;
 }
 
-.toolbar-btn:hover {
+/* .toolbar-btn:hover {
   background: #f8f9fa;
   border-color: #adb5bd;
+} */
+
+/* Ensure live preview container doesn't overlap toolbar */
+.live-preview-container {
+  flex: 1;
+  overflow: auto;
+  background: #f5f5f5; /* Light background for contrast */
+  padding: 1rem;
+  margin-top: 0; /* Remove any conflicting margins */
+  position: relative;
+  z-index: 1; /* Lower than toolbar */
+}
+
+/* Fix live preview page positioning */
+.live-preview-page {
+  background: #ffffff; /* Solid white background */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  width: 794px; /* A4 width */
+  min-height: 1123px; /* A4 height */
+  position: relative;
+  z-index: 2;
 }
 
 /* Responsive */

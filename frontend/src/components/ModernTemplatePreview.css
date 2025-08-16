@@ -1,3 +1,4 @@
+/* Modern Template Styles - Fixed for Editor Preview */
 .modern-template-preview-page {
   font-family: 'Helvetica', Arial, sans-serif;
   font-size: 11px;
@@ -5,29 +6,40 @@
   line-height: 1.4;
   color: #333;
   background-color: white;
-  width: 210mm; /* A4 width */
-  height: 297mm; /* A4 height */
+  width: 100%;
+  max-width: 794px;
+  min-height: 1123px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 2rem auto;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
+
 .modern-header {
   text-align: center;
   margin-bottom: 20px;
   border-bottom: 2px solid #333;
   padding-bottom: 10px;
 }
+
 .modern-name {
   font-size: 28px;
   font-weight: bold;
-  margin: 0;
+  margin: 0 0 5px 0;
+  color: #000;
 }
+
 .modern-contact {
   font-size: 11px;
-  margin-top: 5px;
+  margin: 5px 0 0 0;
+  color: #333;
 }
+
 .modern-section {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  display: block;
+  width: 100%;
 }
+
 .modern-section-title {
   font-size: 14px;
   font-weight: bold;
@@ -35,43 +47,127 @@
   padding-bottom: 5px;
   margin-bottom: 10px;
   text-transform: uppercase;
+  color: #000;
+  display: block;
+  width: 100%;
 }
+
 .modern-item {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  display: block;
+  width: 100%;
 }
-.modern-item-header,
+
+.modern-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 .modern-item-subheader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-.modern-item-header {
-  margin-bottom: 2px;
-}
-.modern-item-subheader {
-  margin-bottom: 3px;
+  margin-bottom: 6px;
   font-style: italic;
+  color: #555;
+  width: 100%;
 }
+
 .modern-item-title {
   font-size: 12px;
   font-weight: bold;
   margin: 0;
+  color: #000;
+  flex: 1;
+  min-width: 0;
 }
-.modern-item-date,
+
+.modern-item-date {
+  font-size: 10px;
+  color: #666;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
 .modern-item-location {
   font-size: 10px;
   color: #666;
+  white-space: nowrap;
 }
+
 .modern-item-description {
   font-size: 10px;
   white-space: pre-wrap;
   margin: 0;
+  color: #333;
+  line-height: 1.5;
+  display: block;
+  width: 100%;
 }
+
 .modern-skills-text {
   font-size: 10px;
+  line-height: 1.5;
+  color: #333;
+  display: block;
+  width: 100%;
 }
+
 .modern-project-link {
   color: #0056b3;
   text-decoration: none;
   font-size: 9px;
+}
+
+.modern-project-link:hover {
+  text-decoration: underline;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .modern-template-preview-page {
+  transform: scale(0.8);
+  transform-origin: top center;
+  margin: 20px auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Ensure proper spacing in editor */
+.modern-template-preview-page * {
+  box-sizing: border-box;
+}
+
+/* Force block display for all major elements */
+.modern-section > *,
+.modern-item > * {
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .rezi-preview-document .modern-template-preview-page {
+    transform: scale(0.7);
+  }
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-document .modern-template-preview-page {
+    transform: scale(0.6);
+  }
+}
+
+/* Print styles */
+@media print {
+  .modern-template-preview-page {
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    box-shadow: none;
+    transform: none;
+  }
 }

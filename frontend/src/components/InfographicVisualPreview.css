@@ -1,100 +1,226 @@
+/* Infographic Visual Template Styles - Fixed for Editor */
 .info-page {
-  font-family: 'Roboto', sans-serif;
-  display: flex;
-  width: 210mm;
-  height: 297mm;
-  margin: 2rem auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Roboto', sans-serif !important;
+  display: flex !important;
+  width: 100% !important;
+  max-width: 794px !important;
+  min-height: 1123px !important;
+  margin: 0 auto !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) !important;
+  background-color: white !important;
+  box-sizing: border-box !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
 }
+
 .info-left-col {
-  width: 35%;
-  background-color: #008080; /* Teal */
-  color: white;
-  padding: 30px;
-  text-align: center;
+  width: 35% !important;
+  background-color: #008080 !important; /* Teal */
+  color: white !important;
+  padding: 30px !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
+
 .info-right-col {
-  width: 65%;
-  background-color: #fff;
-  padding: 30px;
+  width: 65% !important;
+  background-color: white !important;
+  padding: 30px !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
+
 .info-photo-placeholder {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 0 auto 15px auto;
-  border: 3px solid white;
+  width: 120px !important;
+  height: 120px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  margin: 0 auto 15px auto !important;
+  border: 3px solid white !important;
 }
+
 .info-name {
-  font-size: 26px;
-  margin: 0;
+  font-size: 26px !important;
+  margin: 0 0 5px 0 !important;
+  color: white !important;
+  font-weight: bold !important;
 }
+
 .info-title {
-  font-size: 14px;
-  font-weight: 300;
-  margin-bottom: 25px;
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  margin-bottom: 25px !important;
+  color: white !important;
 }
+
 .info-left-title {
-  text-align: left;
-  font-size: 14px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
+  text-align: left !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 10px !important;
+  color: white !important;
+  font-weight: bold !important;
 }
+
 .info-left-section {
-  text-align: left;
-  font-size: 11px;
-  margin-bottom: 20px;
+  text-align: left !important;
+  font-size: 11px !important;
+  margin-bottom: 20px !important;
+  color: white !important;
 }
+
+.info-left-section div {
+  color: white !important;
+  margin-bottom: 4px !important;
+  font-size: 11px !important;
+}
+
 .info-skill-name {
-  margin: 8px 0 4px 0;
+  margin: 8px 0 4px 0 !important;
+  color: white !important;
+  font-size: 11px !important;
 }
+
 .info-dots {
-  display: flex;
-  gap: 4px;
+  display: flex !important;
+  gap: 4px !important;
+  margin-bottom: 12px !important;
 }
+
 .info-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.3);
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
 }
+
 .info-dot.filled {
-  background-color: white;
+  background-color: white !important;
 }
+
 .info-right-title {
-  font-size: 18px;
-  color: #008080;
-  border-bottom: 2px solid #008080;
-  padding-bottom: 5px;
-  margin-bottom: 15px;
+  font-size: 18px !important;
+  color: #008080 !important;
+  border-bottom: 2px solid #008080 !important;
+  padding-bottom: 5px !important;
+  margin-bottom: 15px !important;
+  font-weight: bold !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .info-item {
-  position: relative;
-  padding-left: 20px;
-  margin-bottom: 15px;
-  border-left: 2px solid #eee;
+  position: relative !important;
+  padding-left: 20px !important;
+  margin-bottom: 15px !important;
+  border-left: 2px solid #eee !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
 }
+
 .info-item::before {
-  content: '';
-  position: absolute;
-  left: -6px;
-  top: 4px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #008080;
+  content: '' !important;
+  position: absolute !important;
+  left: -6px !important;
+  top: 4px !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background-color: #008080 !important;
 }
+
 .info-item-date {
-  font-size: 10px;
-  color: #888;
+  font-size: 10px !important;
+  color: #888 !important;
+  margin: 0 0 2px 0 !important;
+  display: block !important;
 }
+
 .info-item-title {
-  font-size: 13px;
-  font-weight: bold;
-  margin: 2px 0;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  margin: 2px 0 !important;
+  color: #111 !important;
+  display: block !important;
 }
+
 .info-item-company {
-  font-size: 12px;
-  font-style: italic;
+  font-size: 12px !important;
+  font-style: italic !important;
+  margin: 0 0 5px 0 !important;
+  color: #666 !important;
+  display: block !important;
+}
+
+.info-item-description {
+  font-size: 11px !important;
+  line-height: 1.5 !important;
+  color: #333 !important;
+  margin: 0 0 8px 0 !important;
+  white-space: pre-wrap !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Links styling */
+.info-item-description a {
+  color: #008080 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.info-item-description a:hover {
+  text-decoration: underline !important;
+}
+
+/* Editor Preview Specific Fixes */
+.rezi-preview-document .info-page {
+  transform: scale(0.8) !important;
+  transform-origin: top center !important;
+  margin: 20px auto !important;
+}
+
+/* Ensure proper spacing in editor */
+.info-page * {
+  box-sizing: border-box !important;
+}
+
+/* Force block display for all major elements */
+.info-left-col > *,
+.info-right-col > *,
+.info-item > * {
+  display: block !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .rezi-preview-document .info-page {
+    transform: scale(0.7) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-document .info-page {
+    transform: scale(0.6) !important;
+    flex-direction: column !important;
+  }
+
+  .info-left-col,
+  .info-right-col {
+    width: 100% !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  .info-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
 }

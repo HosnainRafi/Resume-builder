@@ -3,7 +3,11 @@ import OpenAI from 'openai';
 import env from '../../config';
 import { CustomError } from '../../middleware/error-handler';
 import logger from '../../utils/logger';
-import { ISummaryRequest, IExperienceRequest } from './ai.interface'; // Import new interface
+import {
+  ISummaryRequest,
+  IExperienceRequest,
+  IJobDescriptionRequest,
+} from './ai.interface'; // Import new interface
 
 const openrouter = new OpenAI({
   baseURL: 'https://openrouter.ai/api/v1',
@@ -169,6 +173,86 @@ Requirements for bullet points:
       { err: error },
       'An error occurred while calling the OpenRouter API for experience generation.'
     );
+    const errorMessage =
+      error.response?.data?.error?.message ||
+      'An unknown error occurred with the AI service.';
+    throw new CustomError(errorMessage, 'AI_SERVICE_ERROR', 502);
+  }
+};
+
+export const generateAIJobDescription = async (
+  params: IJobDescriptionRequest
+): Promise<string> => {
+  const {
+    jobTitle,
+    company,
+    industry,
+    yearsExperience,
+    responsibilities,
+    targetSkills,
+  } = params;
+
+  const prompt = `
+Generate a concise, professional job description (3-5 sentences) for a resume experience section based on the following details:
+
+Position Details:
+- Job Title: ${jobTitle}
+- Company: ${company}
+${industry ? `- Industry: ${industry}` : ''}
+${yearsExperience ? `- Years of Experience: ${yearsExperience}` : ''}
+${responsibilities ? `- Key Responsibilities: ${responsibilities}` : ''}
+${targetSkills ? `- Skills to Highlight: ${targetSkills}` : ''}
+
+Requirements for the job description:
+- Write in past tense for resume use
+- Focus on achievements and impact rather than just duties
+- Use strong action verbs and quantifiable results where possible
+- Make it ATS-friendly with relevant keywords
+- Keep it professional and concise (3-5 sentences)
+- Format it as a cohesive paragraph suitable for a resume
+
+Return only the job description paragraph without bullet points or additional formatting.
+`;
+
+  const systemPrompt =
+    'You are an expert resume writer specializing in crafting compelling, ATS-optimized job descriptions that highlight achievements and value delivered in professional roles.';
+
+  try {
+    logger.info(
+      `Sending job description generation request to OpenRouter for model: ${env.OPENROUTER_MODEL}`
+    );
+
+    const completion = await openrouter.chat.completions.create({
+      model: env.OPENROUTER_MODEL,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt },
+      ],
+      max_tokens: 250,
+      temperature: 0.7,
+    });
+
+    const jobDescription = completion.choices[0]?.message?.content?.trim();
+
+    if (!jobDescription) {
+      logger.error(
+        'AI service returned an empty or invalid response for job description.'
+      );
+      throw new CustomError(
+        'Failed to generate job description due to an empty response from the AI service.',
+        'AI_SERVICE_ERROR',
+        502
+      );
+    }
+
+    logger.info('Successfully generated job description.');
+    return jobDescription;
+  } catch (error: any) {
+    logger.error(
+      { err: error },
+      'An error occurred while calling the OpenRouter API for job description generation.'
+    );
+
     const errorMessage =
       error.response?.data?.error?.message ||
       'An unknown error occurred with the AI service.';
