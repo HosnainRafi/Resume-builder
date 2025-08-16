@@ -1,13 +1,35 @@
+// src/modules/ai/ai.validation.ts
 import { z } from 'zod';
 
-export const EnhanceTextSchema = z.object({
-  text: z
+const experienceLevels = [
+  'entry-level',
+  'mid-level',
+  'senior',
+  'executive',
+] as const;
+
+export const GenerateSummarySchema = z.object({
+  jobTitle: z
     .string()
     .trim()
-    // FIX: Lower the minimum length to allow for short phrases.
-    .min(3, 'Text must be at least 3 characters long.')
-    .max(500, 'Text cannot exceed 500 characters.'),
-  context: z
-    .enum(['bullet_point', 'summary', 'job_title'])
-    .default('bullet_point'),
+    .min(1, { message: 'Job title is required and cannot be empty.' }),
+  yearsExperience: z.string().trim().min(1, {
+    message: 'Years of experience are required and cannot be empty.',
+  }),
+  experienceLevel: z.enum(experienceLevels),
+  keySkills: z.string().optional(),
+  careerHighlights: z.string().optional(),
+  targetJobDescription: z.string().optional(),
+  achievements: z.string().optional(),
+});
+
+// New schema for generating experience bullet points
+export const GenerateExperienceSchema = z.object({
+  jobTitle: z.string().trim().min(1, 'Job Title is required.'),
+  company: z.string().trim().min(1, 'Company name is required.'),
+  // Optional: add context for more tailored bullet points
+  industry: z.string().optional(),
+  yearsExperience: z.string().optional(),
+  previousResponsibilities: z.string().optional(), // Existing bullet points or context
+  targetSkills: z.string().optional(),
 });

@@ -1,64 +1,63 @@
+// src/modules/ai/ai.controller.ts
 import { Request, Response, NextFunction } from 'express';
-import { enhanceTextWithAI, generateBulletPoints } from './ai.service';
-import { EnhanceTextSchema } from './ai.validation';
-import { CustomError } from '../../middleware/error-handler';
+import {
+  GenerateSummarySchema,
+  GenerateExperienceSchema,
+} from './ai.validation'; // Import new schema
+import {
+  generateAISummary,
+  generateAIExperienceBulletPoints,
+} from './ai.service'; // Import new service function
+import logger from '../../utils/logger';
 
-export const enhanceText = async (
+/**
+ * Controller for generating a resume summary.
+ * Handles validation, calls the service, and responds to the client.
+ */
+export const generateSummaryController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const validationResult = EnhanceTextSchema.safeParse(req.body);
+    const validatedData = GenerateSummarySchema.parse(req.body);
+    logger.info('Summary generation request passed validation.');
 
-    if (!validationResult.success) {
-      // This block now ONLY handles the error case.
-      throw new CustomError(
-        'Invalid input.',
-        'VALIDATION_ERROR',
-        400,
-        validationResult.error.flatten().fieldErrors
-      );
-    } // <-- FIX: The closing brace is moved here.
-
-    // This code now correctly runs only on successful validation.
-    const { text, context } = validationResult.data;
-    const enhancedText = await enhanceTextWithAI(text, context);
-
-    res.status(200).json({
-      data: {
-        originalText: text,
-        enhancedText: enhancedText,
-      },
-    });
-  } catch (error) {
-    next(error); // Pass error to the global error handler
-  }
-};
-
-export const generateExperience = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { jobTitle, company } = req.body;
-    if (!jobTitle || !company) {
-      throw new CustomError(
-        'Job title and company are required.',
-        'VALIDATION_ERROR',
-        400
-      );
-    }
-
-    const bulletPoints = await generateBulletPoints(jobTitle, company);
+    const summary = await generateAISummary(validatedData);
 
     res.status(200).json({
       success: true,
-      message: 'Bullet points generated successfully.',
+      message: 'Summary generated successfully.',
+      data: { summary },
+    });
+  } catch (error) {
+    logger.error({ err: error }, 'Error in generateSummaryController');
+    next(error);
+  }
+};
+
+/**
+ * Controller for generating experience bullet points.
+ * Handles validation, calls the service, and responds to the client.
+ */
+export const generateExperienceController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const validatedData = GenerateExperienceSchema.parse(req.body);
+    logger.info('Experience generation request passed validation.');
+
+    const bulletPoints = await generateAIExperienceBulletPoints(validatedData);
+
+    res.status(200).json({
+      success: true,
+      message: 'Experience bullet points generated successfully.',
       data: { bulletPoints },
     });
   } catch (error) {
+    logger.error({ err: error }, 'Error in generateExperienceController');
     next(error);
   }
 };

@@ -1,0 +1,81 @@
+.live-preview-container {
+  height: 100%;
+  overflow: auto;
+  background: #f5f5f5;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.live-preview-page {
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  width: 794px; /* A4 width */
+  min-height: 1123px; /* A4 height */
+}
+
+.sortable-resume-section {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.sortable-resume-section.editable:hover {
+  box-shadow: inset 0 0 0 2px #007bff;
+}
+
+.sortable-resume-section.dragging {
+  z-index: 1000;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.section-drag-handle {
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background: #007bff;
+  color: white;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.section-drag-handle:active {
+  cursor: grabbing;
+}
+
+.sortable-resume-section.editable:hover .section-drag-handle {
+  opacity: 1;
+}
+
+.live-preview-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .live-preview-container {
+    padding: 1rem;
+  }
+
+  .live-preview-page {
+    width: 100%;
+    max-width: 794px;
+  }
+}

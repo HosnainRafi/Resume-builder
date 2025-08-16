@@ -1,12 +1,29 @@
+// src/modules/ai/ai.routes.ts
 import { Router } from 'express';
-import { enhanceText, generateExperience } from './ai.controller';
-import { firebaseAuthMiddleware } from 'backend/src/middleware/firebase-auth.middleware';
+import {
+  generateSummaryController,
+  generateExperienceController,
+} from './ai.controller'; // Import new controller
+import logger from '../../utils/logger';
 
 const router = Router();
 
-// Protect this route to ensure only logged-in users can use the AI features.
-// This is where you can later check planLimits if you add them.
-router.post('/enhance', firebaseAuthMiddleware, enhanceText);
-router.post('/generate-experience', generateExperience);
+logger.info('AI routes module is being loaded.');
+
+/**
+ * @route POST /api/ai/generate-summary
+ * @description Generates a professional resume summary based on user input.
+ * @access Public (or authenticated if you want to restrict this)
+ */
+router.post('/generate-summary', generateSummaryController);
+logger.info('✅ Route POST /api/ai/generate-summary has been defined.');
+
+/**
+ * @route POST /api/ai/generate-experience
+ * @description Generates professional experience bullet points based on job title and company.
+ * @access Public (or authenticated)
+ */
+router.post('/generate-experience', generateExperienceController); // New route
+logger.info('✅ Route POST /api/ai/generate-experience has been defined.');
 
 export default router;

@@ -2,15 +2,11 @@
 
 import React, { useState } from 'react';
 import { Form, Button, Card, Row, Col, Spinner } from 'react-bootstrap';
-import { mutate } from 'swr';
-import axios from 'axios';
+import apiClient from '../api/apiClient'; // Import your pre-configured apiClient
 
 // API function to call our new bullet point generator
 const generateAIBulletPoints = async ({ jobTitle, company }) => {
-  const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    withCredentials: true,
-  });
+  // Use the imported apiClient directly, which already has the interceptor for auth headers
   const { data } = await apiClient.post('/api/ai/generate-experience', {
     jobTitle,
     company,
@@ -23,7 +19,7 @@ function useAsyncMutation(mutationFn, options = {}) {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
 
-  const mutate = async (variables) => {
+  const performMutation = async (variables) => {
     setIsPending(true);
     setError(null);
 
@@ -44,23 +40,30 @@ function useAsyncMutation(mutationFn, options = {}) {
     }
   };
 
-  return { mutate, isPending, error };
+  return { mutate: performMutation, isPending, error };
 }
 
 // Reusable AI Writer button component
 function AIWriterButton({
   jobTitle,
   company,
-  onGenerated,
+  onGenerated, // This will be the handleExperienceChange from parent
   index,
   currentDescription,
 }) {
   const mutation = useAsyncMutation(generateAIBulletPoints, {
     onSuccess: (newBulletPoints) => {
       // Append new bullet points to the existing description
-      const updatedDescription = [currentDescription, ...newBulletPoints]
-        .filter((line) => line)
+      // Ensure newBulletPoints is an array.
+      const bulletPointsArray = Array.isArray(newBulletPoints)
+        ? newBulletPoints
+        : [];
+      const updatedDescription = [currentDescription, ...bulletPointsArray]
+        .filter((line) => line) // Remove any empty lines
         .join('\n');
+
+      // Call the onGenerated prop (which is handleExperienceChange)
+      // with the correct arguments: index, field ('description'), and the new value
       onGenerated(index, 'description', updatedDescription);
     },
     onError: (error) => {
@@ -89,9 +92,12 @@ function AIWriterButton({
 }
 
 function ExperienceEditor({ experience, setExperience }) {
+  // Ensure 'experience' is always an array, even if it's initially undefined or null.
+  const currentExperience = experience || [];
+
   const handleAddExperience = () => {
     setExperience([
-      ...(experience || []),
+      ...currentExperience,
       {
         jobTitle: '',
         company: '',
@@ -104,13 +110,16 @@ function ExperienceEditor({ experience, setExperience }) {
   };
 
   const handleExperienceChange = (index, field, value) => {
-    const updatedExperience = [...experience];
-    updatedExperience[index][field] = value;
+    const updatedExperience = [...currentExperience];
+    updatedExperience[index] = {
+      ...updatedExperience[index], // Preserve existing properties
+      [field]: value,
+    };
     setExperience(updatedExperience);
   };
 
   const handleRemoveExperience = (index) => {
-    const updatedExperience = (experience || []).filter((_, i) => i !== index);
+    const updatedExperience = currentExperience.filter((_, i) => i !== index);
     setExperience(updatedExperience);
   };
 
@@ -118,7 +127,7 @@ function ExperienceEditor({ experience, setExperience }) {
     <Card className="mb-4">
       <Card.Header as="h5">Work Experience</Card.Header>
       <Card.Body>
-        {(experience || []).map((exp, index) => (
+        {currentExperience.map((exp, index) => (
           <div key={index} className="mb-4 p-3 border rounded">
             <Row className="g-3">
               <Col md={6}>
@@ -191,11 +200,11 @@ function ExperienceEditor({ experience, setExperience }) {
                       Description / Achievements
                     </Form.Label>
                     <AIWriterButton
-                      jobTitle={exp.jobTitle}
-                      company={exp.company}
-                      onGenerated={handleExperienceChange}
+                      jobTitle={exp.jobTitle || ''}
+                      company={exp.company || ''}
+                      onGenerated={handleExperienceChange} // Correctly passes the parent's handler
                       index={index}
-                      currentDescription={exp.description}
+                      currentDescription={exp.description || ''}
                     />
                   </div>
                   <Form.Control

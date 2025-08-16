@@ -3,15 +3,16 @@
 import React, { useState } from 'react';
 import { Card, Form, Button, Spinner, Badge, Alert } from 'react-bootstrap';
 import useSWRMutation from 'swr/mutation';
-import axios from 'axios';
+// import axios from 'axios';
+import apiClient from '../api/apiClient';
 
 // API function to call our new endpoint
 const analyzeResumeKeywords = async (url, { arg }) => {
   const { jobDescription } = arg;
-  const apiClient = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    withCredentials: true,
-  });
+  // const apiClient = axios.create({
+  //   baseURL: import.meta.env.VITE_API_BASE_URL,
+  //   withCredentials: true,
+  // });
   const { data } = await apiClient.post(url, { jobDescription });
   return data.data;
 };

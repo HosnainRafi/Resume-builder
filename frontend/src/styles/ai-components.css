@@ -1,0 +1,42 @@
+/* src/styles/ai-components.css */
+
+.ai-summary-generator {
+  border: 2px dashed var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8edff 100%);
+}
+
+.ai-summary-generator .card-header {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #4f46e5 100%);
+  color: white;
+  border: none;
+}
+
+.ai-summary-generator .btn-primary {
+  background: var(--color-primary);
+  border: none;
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+.ai-summary-generator .btn-primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+}
+
+.generated-summary {
+  border: 2px solid var(--color-success);
+  border-radius: var(--radius-md);
+  background: #f0fdf4;
+  padding: var(--space-md);
+}
+
+.ai-badge {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+}

@@ -1,135 +1,71 @@
+// src/components/ResumeTabs.jsx
+
 import React, { useState } from 'react';
 import { Nav, Tab } from 'react-bootstrap';
-import './ReziForms.css';
-
-// Import your editor components
 import HeaderEditor from './HeaderEditor';
+import SummaryEditor from './SummaryEditor'; // Updated with AI generator
 import ExperienceEditor from './ExperienceEditor';
 import EducationEditor from './EducationEditor';
 import SkillsEditor from './SkillsEditor';
-import ProjectsEditor from './ProjectsEditor';
-
-const SECTIONS = [
-  {
-    eventKey: 'contact',
-    title: '👤 Contact',
-    icon: '👤',
-    component: HeaderEditor,
-    propName: 'header',
-    setterName: 'setHeader',
-  },
-  {
-    eventKey: 'experience',
-    title: '💼 Experience',
-    icon: '💼',
-    component: ExperienceEditor,
-    propName: 'experience',
-    setterName: 'setExperience',
-  },
-  {
-    eventKey: 'education',
-    title: '🎓 Education',
-    icon: '🎓',
-    component: EducationEditor,
-    propName: 'education',
-    setterName: 'setEducation',
-  },
-  {
-    eventKey: 'skills',
-    title: '⚡ Skills',
-    icon: '⚡',
-    component: SkillsEditor,
-    propName: 'skills',
-    setterName: 'setSkills',
-  },
-  {
-    eventKey: 'projects',
-    title: '🚀 Projects',
-    icon: '🚀',
-    component: ProjectsEditor,
-    propName: 'projects',
-    setterName: 'setProjects',
-  },
-];
 
 function ResumeTabs({ resumeData, onFieldChange }) {
-  const [activeTab, setActiveTab] = useState('contact');
-  const [completedSections, setCompletedSections] = useState(new Set());
-
-  // Check if section is completed based on data
-  const isSectionCompleted = (section) => {
-    if (!resumeData) return false;
-    const data = resumeData[section.propName];
-
-    switch (section.propName) {
-      case 'header':
-        return data && data.name && data.email;
-      case 'experience':
-      case 'education':
-      case 'projects':
-        return Array.isArray(data) && data.length > 0;
-      case 'skills':
-        return Array.isArray(data) && data.length > 0;
-      default:
-        return false;
-    }
-  };
+  const [activeTab, setActiveTab] = useState('header');
 
   return (
-    <div className="rezi-card">
-      <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
-        <div className="rezi-tabs-header">
-          <Nav variant="pills" className="rezi-nav-tabs">
-            {SECTIONS.map((section) => {
-              const isCompleted = isSectionCompleted(section);
-              return (
-                <Nav.Item key={section.eventKey}>
-                  <Nav.Link
-                    eventKey={section.eventKey}
-                    className={`rezi-tab-link ${isCompleted ? 'completed' : ''}`}
-                  >
-                    <span className="rezi-tab-icon">{section.icon}</span>
-                    <span className="rezi-tab-text">
-                      {section.title.replace(/^[^\s]+ /, '')}
-                    </span>
-                    {isCompleted && <span className="rezi-tab-check">✓</span>}
-                  </Nav.Link>
-                </Nav.Item>
-              );
-            })}
-          </Nav>
-          <div className="rezi-progress-bar">
-            <div
-              className="rezi-progress-fill"
-              style={{
-                width: `${(completedSections.size / SECTIONS.length) * 100}%`,
-              }}
-            />
-          </div>
-        </div>
+    <Tab.Container activeKey={activeTab} onSelect={setActiveTab}>
+      <Nav variant="tabs" className="resume-nav-tabs">
+        <Nav.Item>
+          <Nav.Link eventKey="header">Contact Info</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="summary">
+            Summary ✨<span className="ai-badge ms-1">AI</span>
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="experience">Experience</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="education">Education</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="skills">Skills</Nav.Link>
+        </Nav.Item>
+      </Nav>
 
-        <Tab.Content className="rezi-tab-content">
-          {SECTIONS.map((section) => {
-            const EditorComponent = section.component;
-            const data = resumeData?.[section.propName];
-            const setter = (value) => onFieldChange(section.propName, value);
-
-            return (
-              <Tab.Pane key={section.eventKey} eventKey={section.eventKey}>
-                <div className="rezi-section-content">
-                  <EditorComponent
-                    {...{
-                      [section.propName]: data,
-                      [section.setterName]: setter,
-                    }}
-                  />
-                </div>
-              </Tab.Pane>
-            );
-          })}
-        </Tab.Content>
-      </Tab.Container>
-    </div>
+      <Tab.Content>
+        <Tab.Pane eventKey="header">
+          <HeaderEditor
+            header={resumeData.header}
+            setHeader={(data) => onFieldChange('header', data)}
+          />
+        </Tab.Pane>
+        <Tab.Pane eventKey="summary">
+          <SummaryEditor
+            summary={resumeData.summary}
+            setSummary={(data) => onFieldChange('summary', data)}
+          />
+        </Tab.Pane>
+        <Tab.Pane eventKey="experience">
+          <ExperienceEditor
+            experience={resumeData.experience}
+            setExperience={(data) => onFieldChange('experience', data)}
+          />
+        </Tab.Pane>
+        <Tab.Pane eventKey="education">
+          <EducationEditor
+            education={resumeData.education}
+            setEducation={(data) => onFieldChange('education', data)}
+          />
+        </Tab.Pane>
+        <Tab.Pane eventKey="skills">
+          <SkillsEditor
+            skills={resumeData.skills}
+            setSkills={(data) => onFieldChange('skills', data)}
+          />
+        </Tab.Pane>
+      </Tab.Content>
+    </Tab.Container>
   );
 }
 

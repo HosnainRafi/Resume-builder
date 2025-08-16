@@ -1,7 +1,7 @@
 // src/modules/resumes/resume.controller.ts
 
 import { Request, Response, NextFunction } from 'express';
-import * as resumeService from './resume.service';
+import * as resumeService from './resume.service'; // Contains calculateScore
 import { CreateResumeSchema, UpdateResumeSchema } from './resume.validation';
 import { CustomError } from '../../middleware/error-handler';
 import { z, ZodError, ZodSchema } from 'zod';
@@ -10,7 +10,7 @@ import { ResumeModel } from './resume.model';
 import sharelinkModel from './sharelink.model';
 import { randomBytes } from 'crypto';
 
-// Generic validation utility
+// Generic validation utility (assuming it's used elsewhere in this controller)
 const validate = <T extends ZodSchema>(schema: T, data: any): z.infer<T> => {
   const parsed = schema.safeParse(data);
   if (!parsed.success) {
@@ -32,14 +32,10 @@ export const create = async (
 ) => {
   try {
     const uid = req.user!.uid;
-
-    // --- FIX 2: Validate directly and add detailed error logging ---
     const resumeData = CreateResumeSchema.parse(req.body);
-
     const newResume = await resumeService.createResume(uid, resumeData);
     res.status(201).json({ data: newResume });
   } catch (error) {
-    // Check if the error is a Zod validation error
     if (error instanceof ZodError) {
       console.error(
         'Zod Validation Error:',
@@ -54,7 +50,6 @@ export const create = async (
         )
       );
     }
-    // Pass any other errors to the global error handler
     next(error);
   }
 };
@@ -66,14 +61,11 @@ export const getById = async (
   next: NextFunction
 ) => {
   try {
-    // Use .uid from Firebase user object
     const uid = req.user!.uid;
     const { id: resumeId } = req.params;
-
     if (!mongoose.Types.ObjectId.isValid(resumeId)) {
       throw new CustomError('Invalid resume ID format.', 'BAD_REQUEST', 400);
     }
-
     const resume = await resumeService.findResumeById(uid, resumeId);
     if (!resume) {
       throw new CustomError('Resume not found.', 'NOT_FOUND', 404);
@@ -91,7 +83,6 @@ export const getAll = async (
   next: NextFunction
 ) => {
   try {
-    // Use .uid from Firebase user object
     const uid = req.user!.uid;
     const resumes = await resumeService.findResumesByUser(uid);
     res.status(200).json({ data: resumes });
@@ -107,14 +98,11 @@ export const update = async (
   next: NextFunction
 ) => {
   try {
-    // Use .uid from Firebase user object
     const uid = req.user!.uid;
     const { id: resumeId } = req.params;
-
     if (!mongoose.Types.ObjectId.isValid(resumeId)) {
       throw new CustomError('Invalid resume ID format.', 'BAD_REQUEST', 400);
     }
-
     const updateData = validate(UpdateResumeSchema, req.body);
     const updatedResume = await resumeService.updateResume(
       uid,
@@ -134,7 +122,6 @@ export const remove = async (
   next: NextFunction
 ) => {
   try {
-    // Use .uid from Firebase user object
     const uid = req.user!.uid;
     const resumeId = req.params.id;
     await resumeService.deleteResume(uid, resumeId);
@@ -153,7 +140,6 @@ export const analyzeKeywords = async (
   try {
     const { resumeId } = req.params;
     const { jobDescription } = req.body;
-
     if (!jobDescription) {
       throw new CustomError(
         'Job description is required.',
@@ -162,39 +148,25 @@ export const analyzeKeywords = async (
       );
     }
 
-    const resume = await ResumeModel.findById(resumeId);
-    if (!resume) {
-      throw new CustomError('Resume not found.', 'NOT_FOUND', 404);
-    }
-
-    const extractKeywords = (text: string) => {
-      return text.toLowerCase().match(/\b(\w{3,})\b/g) || [];
-    };
-
-    const jobKeywords = new Set(extractKeywords(jobDescription));
-    const resumeText = JSON.stringify(resume.toObject());
-    const resumeKeywords = new Set(extractKeywords(resumeText));
-    const missingKeywords = [...jobKeywords].filter(
-      (k) => !resumeKeywords.has(k)
-    );
-    const presentKeywords = [...jobKeywords].filter((k) =>
-      resumeKeywords.has(k)
+    // Ensure resume is found before attempting analysis (logic moved to service)
+    const analysisResult = await resumeService.analyzeResumeKeywords(
+      resumeId,
+      jobDescription
     );
 
     res.status(200).json({
       success: true,
-      data: {
-        requiredKeywords: [...jobKeywords],
-        presentKeywords,
-        missingKeywords,
-      },
+      data: analysisResult, // Directly return the result from service
     });
   } catch (error) {
     next(error);
   }
 };
 
-// Score a resume based on completeness and other metrics
+/**
+ * Controller to score a resume based on completeness, best practices, and ATS-friendliness.
+ * This function utilizes the `calculateScore` from resumeService.
+ */
 export const scoreResume = async (
   req: Request,
   res: Response,
@@ -202,12 +174,22 @@ export const scoreResume = async (
 ) => {
   try {
     const { resumeId } = req.params;
-    const resume = await ResumeModel.findById(resumeId);
+    const resume = await ResumeModel.findById(resumeId); // Fetch the resume document
+
     if (!resume) {
       throw new CustomError('Resume not found.', 'NOT_FOUND', 404);
     }
-    const { score, feedback } = resumeService.calculateScore(resume.toObject());
-    res.status(200).json({ success: true, data: { score, feedback } });
+
+    // Call the calculateScore function from your resume service
+    const { score, feedback } = resumeService.calculateScore(resume.toObject()); // Pass plain object
+
+    res.status(200).json({
+      success: true,
+      data: {
+        score,
+        feedback,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -221,9 +203,7 @@ export const createShareLink = async (
 ) => {
   try {
     const { resumeId, template } = req.body;
-    // Use .uid from Firebase user object
-    const uid = req.user!.uid;
-
+    const uid = req.user!.uid; // Use .uid from Firebase user object
     if (!process.env.APP_URL) {
       console.error('FATAL ERROR: APP_URL environment variable is not set.');
       throw new CustomError('Server configuration error.', 'SERVER_ERROR', 500);
@@ -263,7 +243,6 @@ export const getSharedResume = async (
   try {
     const { token } = req.params;
     const share = await sharelinkModel.findOne({ token });
-
     if (!share) {
       throw new CustomError(
         'Share link not found or has expired.',
@@ -271,7 +250,6 @@ export const getSharedResume = async (
         404
       );
     }
-
     res.status(200).json({
       resumeData: share.resumeData,
       template: share.template,

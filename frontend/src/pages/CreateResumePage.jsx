@@ -2,14 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Card, ProgressBar } from 'react-bootstrap';
+import { Container, Card, ProgressBar, Button } from 'react-bootstrap'; // Added Button import
 import { mutate } from 'swr';
 import apiClient from '../api/apiClient';
 
-// Import your step components
+// Import all step components
 import Step1_Header from './create-resume-steps/Step1_Header';
 import Step2_Summary from './create-resume-steps/Step2_Summary';
-// ... other step imports
+import Step3_Experience from './create-resume-steps/Step3_Experience';
+import Step4_Education from './create-resume-steps/Step4_Education';
+import Step5_Skills from './create-resume-steps/Step5_Skills';
+import Step6_Projects from './create-resume-steps/Step6_Projects';
+import Step7_Finalize from './create-resume-steps/Step7_Finalize';
 
 const TOTAL_STEPS = 7;
 
@@ -20,7 +24,15 @@ function CreateResumePage() {
 
   const [formData, setFormData] = useState({
     title: 'Untitled Resume',
-    header: {},
+    header: {
+      name: '',
+      email: '',
+      phone: '',
+      linkedin: '',
+      github: '',
+      website: '',
+      location: '',
+    },
     summary: '',
     experience: [],
     education: [],
@@ -60,15 +72,17 @@ function CreateResumePage() {
           : 'Untitled Resume',
       };
 
-      await apiClient.post('/resumes', finalData);
+      await apiClient.post('/api/resumes', finalData);
 
       // Revalidate the resumes cache
-      mutate('/resumes');
+      mutate('/api/resumes');
 
       alert('Resume created successfully!');
       navigate('/resumes');
     } catch (error) {
-      alert(`Error creating resume: ${error.message}`);
+      alert(
+        `Error creating resume: ${error.response?.data?.message || error.message}`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -89,7 +103,16 @@ function CreateResumePage() {
         return <Step1_Header {...props} />;
       case 2:
         return <Step2_Summary {...props} />;
-      // ... other cases
+      case 3:
+        return <Step3_Experience {...props} />;
+      case 4:
+        return <Step4_Education {...props} />;
+      case 5:
+        return <Step5_Skills {...props} />;
+      case 6:
+        return <Step6_Projects {...props} />;
+      case 7:
+        return <Step7_Finalize {...props} />;
       default:
         return <Step1_Header {...props} />;
     }
@@ -107,6 +130,26 @@ function CreateResumePage() {
           <ProgressBar now={progress} />
         </Card.Header>
         <Card.Body>{renderStepContent()}</Card.Body>
+        <Card.Footer className="d-flex justify-content-between">
+          <Button
+            variant="secondary"
+            onClick={handlePrevStep}
+            disabled={currentStep === 1 || isSubmitting}
+          >
+            Back
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleNextStep}
+            disabled={isSubmitting}
+          >
+            {currentStep === TOTAL_STEPS
+              ? isSubmitting
+                ? 'Creating Resume...'
+                : 'Create Resume'
+              : 'Next'}
+          </Button>
+        </Card.Footer>
       </Card>
     </Container>
   );

@@ -4,14 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 import { pdf } from '@react-pdf/renderer';
-import apiClient from '../api/apiClient'; // Using the consistent apiClient
+import apiClient from '../api/apiClient';
 
-// --- Import Your Components & CSS ---
+// --- Import Components ---
 import '../EditorLayout.css';
 import ResumeTabs from '../components/ResumeTabs';
 import KeywordAnalyzer from '../components/KeywordAnalyzer';
 import ResumeScorecard from '../components/ResumeScorecard';
-import DraggableTemplateWrapper from '../components/DraggableTemplateWrapper';
+import LivePreviewPane from '../components/LivePreviewPane'; // New component
+import PreviewToolbar from '../components/PreviewToolbar'; // New component
 
 // --- Import All Templates ---
 import ClassicTemplate from '../components/ClassicTemplate';
@@ -24,36 +25,33 @@ import StudentEntryLevelTemplate from '../components/StudentEntryLevelTemplate';
 import InfographicVisualTemplate from '../components/InfographicVisualTemplate';
 import ModernExecutiveTemplate from '../components/ModernExecutiveTemplate';
 
-// --- Custom mutation hook for SWR ---
-function useAsyncMutation(mutationFn, options = {}) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+const DEFAULT_RESUME_STRUCTURE = {
+  title: 'Untitled Resume',
+  header: {
+    name: '',
+    email: '',
+    phone: '',
+    linkedin: '',
+    github: '',
+    website: '',
+    location: '',
+  },
+  summary: '',
+  experience: [],
+  education: [],
+  skills: [],
+  projects: [],
+  template: 'classic',
+  sectionOrder: [
+    'header',
+    'summary',
+    'experience',
+    'education',
+    'skills',
+    'projects',
+  ], // Add section order
+};
 
-  const mutateAsync = async (variables) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const result = await mutationFn(variables);
-      if (options.onSuccess) {
-        options.onSuccess(result);
-      }
-      return result;
-    } catch (err) {
-      setError(err);
-      if (options.onError) {
-        options.onError(err);
-      }
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return { mutate: mutateAsync, isLoading, error };
-}
-
-// --- Master Template Configuration ---
 const TEMPLATES = [
   {
     id: 'classic',
@@ -111,64 +109,95 @@ const TEMPLATES = [
   },
 ];
 
-// Fetcher function for SWR
+function useAsyncMutation(mutationFn, options = {}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const mutateAsync = async (variables) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await mutationFn(variables);
+      if (options.onSuccess) options.onSuccess(result);
+      return result;
+    } catch (err) {
+      setError(err);
+      if (options.onError) options.onError(err);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { mutate: mutateAsync, isLoading, error };
+}
+
 const fetcher = (url) => apiClient.get(url).then((res) => res.data.data);
 
 function ResumeEditorPage() {
   const { resumeId } = useParams();
   const navigate = useNavigate();
 
-  // State for the editor UI
-  const [formData, setFormData] = useState(null); // Initialize as null
+  const [formData, setFormData] = useState(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState('classic');
-  const [viewMode, setViewMode] = useState('traditional'); // 'traditional' or 'draggable'
+  const [viewMode, setViewMode] = useState('split'); // 'split', 'preview-only', 'edit-only'
+  const [previewScale, setPreviewScale] = useState(0.8);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // --- Data Fetching with SWR ---
   const {
     data: initialResumeData,
     error,
     isLoading,
   } = useSWR(resumeId ? `/api/resumes/${resumeId}` : null, fetcher);
 
-  // --- State Synchronization ---
-  // This effect runs once the initial data is fetched successfully.
-  // It copies the fetched data into our local 'formData' state for editing.
   useEffect(() => {
     if (initialResumeData) {
-      setFormData(initialResumeData);
-      // Also set the template based on the saved resume data
-      setSelectedTemplateId(initialResumeData.template || 'classic');
+      const mergedData = {
+        ...DEFAULT_RESUME_STRUCTURE,
+        ...initialResumeData,
+        header: {
+          ...DEFAULT_RESUME_STRUCTURE.header,
+          ...(initialResumeData.header || {}),
+        },
+        experience: initialResumeData.experience || [],
+        education: initialResumeData.education || [],
+        skills: initialResumeData.skills || [],
+        projects: initialResumeData.projects || [],
+        sectionOrder:
+          initialResumeData.sectionOrder ||
+          DEFAULT_RESUME_STRUCTURE.sectionOrder,
+        template:
+          initialResumeData.template || DEFAULT_RESUME_STRUCTURE.template,
+      };
+      setFormData(mergedData);
+      setSelectedTemplateId(mergedData.template);
     }
   }, [initialResumeData]);
 
-  // --- Data Mutation ---
   const updateMutation = useAsyncMutation(
     (updatedData) => apiClient.patch(`/api/resumes/${resumeId}`, updatedData),
     {
       onSuccess: () => {
-        // Revalidate the cache for this specific resume
         mutate(`/api/resumes/${resumeId}`);
-        // Also revalidate the resumes list
         mutate('/api/resumes');
-        alert('Resume saved successfully!');
       },
-      onError: (err) => {
-        alert(`Failed to save resume: ${err.message}`);
-      },
+      onError: (err) => console.error('Failed to save resume:', err),
     }
   );
 
-  // --- Event Handlers ---
-  const handleSave = () => {
-    if (formData) {
-      // Include the selected template ID in the data to be saved
+  // Auto-save functionality
+  useEffect(() => {
+    if (!formData || !resumeId) return;
+
+    const timeoutId = setTimeout(() => {
       updateMutation.mutate({ ...formData, template: selectedTemplateId });
-    }
-  };
+    }, 2000); // Auto-save after 2 seconds of inactivity
+
+    return () => clearTimeout(timeoutId);
+  }, [formData, selectedTemplateId, resumeId]);
 
   const handleDownloadPDF = async () => {
     if (!formData) return;
-
     try {
       const currentTemplate =
         TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
@@ -189,116 +218,201 @@ function ResumeEditorPage() {
     }
   };
 
-  // --- Loading and Error States ---
-  // This is the most important part: handle loading and error states *before* rendering the main UI.
-  if (isLoading) {
-    return <div className="rezi-loading">Loading Editor...</div>;
-  }
+  const handleSectionReorder = (newSectionOrder) => {
+    setFormData((prev) => ({ ...prev, sectionOrder: newSectionOrder }));
+  };
 
-  if (error) {
+  if (isLoading) {
     return (
-      <div className="rezi-error">Error loading resume: {error.message}</div>
+      <div className="rezi-loading-container">
+        <div className="rezi-loading">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3">Loading Resume Editor...</p>
+        </div>
+      </div>
     );
   }
 
-  // If data has not yet been set to local state, show a loading message.
-  // This prevents child components from receiving 'null' as a prop.
-  if (!formData) {
-    return <div className="rezi-loading">Initializing...</div>;
-  }
-
-  // --- Main Render ---
-  // Now that we know `formData` is populated, we can safely render the editor.
-  const currentTemplate =
-    TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
-  const PreviewComponent = currentTemplate.component;
-
-  return (
-    <div className="rezi-page-wrapper">
-      <header className="rezi-header">
-        <h1 className="rezi-title">Editing: {formData.title}</h1>
-        <div className="rezi-actions">
-          {/* View Mode Toggle */}
-          <div className="view-toggle">
+  if (error || !formData) {
+    return (
+      <div className="rezi-error-container">
+        <div className="rezi-error">
+          <div className="alert alert-danger" role="alert">
+            <h4 className="alert-heading">Error loading resume</h4>
+            <p>{error?.message || 'Failed to load resume data'}</p>
             <button
-              onClick={() => setViewMode('traditional')}
-              className={`rezi-btn ${
-                viewMode === 'traditional'
-                  ? 'rezi-btn-primary'
-                  : 'rezi-btn-secondary'
-              }`}
+              className="btn btn-outline-danger"
+              onClick={() => navigate('/resumes')}
             >
-              📄 Templates
-            </button>
-            <button
-              onClick={() => setViewMode('draggable')}
-              className={`rezi-btn ${
-                viewMode === 'draggable'
-                  ? 'rezi-btn-primary'
-                  : 'rezi-btn-secondary'
-              }`}
-            >
-              🔄 Drag & Drop
+              Return to Resumes
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  const currentTemplate =
+    TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
+
+  return (
+    <div
+      className={`rezi-editor-workspace ${isFullscreen ? 'fullscreen' : ''}`}
+    >
+      {/* Enhanced Header */}
+      <header className="rezi-editor-header">
+        <div className="rezi-header-left">
           <button
-            className="rezi-btn rezi-btn-primary"
-            onClick={handleSave}
-            disabled={updateMutation.isLoading}
-          >
-            {updateMutation.isLoading ? 'Saving...' : '💾 Save'}
-          </button>
-          <button
-            className="rezi-btn rezi-btn-success"
-            onClick={handleDownloadPDF}
-          >
-            📥 Download PDF
-          </button>
-          <button
-            className="rezi-btn rezi-btn-secondary"
+            className="rezi-back-btn"
             onClick={() => navigate('/resumes')}
           >
-            ← Back
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M19 12H6m0 0l6 6m-6-6l6-6" />
+            </svg>
           </button>
+          <div className="rezi-title-section">
+            <h1 className="rezi-title">{formData.title}</h1>
+            <span className="rezi-subtitle">
+              {updateMutation.isLoading ? 'Auto-saving...' : 'Saved'}
+            </span>
+          </div>
+        </div>
+
+        <div className="rezi-header-center">
+          <div className="rezi-view-controls">
+            <button
+              className={`rezi-view-btn ${viewMode === 'edit-only' ? 'active' : ''}`}
+              onClick={() => setViewMode('edit-only')}
+            >
+              📝 Edit
+            </button>
+            <button
+              className={`rezi-view-btn ${viewMode === 'split' ? 'active' : ''}`}
+              onClick={() => setViewMode('split')}
+            >
+              📊 Split
+            </button>
+            <button
+              className={`rezi-view-btn ${viewMode === 'preview-only' ? 'active' : ''}`}
+              onClick={() => setViewMode('preview-only')}
+            >
+              👁️ Preview
+            </button>
+          </div>
+        </div>
+
+        <div className="rezi-header-right">
+          <div className="rezi-actions">
+            <select
+              value={selectedTemplateId}
+              onChange={(e) => setSelectedTemplateId(e.target.value)}
+              className="rezi-template-select"
+            >
+              {TEMPLATES.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+
+            <button
+              className="rezi-btn rezi-btn-outline"
+              onClick={handleDownloadPDF}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="7,10 12,15 17,10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Download PDF
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="rezi-main-content">
-        {viewMode === 'traditional' ? (
-          // --- Traditional Two-Panel Layout ---
-          <div className="rezi-editor-container">
-            <div className="rezi-editor-panel">
-              {/* All your editor tools go here */}
-              <ResumeTabs resumeData={formData} onFieldChange={setFormData} />
+      {/* Main Content Area */}
+      <main className="rezi-editor-main">
+        {viewMode === 'edit-only' && (
+          <div className="rezi-edit-panel">
+            <ResumeTabs
+              resumeData={formData}
+              onFieldChange={(field, data) => {
+                setFormData((prev) => ({ ...prev, [field]: data }));
+              }}
+            />
+            <div className="rezi-analysis-tools">
               <ResumeScorecard resumeId={resumeId} />
               <KeywordAnalyzer resumeId={resumeId} />
             </div>
-            <div className="rezi-preview-panel">
-              {/* Template selector and preview */}
-              <select
-                value={selectedTemplateId}
-                onChange={(e) => setSelectedTemplateId(e.target.value)}
-                className="template-dropdown"
-              >
-                {TEMPLATES.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-              <div className="rezi-preview-document">
-                <PreviewComponent resumeData={formData} />
+          </div>
+        )}
+
+        {viewMode === 'split' && (
+          <div className="rezi-split-layout">
+            <div className="rezi-edit-sidebar">
+              <ResumeTabs
+                resumeData={formData}
+                onFieldChange={(field, data) => {
+                  setFormData((prev) => ({ ...prev, [field]: data }));
+                }}
+              />
+              <div className="rezi-analysis-tools-compact">
+                <ResumeScorecard resumeId={resumeId} />
+                <KeywordAnalyzer resumeId={resumeId} />
               </div>
             </div>
+            <div className="rezi-preview-area">
+              <PreviewToolbar
+                scale={previewScale}
+                onScaleChange={setPreviewScale}
+                isFullscreen={isFullscreen}
+                onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
+                template={currentTemplate}
+                onTemplateChange={setSelectedTemplateId}
+              />
+              <LivePreviewPane
+                resumeData={formData}
+                template={currentTemplate}
+                scale={previewScale}
+                onSectionReorder={handleSectionReorder}
+                isEditable={true}
+              />
+            </div>
           </div>
-        ) : (
-          // --- Draggable Full-Width Layout ---
-          <div className="rezi-full-editor">
-            <DraggableTemplateWrapper
+        )}
+
+        {viewMode === 'preview-only' && (
+          <div className="rezi-preview-full">
+            <PreviewToolbar
+              scale={previewScale}
+              onScaleChange={setPreviewScale}
+              isFullscreen={isFullscreen}
+              onToggleFullscreen={() => setIsFullscreen(!isFullscreen)}
+              template={currentTemplate}
+              onTemplateChange={setSelectedTemplateId}
+            />
+            <LivePreviewPane
               resumeData={formData}
-              onResumeDataChange={setFormData}
-              TemplateComponent={PreviewComponent}
-              templateName={currentTemplate.name}
+              template={currentTemplate}
+              scale={previewScale}
+              onSectionReorder={handleSectionReorder}
+              isEditable={true}
             />
           </div>
         )}
