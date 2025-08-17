@@ -32,8 +32,8 @@ body {
   min-height: 100vh;
 
   /* Apply theme colors from :root */
-  color: var(--text-color);
-  background-color: #ffffff !important;
+  /* color: var(--text-color); */
+  /* background-color: #ffffff !important; */
 
   /* Font rendering improvements */
   font-synthesis: none;

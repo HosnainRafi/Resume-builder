@@ -1,24 +1,42 @@
-/* src/styles/navigation.css */
+/* Root variables for color and spacing */
+:root {
+  --color-primary: #667eea;
+  --color-primary-light: #f4f6fc;
+  --color-gray-900: #171923;
+  --color-gray-700: #23272f;
+  --color-gray-600: #4a5568;
+  --color-gray-200: #e2e8f0;
+  --color-gray-100: #f7fafc;
+  --container-max-width: 1200px;
+  --header-height: 64px;
+  --space-md: 32px;
+  --space-sm: 12px;
+  --space-lg: 42px;
+  --radius-md: 8px;
+}
 
+/* Navigation Bar */
 .rezi-navbar {
-  background: white;
+  background: #fff;
   border-bottom: 1px solid var(--color-gray-200);
   height: var(--header-height);
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.03);
 }
 
 .rezi-navbar-container {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 0 var(--space-md);
-  height: 100%;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+/* Brand Left */
 .rezi-navbar-brand {
   display: flex;
   align-items: center;
@@ -27,17 +45,18 @@
 .rezi-logo {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 8px;
   text-decoration: none;
   color: var(--color-gray-900);
-  font-weight: 600;
-  font-size: 1.25rem;
+  font-weight: 700;
+  font-size: 1.35rem;
 }
 
 .rezi-logo-icon {
-  font-size: 1.5rem;
+  font-size: 1.9rem;
 }
 
+/* Navbar links - expand as needed */
 .rezi-navbar-menu {
   display: flex;
   align-items: center;
@@ -48,9 +67,9 @@
   color: var(--color-gray-600);
   text-decoration: none;
   font-weight: 500;
-  padding: var(--space-sm) var(--space-md);
+  padding: 8px 12px;
   border-radius: var(--radius-md);
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
 
 .rezi-nav-link:hover {
@@ -63,20 +82,88 @@
   background: var(--color-primary-light);
 }
 
+/* User Menu Right */
 .rezi-navbar-user {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  gap: 0;
 }
 
 .rezi-user-menu {
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  gap: 12px;
 }
 
+/* Avatar circle with initials */
+.rezi-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin-right: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Name styling */
 .rezi-user-name {
   color: var(--color-gray-700);
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 0.94rem;
+  margin-right: 4px;
+  letter-spacing: 0.01em;
+}
+
+/* Sign Out button */
+.rezi-signout-btn {
+  background: white;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  font-weight: 500;
+  font-size: 0.89rem;
+  border-radius: var(--radius-md);
+  padding: 4px 14px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.04);
+  transition: all 0.18s;
+  margin-left: 8px;
+}
+.rezi-signout-btn:hover {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .rezi-navbar-container {
+    padding: 0 14px;
+    height: 48px;
+    min-height: 48px;
+  }
+  .rezi-logo-text {
+    font-size: 1.02rem;
+  }
+  .rezi-logo-icon {
+    font-size: 1.35rem;
+  }
+  .rezi-user-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+  }
+  .rezi-user-name {
+    font-size: 0.82rem;
+  }
+  .rezi-signout-btn {
+    padding: 2px 10px;
+    font-size: 0.75rem;
+  }
 }

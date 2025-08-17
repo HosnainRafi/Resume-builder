@@ -1,0 +1,555 @@
+/* ResumesPage.css */
+
+.rezi-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.rezi-page-content {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Dashboard Header */
+.rezi-dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.rezi-header-left {
+  flex: 1;
+}
+
+.rezi-dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.rezi-dashboard-subtitle {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 400;
+}
+
+.rezi-header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Controls */
+.rezi-dashboard-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.rezi-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.rezi-view-toggle {
+  display: flex;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.rezi-toggle-btn {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rezi-toggle-btn:hover {
+  background: #f8f9fa;
+  color: #495057;
+}
+
+.rezi-toggle-btn.active {
+  background: #667eea;
+  color: white;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.rezi-sort-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #495057;
+}
+
+.rezi-select {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+}
+
+.rezi-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Buttons */
+.rezi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.rezi-btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.rezi-btn-primary:hover {
+  background: #5a6fd8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+.rezi-btn-secondary {
+  background: white;
+  color: #495057;
+  border: 1px solid #e9ecef;
+}
+
+.rezi-btn-secondary:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.rezi-btn-lg {
+  padding: 14px 24px;
+  font-size: 15px;
+}
+
+/* Loading and Error States */
+.rezi-loading-state,
+.rezi-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.rezi-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rezi-error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+/* Empty State */
+.rezi-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.rezi-empty-illustration {
+  margin-bottom: 24px;
+  opacity: 0.7;
+}
+
+.rezi-empty-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 12px 0;
+}
+
+.rezi-empty-description {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0 0 32px 0;
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+/* Resume Items Container */
+.rezi-resumes-container.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.rezi-resumes-container.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Resume Item */
+.rezi-resume-item {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.rezi-resume-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.rezi-resume-item.grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.rezi-resume-item.list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Resume Preview */
+.rezi-resume-preview {
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.rezi-resume-item.grid .rezi-resume-preview {
+  height: 200px;
+  width: 100%;
+}
+
+.rezi-resume-item.list .rezi-resume-preview {
+  width: 120px;
+  height: 80px;
+  border-bottom: none;
+  border-right: 1px solid #e9ecef;
+  flex-shrink: 0;
+}
+
+.rezi-preview-placeholder {
+  color: #adb5bd;
+  font-size: 24px;
+}
+
+.rezi-resume-item.list .rezi-preview-placeholder {
+  font-size: 20px;
+}
+
+/* Resume Content */
+.rezi-resume-content {
+  padding: 20px;
+  flex: 1;
+}
+
+.rezi-resume-item.list .rezi-resume-content {
+  padding: 16px 20px;
+}
+
+.rezi-resume-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.rezi-resume-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.rezi-resume-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.rezi-action-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #6c757d;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rezi-action-btn:hover {
+  background: #f8f9fa;
+  color: #495057;
+}
+
+.rezi-action-btn-danger:hover {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Resume Meta */
+.rezi-resume-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.rezi-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rezi-score-item {
+  font-weight: 500;
+}
+
+.rezi-score-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  position: relative;
+}
+
+.rezi-score-circle::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: white;
+  border-radius: 50%;
+}
+
+.rezi-score-circle span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Resume Actions */
+.rezi-resume-actions-main {
+  display: flex;
+  gap: 12px;
+}
+
+.rezi-resume-item.list .rezi-resume-actions-main {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rezi-page-content {
+    padding: 16px;
+  }
+
+  .rezi-dashboard-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .rezi-dashboard-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .rezi-controls-left {
+    justify-content: space-between;
+  }
+
+  .rezi-resumes-container.grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rezi-resume-item.list {
+    flex-direction: column;
+  }
+
+  .rezi-resume-item.list .rezi-resume-preview {
+    width: 100%;
+    height: 120px;
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .rezi-resume-actions-main {
+    flex-direction: column;
+  }
+
+  .rezi-btn {
+    justify-content: center;
+  }
+}
+/* Live Resume Preview Styles */
+.rezi-resume-live-preview {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: white;
+  border-radius: 4px;
+}
+
+.rezi-preview-scale-wrapper {
+  transform: scale(0.35);
+  transform-origin: top left;
+  width: 285.71%; /* 100% / 0.35 to counteract scale */
+  height: 285.71%; /* 100% / 0.35 to counteract scale */
+  pointer-events: none;
+  position: relative;
+}
+
+/* Overlay for hover interactions */
+.rezi-preview-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.rezi-resume-item:hover .rezi-preview-overlay {
+  opacity: 1;
+}
+
+.rezi-preview-overlay-btn {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.rezi-preview-overlay-btn:hover {
+  background: white;
+  transform: translateY(-1px);
+}
+
+/* Adjustments for list view */
+.rezi-resume-item.list .rezi-preview-scale-wrapper {
+  transform: scale(0.25);
+  width: 400%; /* 100% / 0.25 */
+  height: 400%; /* 100% / 0.25 */
+}
+
+/* Controls right alignment */
+.rezi-controls-right {
+  display: flex;
+  align-items: center;
+}
+
+.rezi-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.rezi-stat-item {
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+}
+
+/* Performance optimization */
+.rezi-resume-live-preview * {
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .rezi-preview-scale-wrapper {
+    transform: scale(0.3);
+    width: 333.33%;
+    height: 333.33%;
+  }
+
+  .rezi-resume-item.list .rezi-preview-scale-wrapper {
+    transform: scale(0.2);
+    width: 500%;
+    height: 500%;
+  }
+}
