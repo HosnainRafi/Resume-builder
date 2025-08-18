@@ -111,9 +111,7 @@ const TechModernTemplate = ({ resumeData }) => {
         {/* Sidebar */}
         <View style={styles.sidebar}>
           <SafeText style={styles.name}>{header.name || 'Your Name'}</SafeText>
-          <SafeText style={styles.title}>
-            {header.title || 'Software Engineer'}
-          </SafeText>
+          <SafeText style={styles.title}>{header.title || ''}</SafeText>
 
           {/* Contact */}
           <View style={styles.sidebarSection}>

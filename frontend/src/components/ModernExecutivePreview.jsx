@@ -19,7 +19,7 @@ function ModernExecutivePreview({ resumeData }) {
     if (experience && experience.length > 0 && experience[0].jobTitle) {
       return experience.jobTitle;
     }
-    return 'Chief Executive Officer'; // Fallback title
+    return ''; // Fallback title
   };
 
   return (
@@ -96,11 +96,9 @@ function ModernExecutivePreview({ resumeData }) {
             <h2 className="exec-right-title">Professional Experience</h2>
             {experience.map((exp, index) => (
               <div key={index} style={{ marginBottom: '20px' }}>
-                <h3 className="exec-item-title">
-                  {exp.jobTitle || 'Executive Position'}
-                </h3>
+                <h3 className="exec-item-title">{exp.jobTitle || ''}</h3>
                 <div className="exec-item-subheader">
-                  {exp.company || 'Fortune 500 Company'} | {exp.startDate} -{' '}
+                  {exp.company || ''} | {exp.startDate} -{' '}
                   {exp.endDate || 'Present'}
                 </div>
                 <p

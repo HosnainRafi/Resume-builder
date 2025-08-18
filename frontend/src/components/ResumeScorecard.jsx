@@ -1,133 +1,194 @@
 // src/components/ResumeScorecard.jsx
 
 import React from 'react';
-import {
-  Card,
-  Button,
-  Spinner,
-  ListGroup,
-  ProgressBar,
-  Alert,
-} from 'react-bootstrap';
 import useSWR from 'swr';
-// import axios from 'axios';
 import apiClient from '../api/apiClient';
 
 // API function to call our scoring endpoint
 const fetchResumeScore = async (url) => {
-  // const apiClient = axios.create({
-  //   baseURL: import.meta.env.VITE_API_BASE_URL,
-  //   withCredentials: true,
-  // });
   const { data } = await apiClient.get(url);
   return data.data; // This data object should contain { score, feedback }
 };
 
 function ResumeScorecard({ resumeId }) {
-  // Use useSWR to automatically fetch data when resumeId is available.
-  // The key (first argument) can be null initially to prevent fetching
-  // until resumeId is provided. Once resumeId exists, it will fetch.
   const {
-    data, // The fetched data ({ score, feedback })
-    error, // Any error during fetching
-    isLoading, // True while fetching
-    mutate: refetch, // SWR's revalidation function
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
   } = useSWR(
-    resumeId ? `/api/resumes/${resumeId}/score` : null, // SWR key: fetches only if resumeId exists
-    fetchResumeScore, // The fetcher function
+    resumeId ? `/api/resumes/${resumeId}/score` : null,
+    fetchResumeScore,
     {
-      revalidateOnFocus: false, // Optional: prevent re-fetching on window focus for this component
-      revalidateOnMount: true, // Optional: re-fetch when component mounts (after resumeId is set)
-      shouldRetryOnError: false, // Optional: do not retry if an error occurs
+      revalidateOnFocus: false,
+      revalidateOnMount: true,
+      shouldRetryOnError: false,
     }
   );
 
-  // Manual trigger function for fetching score (used by the button)
   const handleAnalyzeResume = async () => {
     try {
-      // Calling refetch() without arguments tells SWR to revalidate the current key.
-      // This will trigger a new fetch to `/api/resumes/${resumeId}/score`.
       await refetch();
     } catch (error) {
       console.error('Failed to analyze resume:', error);
-      // You might want to display a user-friendly error message here in the UI
     }
   };
 
-  // Helper function to determine ProgressBar variant based on score
-  const getScoreVariant = (score) => {
-    if (score >= 80) return 'success';
-    if (score >= 50) return 'warning';
-    return 'danger';
+  // Get score color based on score value
+  const getScoreColor = (score) => {
+    if (score >= 80) return '#27ae60';
+    if (score >= 60) return '#f39c12';
+    return '#e74c3c';
+  };
+
+  // Get score status text
+  const getScoreStatus = (score) => {
+    if (score >= 80) return 'Excellent';
+    if (score >= 60) return 'Good';
+    return 'Needs Improvement';
   };
 
   return (
-    <Card className="mb-4">
-      <Card.Header as="h5">Resume Analysis</Card.Header>
-      <Card.Body>
-        <div className="text-center">
-          <Button
+    <div className="rezi-scorecard">
+      {/* Score Display */}
+      {data ? (
+        <div className="rezi-score-section">
+          <div className="rezi-score-circle-container">
+            <div
+              className="rezi-score-circle"
+              style={{
+                background: `conic-gradient(${getScoreColor(data.score)} ${data.score * 3.6}deg, rgba(255,255,255,0.1) 0deg)`,
+              }}
+            >
+              <div className="rezi-score-inner">
+                <span
+                  className="rezi-score-number"
+                  style={{ color: getScoreColor(data.score) }}
+                >
+                  {data.score}
+                </span>
+                <span className="rezi-score-max">/100</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rezi-score-info">
+            <h3 className="rezi-score-title">Rezi Score</h3>
+            <p
+              className="rezi-score-status"
+              style={{ color: getScoreColor(data.score) }}
+            >
+              {getScoreStatus(data.score)}
+            </p>
+          </div>
+
+          <button
+            className="rezi-score-button"
             onClick={handleAnalyzeResume}
-            // Disable button while loading or if no resumeId is available
-            disabled={isLoading || !resumeId}
-            className="mb-3 w-100"
+            disabled={isLoading}
           >
             {isLoading ? (
               <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
-                />
+                <div className="rezi-spinner"></div>
                 Analyzing...
               </>
             ) : (
-              'Analyze & Score My Resume'
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                Refresh Score
+              </>
             )}
-          </Button>
-        </div>
+          </button>
 
-        {/* Display error message if fetching fails */}
-        {error && (
-          <Alert variant="danger">
-            Could not calculate score at this time. Please try again.
-          </Alert>
-        )}
-
-        {/* Display score and feedback only if data is available */}
-        {data && (
-          <div>
-            <h4 className="text-center mb-0">Score: {data.score} / 100</h4>
-            <ProgressBar
-              animated
-              now={data.score}
-              variant={getScoreVariant(data.score)}
-              className="mb-3"
-              style={{ height: '10px' }}
-            />
-            <h6>Actionable Feedback:</h6>
-            <ListGroup variant="flush">
-              {/* Check if feedback array has items */}
-              {data.feedback && data.feedback.length > 0 ? (
-                data.feedback.map((item, index) => (
-                  <ListGroup.Item key={index} className="px-0 py-2">
-                    - {item}
-                  </ListGroup.Item>
-                ))
-              ) : (
-                // Message when there's no specific feedback (i.e., resume is solid)
-                <ListGroup.Item className="text-success px-0 py-2">
-                  Excellent! Your resume looks solid.
-                </ListGroup.Item>
+          {/* Feedback Section */}
+          {data.feedback && data.feedback.length > 0 && (
+            <div className="rezi-feedback-section">
+              <h4 className="rezi-feedback-title">Key Improvements</h4>
+              <ul className="rezi-feedback-list">
+                {data.feedback.slice(0, 3).map((item, index) => (
+                  <li key={index} className="rezi-feedback-item">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              {data.feedback.length > 3 && (
+                <button className="rezi-view-all-btn">
+                  View All ({data.feedback.length}) →
+                </button>
               )}
-            </ListGroup>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* Initial State */
+        <div className="rezi-score-section">
+          <div className="rezi-score-placeholder">
+            <div className="rezi-score-icon">
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                opacity="0.3"
+              >
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </div>
+            <h3 className="rezi-score-title">Resume Score</h3>
+            <p className="rezi-placeholder-text">
+              Get instant feedback on your resume's ATS compatibility and
+              overall quality.
+            </p>
           </div>
-        )}
-      </Card.Body>
-    </Card>
+
+          <button
+            className="rezi-score-button rezi-primary"
+            onClick={handleAnalyzeResume}
+            disabled={isLoading || !resumeId}
+          >
+            {isLoading ? (
+              <>
+                <div className="rezi-spinner"></div>
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Analyze My Resume
+              </>
+            )}
+          </button>
+
+          {error && (
+            <div className="rezi-error-message">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+              </svg>
+              Failed to analyze. Try again.
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -29,7 +29,7 @@ function InfographicVisualPreview({ resumeData }) {
     if (experience && experience.length > 0 && experience[0].jobTitle) {
       return experience.jobTitle;
     }
-    return 'Product Manager'; // Fallback title
+    return ''; // Fallback title
   };
 
   return (
@@ -40,7 +40,7 @@ function InfographicVisualPreview({ resumeData }) {
         <div className="info-photo-placeholder"></div>
 
         {/* Name and Title */}
-        <h1 className="info-name">{header.name || 'Your Name'}</h1>
+        <h1 className="info-name">{header.name || ''}</h1>
         <h2 className="info-title">
           {getJobTitle()} {/* Changed from header.title to getJobTitle() */}
         </h2>

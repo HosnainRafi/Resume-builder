@@ -27,9 +27,7 @@ function CreativeColorSplashPreview({ resumeData, sectionOnly = null }) {
           <div className="creative-header">
             <div className="creative-header-text">
               <h1 className="creative-name">{header.name || 'Your Name'}</h1>
-              <h2 className="creative-title">
-                {header.title || 'Professional Title'}
-              </h2>
+              <h2 className="creative-title">{header.title || ''}</h2>
             </div>
             <div className="creative-photo-placeholder"></div>
           </div>

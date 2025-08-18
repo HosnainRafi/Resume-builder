@@ -1,6 +1,7 @@
 // src/components/ClassicTemplatePreview.jsx
 
 import React from 'react';
+import StyleOnlyEditableField from './StyleOnlyEditableField';
 import './ClassicTemplatePreview.css';
 
 function ClassicTemplatePreview({ resumeData }) {
@@ -17,22 +18,36 @@ function ClassicTemplatePreview({ resumeData }) {
     <div className="classic-template-preview-page">
       {/* Sidebar */}
       <div className="classic-sidebar">
-        <h1 className="classic-name">{header.name || 'Your Name'}</h1>
+        <StyleOnlyEditableField
+          tag="h1"
+          className="classic-name"
+          allowFormatting={true}
+        >
+          {header.name || 'Your Name'}
+        </StyleOnlyEditableField>
 
         {/* Contact Section */}
         <div className="classic-sidebar-section">
           <h3 className="classic-sidebar-title">Contact</h3>
           {header.email && (
-            <div className="classic-contact-item">{header.email}</div>
+            <StyleOnlyEditableField className="classic-contact-item">
+              {header.email}
+            </StyleOnlyEditableField>
           )}
           {header.phone && (
-            <div className="classic-contact-item">{header.phone}</div>
+            <StyleOnlyEditableField className="classic-contact-item">
+              {header.phone}
+            </StyleOnlyEditableField>
           )}
           {header.website && (
-            <div className="classic-contact-item">{header.website}</div>
+            <StyleOnlyEditableField className="classic-contact-item">
+              {header.website}
+            </StyleOnlyEditableField>
           )}
           {header.location && (
-            <div className="classic-contact-item">{header.location}</div>
+            <StyleOnlyEditableField className="classic-contact-item">
+              {header.location}
+            </StyleOnlyEditableField>
           )}
         </div>
 
@@ -42,7 +57,9 @@ function ClassicTemplatePreview({ resumeData }) {
             <h3 className="classic-sidebar-title">Skills</h3>
             <ul className="classic-skills-list">
               {skills.map((skill, index) => (
-                <li key={index}>{skill}</li>
+                <StyleOnlyEditableField key={index} tag="li">
+                  {skill}
+                </StyleOnlyEditableField>
               ))}
             </ul>
           </div>
@@ -55,7 +72,13 @@ function ClassicTemplatePreview({ resumeData }) {
         {summary && (
           <div className="classic-section">
             <h2 className="classic-section-title">Professional Summary</h2>
-            <p className="classic-item-description">{summary}</p>
+            <StyleOnlyEditableField
+              tag="p"
+              className="classic-item-description"
+              allowFormatting={true}
+            >
+              {summary}
+            </StyleOnlyEditableField>
           </div>
         )}
 
@@ -66,20 +89,33 @@ function ClassicTemplatePreview({ resumeData }) {
             {experience.map((exp, index) => (
               <div key={index} className="classic-item">
                 <div className="classic-item-header">
-                  <h4 className="classic-item-title">
+                  <StyleOnlyEditableField
+                    tag="h4"
+                    className="classic-item-title"
+                  >
                     {exp.jobTitle || 'Job Title'}
-                  </h4>
+                  </StyleOnlyEditableField>
                   <span className="classic-item-date">
                     {exp.startDate || 'Start'} - {exp.endDate || 'Present'}
                   </span>
                 </div>
                 <div className="classic-item-subheader">
-                  {exp.company || 'Company'} | {exp.location || 'Location'}
+                  <StyleOnlyEditableField tag="span">
+                    {exp.company || 'Company'}
+                  </StyleOnlyEditableField>
+                  {' | '}
+                  <StyleOnlyEditableField tag="span">
+                    {exp.location || 'Location'}
+                  </StyleOnlyEditableField>
                 </div>
-                <p className="classic-item-description">
+                <StyleOnlyEditableField
+                  tag="p"
+                  className="classic-item-description"
+                  allowFormatting={true}
+                >
                   {exp.description ||
                     'Describe your responsibilities and achievements.'}
-                </p>
+                </StyleOnlyEditableField>
               </div>
             ))}
           </div>
@@ -92,19 +128,32 @@ function ClassicTemplatePreview({ resumeData }) {
             {education.map((edu, index) => (
               <div key={index} className="classic-item">
                 <div className="classic-item-header">
-                  <h4 className="classic-item-title">
+                  <StyleOnlyEditableField
+                    tag="h4"
+                    className="classic-item-title"
+                  >
                     {edu.degree || 'Degree'}
-                  </h4>
+                  </StyleOnlyEditableField>
                   <span className="classic-item-date">
                     {edu.graduationDate || 'Year'}
                   </span>
                 </div>
                 <div className="classic-item-subheader">
-                  {edu.institution || 'Institution'} |{' '}
-                  {edu.location || 'Location'}
+                  <StyleOnlyEditableField tag="span">
+                    {edu.institution || 'Institution'}
+                  </StyleOnlyEditableField>
+                  {' | '}
+                  <StyleOnlyEditableField tag="span">
+                    {edu.location || 'Location'}
+                  </StyleOnlyEditableField>
                 </div>
                 {edu.gpa && (
-                  <p className="classic-item-description">GPA: {edu.gpa}</p>
+                  <StyleOnlyEditableField
+                    tag="p"
+                    className="classic-item-description"
+                  >
+                    GPA: {edu.gpa}
+                  </StyleOnlyEditableField>
                 )}
               </div>
             ))}
@@ -118,16 +167,26 @@ function ClassicTemplatePreview({ resumeData }) {
             {projects.map((proj, index) => (
               <div key={index} className="classic-item">
                 <div className="classic-item-header">
-                  <h4 className="classic-item-title">
+                  <StyleOnlyEditableField
+                    tag="h4"
+                    className="classic-item-title"
+                  >
                     {proj.name || 'Project Name'}
-                  </h4>
+                  </StyleOnlyEditableField>
                 </div>
                 <div className="classic-item-subheader">
-                  Technologies: {proj.technologies || 'React, Node.js'}
+                  Technologies:{' '}
+                  <StyleOnlyEditableField tag="span">
+                    {proj.technologies || 'React, Node.js'}
+                  </StyleOnlyEditableField>
                 </div>
-                <p className="classic-item-description">
+                <StyleOnlyEditableField
+                  tag="p"
+                  className="classic-item-description"
+                  allowFormatting={true}
+                >
                   {proj.description || 'Describe your project.'}
-                </p>
+                </StyleOnlyEditableField>
                 {proj.link && (
                   <p className="classic-item-description">
                     <a

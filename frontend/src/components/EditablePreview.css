@@ -1,0 +1,155 @@
+/* Editable Preview Styles */
+.editable-preview {
+  position: relative;
+  width: 100%;
+}
+
+.editable-preview.adjustment-mode {
+  filter: brightness(1.05);
+}
+
+.auto-adjusting {
+  animation: autoAdjustPulse 2s ease-in-out;
+}
+
+@keyframes autoAdjustPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Adjustment Toolbar */
+.rezi-adjustment-toolbar {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+.rezi-toolbar-section {
+  margin-bottom: 16px;
+}
+
+.rezi-toolbar-section h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #495057;
+  margin: 0 0 8px 0;
+}
+
+.rezi-toolbar-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.rezi-toolbar-btn {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.rezi-toolbar-btn:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.rezi-toolbar-btn.active {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.rezi-toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: #e9ecef;
+  margin: 0 8px;
+}
+
+.rezi-font-size-slider {
+  width: 60px;
+}
+
+.rezi-color-picker {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rezi-toolbar-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.rezi-toolbar-close:hover {
+  color: #495057;
+}
+
+/* Editable Elements */
+.editable-element {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editable-element:hover {
+  background: rgba(102, 126, 234, 0.1);
+  outline: 1px dashed #667eea;
+}
+
+.editable-element.editing {
+  background: rgba(102, 126, 234, 0.2);
+  outline: 2px solid #667eea;
+}
+
+.edit-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2c3e50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 100;
+}
+
+.edit-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #2c3e50;
+}

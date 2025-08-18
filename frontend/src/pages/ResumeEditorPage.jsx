@@ -174,13 +174,18 @@ function ResumeEditorPage() {
   const [viewMode, setViewMode] = useState('split'); // 'split' or 'edit-only'
   const [saveStatus, setSaveStatus] = useState('saved');
   const [showAnalysisMenu, setShowAnalysisMenu] = useState(false);
-  const [templateManuallyChanged, setTemplateManuallyChanged] = useState(false); // NEW: Track manual template changes
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false); // NEW: Track initial load
+  const [templateManuallyChanged, setTemplateManuallyChanged] = useState(false);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+  const [isAdjustmentMode, setIsAdjustmentMode] = useState(false);
 
   // Refs for tracking save state
   const lastSavedData = useRef(null);
   const saveTimeoutRef = useRef(null);
   const hasUnsavedChanges = useRef(false);
+
+  const toggleAdjustmentMode = () => {
+    setIsAdjustmentMode(!isAdjustmentMode);
+  };
 
   const {
     data: initialResumeData,
@@ -217,7 +222,7 @@ function ResumeEditorPage() {
 
       lastSavedData.current = JSON.stringify(mergedData);
       hasUnsavedChanges.current = false;
-      setInitialDataLoaded(true); // Mark as initially loaded
+      setInitialDataLoaded(true);
     }
   }, [initialResumeData, initialDataLoaded]);
 
@@ -232,7 +237,7 @@ function ResumeEditorPage() {
         });
         lastSavedData.current = updatedDataString;
         hasUnsavedChanges.current = false;
-        setTemplateManuallyChanged(false); // Reset manual change flag after successful save
+        setTemplateManuallyChanged(false);
         mutate(`/api/resumes/${resumeId}`, result, false);
       },
       onError: (err) => {
@@ -276,7 +281,7 @@ function ResumeEditorPage() {
         ...debouncedFormData,
         template: selectedTemplateId,
       });
-    }, 500); // 500ms delay to batch rapid changes
+    }, 500);
   }, [debouncedFormData, selectedTemplateId, resumeId, updateMutation]);
 
   const handleFieldChange = useCallback((field, data) => {
@@ -311,31 +316,81 @@ function ResumeEditorPage() {
         });
       }
 
-      const currentTemplate =
-        TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
-      const PdfComponent = currentTemplate.pdfComponent;
-      const doc = <PdfComponent resumeData={formData} />;
-      const blob = await pdf(doc).toBlob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${formData.title || 'resume'}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      // Dynamic imports to avoid SSR issues
+      const html2canvas = (await import('html2canvas')).default;
+      const { jsPDF } = await import('jspdf');
+
+      // Look for the resume preview element (could be any template)
+      const resumeElement =
+        document.querySelector('.rezi-preview-container > div') ||
+        document.querySelector('.editable-resume-wrapper');
+
+      if (resumeElement) {
+        // Hide any toolbars temporarily for PDF
+        const toolbar = document.querySelector('.floating-toolbar');
+        if (toolbar) toolbar.style.display = 'none';
+
+        const canvas = await html2canvas(resumeElement, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: resumeElement.scrollWidth,
+          height: resumeElement.scrollHeight,
+        });
+
+        // Show toolbar again
+        if (toolbar) toolbar.style.display = 'block';
+
+        const imgData = canvas.toDataURL('image/png');
+
+        // Create PDF with proper dimensions
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save(`${formData.title || 'resume'}.pdf`);
+      } else {
+        // Fallback to original PDF generation
+        const currentTemplate =
+          TEMPLATES.find((t) => t.id === selectedTemplateId) || TEMPLATES[0];
+        const PdfComponent = currentTemplate.pdfComponent;
+        const doc = <PdfComponent resumeData={formData} />;
+        const blob = await pdf(doc).toBlob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${formData.title || 'resume'}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
     } catch (error) {
       console.error('PDF generation failed:', error);
       alert('Failed to generate PDF. Please try again.');
     }
   };
 
-  // FIXED: Template change handler with optimistic updates
   const handleTemplateChange = useCallback(
     (templateId) => {
       // Optimistic update - update UI immediately
       setSelectedTemplateId(templateId);
-      setTemplateManuallyChanged(true); // Mark as manually changed
+      setTemplateManuallyChanged(true);
 
       // Immediately update formData to prevent reversion
       setFormData((prev) => ({
@@ -359,7 +414,6 @@ function ResumeEditorPage() {
     [formData]
   );
 
-  // Toggle analysis menu
   const toggleAnalysisMenu = () => {
     setShowAnalysisMenu(!showAnalysisMenu);
   };
@@ -513,13 +567,28 @@ function ResumeEditorPage() {
               className={`rezi-view-btn ${viewMode === 'split' ? 'active' : ''}`}
               onClick={() => setViewMode('split')}
             >
-              📊 Edit + Preview
+              📊 Preview + Score
             </button>
           </div>
         </div>
 
         <div className="rezi-header-right">
           <div className="rezi-actions">
+            <button
+              className={`rezi-btn rezi-btn-outline ${isAdjustmentMode ? 'active' : ''}`}
+              onClick={toggleAdjustmentMode}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65z" />
+              </svg>
+              {isAdjustmentMode ? 'EXIT ADJUSTMENTS' : 'ADJUSTMENTS'}
+            </button>
+
             <select
               value={selectedTemplateId}
               onChange={(e) => handleTemplateChange(e.target.value)}
@@ -531,34 +600,6 @@ function ResumeEditorPage() {
                 </option>
               ))}
             </select>
-
-            {/* Score Button */}
-            <button
-              className={`rezi-btn rezi-btn-outline ${showAnalysisMenu ? 'active' : ''}`}
-              onClick={toggleAnalysisMenu}
-              title="Resume Score & Analysis"
-              style={{
-                background: showAnalysisMenu
-                  ? 'rgba(255, 255, 255, 0.2)'
-                  : 'rgba(255, 255, 255, 0.1)',
-                borderColor: showAnalysisMenu
-                  ? '#00bfff'
-                  : 'rgba(255, 255, 255, 0.3)',
-              }}
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M3 3v5h5M3 21v-5h5M21 3v5h-5M21 21v-5h-5" />
-                <path d="M3 12h18" />
-              </svg>
-              Score
-            </button>
 
             <button
               className="rezi-btn rezi-btn-outline"
@@ -606,7 +647,7 @@ function ResumeEditorPage() {
       {/* Main Content */}
       <main className="rezi-editor-main">
         {viewMode === 'edit-only' && (
-          <div className={`rezi-split-layout view-edit-only`}>
+          <div className="rezi-split-layout view-edit-only">
             <div className="rezi-edit-sidebar">
               <ResumeTabs
                 resumeData={formData}
@@ -617,45 +658,59 @@ function ResumeEditorPage() {
         )}
 
         {viewMode === 'split' && (
-          <div className={`rezi-split-layout view-split`}>
-            <div className="rezi-edit-sidebar">
-              <ResumeTabs
-                resumeData={formData}
-                onFieldChange={handleFieldChange}
-              />
-            </div>
-            <div className="rezi-preview-area">
-              {/* Preview using dedicated preview component */}
+          <div
+            className="rezi-split-layout view-preview-score"
+            style={{
+              display: 'flex',
+              height: 'calc(100vh - 120px)',
+              gap: '0',
+            }}
+          >
+            {/* Left: Preview Area - 3/4 width */}
+            <div
+              className="rezi-preview-area-main"
+              style={{
+                flex: '3 1 0%',
+                overflowY: 'auto',
+                padding: '20px',
+                background: '#f7f8fa',
+                borderRight: '1px solid #e9ecef',
+              }}
+            >
               <div className="rezi-preview-document">
                 <div className="rezi-preview-container">
+                  {/* FIXED: Dynamic template rendering */}
                   {React.createElement(currentTemplate.previewComponent, {
                     resumeData: formData,
+                    isEditable: true,
+                    onFieldChange: handleFieldChange,
                   })}
                 </div>
               </div>
             </div>
+
+            {/* Right: Score & Analysis - 1/4 width */}
+            <aside
+              className="rezi-score-analysis-sidebar"
+              style={{
+                flex: '1 1 0%',
+                background: '#2c3e50',
+                color: 'white',
+                padding: '20px',
+                overflowY: 'auto',
+                minWidth: '300px',
+              }}
+            >
+              <div className="rezi-sidebar-content">
+                <ResumeScorecard resumeId={resumeId} />
+                <div style={{ marginTop: '20px' }}>
+                  <KeywordAnalyzer resumeId={resumeId} />
+                </div>
+              </div>
+            </aside>
           </div>
         )}
       </main>
-
-      {/* Floating Analysis Menu */}
-      {showAnalysisMenu && (
-        <div className="rezi-analysis-menu open">
-          <div className="rezi-analysis-menu-header">
-            <h6 className="rezi-analysis-menu-title">📊 Resume Analysis</h6>
-            <button
-              className="rezi-analysis-menu-close"
-              onClick={toggleAnalysisMenu}
-            >
-              ×
-            </button>
-          </div>
-          <div className="rezi-analysis-menu-content">
-            <ResumeScorecard resumeId={resumeId} />
-            <KeywordAnalyzer resumeId={resumeId} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

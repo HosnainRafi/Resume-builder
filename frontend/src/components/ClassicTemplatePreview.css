@@ -247,3 +247,43 @@
     transform: none;
   }
 }
+
+/* Adjustment Mode Styles */
+.adjustment-mode {
+  position: relative;
+}
+
+.adjustment-mode-indicator {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.adjustment-mode .style-editable-field {
+  border: 1px dashed rgba(102, 126, 234, 0.3);
+}
+
+.adjustment-mode .style-editable-field:hover {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+/* Active button styling */
+.rezi-btn-outline.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.rezi-btn-outline.active:hover {
+  background: #5a6fd8;
+  border-color: #5a6fd8;
+}

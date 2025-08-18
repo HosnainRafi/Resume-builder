@@ -1,0 +1,134 @@
+/* src/components/EnhancedEditableField.css */
+
+.enhanced-editable-field {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 4px 6px;
+  transition: all 0.2s ease;
+  min-height: 24px;
+  position: relative;
+}
+
+.enhanced-editable-field:hover {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.enhanced-editable-field:hover::after {
+  content: '✏️ Click to edit';
+  position: absolute;
+  top: -25px;
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.enhanced-editable-field .placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.enhanced-editing-container {
+  margin: 8px 0;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  position: relative;
+}
+
+.enhanced-quill-editor {
+  min-height: 120px;
+}
+
+.enhanced-quill-editor .ql-editor {
+  min-height: 80px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  padding: 12px;
+}
+
+.enhanced-quill-editor .ql-toolbar {
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  justify-content: flex-end;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.save-btn {
+  background: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #545b62;
+  transform: translateY(-1px);
+}
+
+/* Override Quill styles for better integration */
+.enhanced-quill-editor .ql-container {
+  border: none;
+  font-family: inherit;
+}
+
+.enhanced-quill-editor .ql-toolbar {
+  border: none;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .enhanced-editing-container {
+    margin: 4px 0;
+  }
+
+  .enhanced-quill-editor .ql-toolbar {
+    padding: 8px;
+  }
+
+  .edit-actions {
+    padding: 8px;
+  }
+
+  .save-btn,
+  .cancel-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
